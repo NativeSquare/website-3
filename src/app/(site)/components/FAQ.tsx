@@ -47,7 +47,7 @@ const FAQ: React.FC = () => {
           <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 mb-6 border border-indigo-100">
             <HelpCircle size={24} />
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 font-geist mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tighter text-gray-900 font-geist mb-4">
             Frequently Asked Questions
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">

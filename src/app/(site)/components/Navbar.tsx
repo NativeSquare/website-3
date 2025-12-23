@@ -38,30 +38,30 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-medium">
-            <Link
-              href="/about"
-              className={`transition-colors font-geist ${isActive("/about")}`}
-            >
-              About
-            </Link>
-            <Link
-              href={PORTFOLIO_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="transition-colors font-geist text-gray-600 hover:text-gray-900"
-            >
-              Portfolio
-            </Link>
-            <Link
-              href="/legal"
-              className={`transition-colors font-geist ${isActive("/legal")}`}
-            >
-              Legal
-            </Link>
-          </nav>
+          <div className="flex items-center gap-6 lg:gap-8">
+            <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-medium">
+              <Link
+                href="/about"
+                className={`transition-colors font-geist ${isActive("/about")}`}
+              >
+                About
+              </Link>
+              <Link
+                href={PORTFOLIO_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="transition-colors font-geist text-gray-600 hover:text-gray-900"
+              >
+                Portfolio
+              </Link>
+              <Link
+                href="/legal"
+                className={`transition-colors font-geist ${isActive("/legal")}`}
+              >
+                Legal
+              </Link>
+            </nav>
 
-          <div className="flex items-center gap-3">
             <Link
               href="https://calendar.app.google/BFYre7dXNFCy6GfT6"
               className="hidden sm:inline-flex items-center rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-gray-900/20 hover:bg-black transition-colors font-geist"

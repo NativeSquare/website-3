@@ -51,7 +51,7 @@ const Testimonials: React.FC = () => {
           <h2 className="text-sm font-semibold text-indigo-600 tracking-wide uppercase mb-3">
             Testimonials
           </h2>
-          <p className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 font-geist">
+          <p className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter text-gray-900 font-geist">
             Trusted by founders <br />{" "}
             <span className="text-gray-500">around the globe</span>
           </p>

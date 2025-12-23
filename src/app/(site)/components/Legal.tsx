@@ -40,46 +40,48 @@ const Legal: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Navigation Sidebar */}
           <aside className="lg:col-span-3">
-            <nav className="flex flex-col gap-1 sticky top-32">
-              {sections.map((section) => (
-                <button
-                  key={section.id}
-                  onClick={() => setActiveSection(section.id)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-                    activeSection === section.id
-                      ? "bg-indigo-50 text-indigo-600 shadow-sm"
-                      : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
-                  }`}
-                >
-                  <section.icon
-                    className={`w-4 h-4 ${
+            <div className="sticky top-32 space-y-8">
+              <nav className="flex flex-col gap-1">
+                {sections.map((section) => (
+                  <button
+                    key={section.id}
+                    onClick={() => setActiveSection(section.id)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
                       activeSection === section.id
-                        ? "text-indigo-600"
-                        : "text-gray-400"
+                        ? "bg-indigo-50 text-indigo-600 shadow-sm"
+                        : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                     }`}
-                  />
-                  {section.label}
-                  {activeSection === section.id && (
-                    <ChevronRight className="w-4 h-4 ml-auto" />
-                  )}
-                </button>
-              ))}
-            </nav>
+                  >
+                    <section.icon
+                      className={`w-4 h-4 ${
+                        activeSection === section.id
+                          ? "text-indigo-600"
+                          : "text-gray-400"
+                      }`}
+                    />
+                    {section.label}
+                    {activeSection === section.id && (
+                      <ChevronRight className="w-4 h-4 ml-auto" />
+                    )}
+                  </button>
+                ))}
+              </nav>
 
-            <div className="mt-8 p-6 bg-gray-50 rounded-2xl border border-gray-100">
-              <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
-                <Mail className="w-4 h-4 text-indigo-600" />
-                Contact Legal Team
-              </h4>
-              <p className="text-xs text-gray-500 mb-4 leading-relaxed">
-                For any questions regarding our terms or your data rights:
-              </p>
-              <a
-                href="mailto:admin@nativesquare.fr"
-                className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 underline underline-offset-4"
-              >
-                admin@nativesquare.fr
-              </a>
+              <div className="p-6 bg-gray-50 rounded-2xl border border-gray-100">
+                <h4 className="text-sm font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-indigo-600" />
+                  Contact Legal Team
+                </h4>
+                <p className="text-xs text-gray-500 mb-4 leading-relaxed">
+                  For any questions regarding our terms or your data rights:
+                </p>
+                <a
+                  href="mailto:admin@nativesquare.fr"
+                  className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 underline underline-offset-4"
+                >
+                  admin@nativesquare.fr
+                </a>
+              </div>
             </div>
           </aside>
 
@@ -102,36 +104,14 @@ const Legal: React.FC = () => {
                           <strong>Company:</strong> NativeSquare SAS
                         </li>
                         <li className="flex gap-2">
-                          <strong>Head Office:</strong> [9 rue des Colonnes,
-                          75002 Paris, France]
+                          <strong>Head Office:</strong> 9 rue des Colonnes,
+                          75002 Paris, France
                         </li>
                         <li className="flex gap-2">
-                          <strong>SIRET:</strong> [989 179 205 R.C.S. Paris]
+                          <strong>SIRET:</strong> 989 179 205 R.C.S. Paris
                         </li>
                         <li className="flex gap-2">
-                          <strong>VAT:</strong> [FR40989179205]
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
-                      <h4 className="text-xs font-bold text-indigo-600 uppercase tracking-widest mb-4">
-                        Publication & Hosting
-                      </h4>
-                      <ul className="list-none p-0 m-0 space-y-2 text-sm">
-                        <li className="flex gap-2">
-                          <strong>Director:</strong> Maxime & Alex (NativeSquare
-                          Leads)
-                        </li>
-                        <li className="flex gap-2">
-                          <strong>Contact:</strong> admin@nativesquare.fr
-                        </li>
-                        <li className="flex gap-2">
-                          <strong>Host:</strong> [INSERT_HOSTING_NAME, e.g.,
-                          Vercel Inc.]
-                        </li>
-                        <li className="flex gap-2">
-                          <strong>Host Contact:</strong>{" "}
-                          [INSERT_HOST_ADDRESS_OR_URL]
+                          <strong>VAT:</strong> FR40989179205
                         </li>
                       </ul>
                     </div>

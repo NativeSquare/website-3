@@ -1,18 +1,34 @@
 import { Award, Heart, Target, Users } from "lucide-react";
+import FAQ from "./FAQ";
+import CTA from "./CTA";
 
 const About: React.FC = () => {
   return (
-    <div className="pt-24 pb-16 bg-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-16 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold font-geist text-gray-900 mb-6">
+    <div className="pt-24 bg-white">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-24 text-center">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-geist tracking-tighter text-gray-900 mb-8">
           We are <span className="text-indigo-600">NativeSquare</span>.
         </h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          We&apos;re a software agency and app studio that partners with
-          entrepreneurs and business owners. We don&apos;t just build apps—we
-          build businesses. From your initial idea to your first sale and
-          beyond, we&apos;re with you every step of the way.
-        </p>
+        <div className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed space-y-6">
+          <p>
+            NativeSquare was born from a simple observation: most businesses
+            struggle not because of a lack of ideas, but because of the gap
+            between a vision and a market-ready product.
+          </p>
+          <p>
+            We are a team of product-minded engineers and designers who have
+            spent years building, launching, and scaling our own applications.
+            Today, our internal studio manages a portfolio of apps serving over
+            25,000 paying users globally.
+          </p>
+          <p>
+            This hands-on experience is what we bring to our clients. We
+            don&apos;t just build software; we build revenue-generating assets.
+            From your initial strategy to your technical infrastructure and
+            sales funnels, we handle the complexity so you can focus on leading
+            your business.
+          </p>
+        </div>
       </div>
 
       <div className="bg-gray-50 py-20">
@@ -70,52 +86,8 @@ const About: React.FC = () => {
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-20">
-        <h2 className="text-3xl font-bold font-geist text-gray-900 mb-12 text-center">
-          Meet the Leads
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="group relative overflow-hidden rounded-2xl">
-            <img
-              src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800"
-              alt="CEO"
-              className="w-full h-[400px] object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
-              <h3 className="text-white text-xl font-bold font-geist">
-                James Carter
-              </h3>
-              <p className="text-gray-300">Technical Director</p>
-            </div>
-          </div>
-          <div className="group relative overflow-hidden rounded-2xl">
-            <img
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800"
-              alt="CTO"
-              className="w-full h-[400px] object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
-              <h3 className="text-white text-xl font-bold font-geist">
-                Sarah Lin
-              </h3>
-              <p className="text-gray-300">Head of Design</p>
-            </div>
-          </div>
-          <div className="group relative overflow-hidden rounded-2xl">
-            <img
-              src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=800"
-              alt="Lead Dev"
-              className="w-full h-[400px] object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-6">
-              <h3 className="text-white text-xl font-bold font-geist">
-                Marcus Reid
-              </h3>
-              <p className="text-gray-300">Lead Engineer</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <FAQ />
+      <CTA />
     </div>
   );
 };

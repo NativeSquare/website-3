@@ -33,7 +33,7 @@ const CTA: React.FC = () => {
                 : "translate-y-10 opacity-0"
             }`}
           >
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white font-geist mb-8">
+            <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tighter text-white font-geist mb-8">
               Ready to turn your vision <br className="hidden sm:block" />
               into a <span className="text-indigo-400">market leader?</span>
             </h2>

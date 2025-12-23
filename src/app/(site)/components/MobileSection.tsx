@@ -32,7 +32,7 @@ const MobileSection: React.FC = () => {
               Agency & Studio
             </div>
 
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 font-geist mb-6">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter text-gray-900 font-geist mb-6">
               We build for clients. <br /> We build for ourselves.
             </h2>
             <p className="text-gray-600 text-lg mb-8 max-w-lg leading-relaxed">

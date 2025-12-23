@@ -65,7 +65,7 @@ const Features: React.FC = () => {
             <p className="text-sm font-semibold text-indigo-600 mb-2">
               Complete Business Solutions
             </p>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 font-geist">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tighter text-gray-900 font-geist">
               We handle everything <br /> so{" "}
               <span className="text-gray-500">you can focus on growth</span>
             </h2>
