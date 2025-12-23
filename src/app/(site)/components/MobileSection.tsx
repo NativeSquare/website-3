@@ -22,7 +22,9 @@ const MobileSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div
             className={`transition-all duration-1000 ${
-              isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-10 opacity-0"
             }`}
           >
             <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-100 px-3 py-1 text-xs font-medium text-blue-700 mb-6">
@@ -34,7 +36,10 @@ const MobileSection: React.FC = () => {
               We build for clients. <br /> We build for ourselves.
             </h2>
             <p className="text-gray-600 text-lg mb-8 max-w-lg leading-relaxed">
-              As both an agency and an app studio, we bring real-world experience to every project. We know what it takes to launch and scale because we&apos;ve done it ourselves with our own apps serving 25,000+ paying users.
+              As both an agency and an app studio, we bring real-world
+              experience to every project. We know what it takes to launch and
+              scale because we&apos;ve done it ourselves with our own apps
+              serving 25,000+ paying users.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
@@ -102,7 +107,9 @@ const MobileSection: React.FC = () => {
 
           <div
             className={`relative flex justify-center lg:justify-end transition-all duration-1000 delay-300 ${
-              isVisible ? "translate-x-0 opacity-100" : "translate-x-10 opacity-0"
+              isVisible
+                ? "translate-x-0 opacity-100"
+                : "translate-x-10 opacity-0"
             }`}
           >
             <div className="relative w-[300px] sm:w-[340px] h-[600px] sm:h-[680px] bg-gray-900 rounded-[3rem] border-8 border-gray-900 shadow-2xl overflow-hidden">
@@ -168,4 +175,3 @@ const MobileSection: React.FC = () => {
 };
 
 export default MobileSection;
-

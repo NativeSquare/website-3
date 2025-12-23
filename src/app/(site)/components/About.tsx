@@ -8,7 +8,10 @@ const About: React.FC = () => {
           We are <span className="text-indigo-600">NativeSquare</span>.
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          We&apos;re a software agency and app studio that partners with entrepreneurs and business owners. We don&apos;t just build apps—we build businesses. From your initial idea to your first sale and beyond, we&apos;re with you every step of the way.
+          We&apos;re a software agency and app studio that partners with
+          entrepreneurs and business owners. We don&apos;t just build apps—we
+          build businesses. From your initial idea to your first sale and
+          beyond, we&apos;re with you every step of the way.
         </p>
       </div>
 
@@ -23,7 +26,8 @@ const About: React.FC = () => {
                 Results-Driven
               </h3>
               <p className="text-gray-600 text-sm">
-                Every decision we make is focused on driving your business forward and maximizing ROI.
+                Every decision we make is focused on driving your business
+                forward and maximizing ROI.
               </p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -34,7 +38,8 @@ const About: React.FC = () => {
                 True Partnership
               </h3>
               <p className="text-gray-600 text-sm">
-                Your success is our success. We&apos;re invested in your growth and work as an extension of your business.
+                Your success is our success. We&apos;re invested in your growth
+                and work as an extension of your business.
               </p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -45,7 +50,8 @@ const About: React.FC = () => {
                 Customer-Centric
               </h3>
               <p className="text-gray-600 text-sm">
-                We build products people love to use. Beautiful design and intuitive experiences are at our core.
+                We build products people love to use. Beautiful design and
+                intuitive experiences are at our core.
               </p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -56,7 +62,8 @@ const About: React.FC = () => {
                 End-to-End
               </h3>
               <p className="text-gray-600 text-sm">
-                From initial concept to market launch and beyond, we handle every aspect of bringing your product to life.
+                From initial concept to market launch and beyond, we handle
+                every aspect of bringing your product to life.
               </p>
             </div>
           </div>
@@ -114,4 +121,3 @@ const About: React.FC = () => {
 };
 
 export default About;
-

@@ -29,7 +29,9 @@ const Footer: React.FC = () => {
               </span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
-              Your full-service software agency and app studio. We turn business ideas into profitable products—handling everything from strategy and development to launch and sales.
+              Your full-service software agency and app studio. We turn business
+              ideas into profitable products—handling everything from strategy
+              and development to launch and sales.
             </p>
           </div>
 
@@ -129,7 +131,7 @@ const Footer: React.FC = () => {
 
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
-            © 2024 NativeSquare Inc. All rights reserved.
+            © 2025 NativeSquare SAS. All rights reserved.
           </p>
           <div className="flex gap-6 text-sm text-gray-500">
             <Link href="/legal" className="hover:text-white transition-colors">
@@ -146,4 +148,3 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
-

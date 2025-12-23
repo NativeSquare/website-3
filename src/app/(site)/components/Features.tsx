@@ -57,7 +57,9 @@ const Features: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-end justify-between gap-8 mb-12">
           <div
             className={`transition-all duration-700 delay-100 ${
-              isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-10 opacity-0"
             }`}
           >
             <p className="text-sm font-semibold text-indigo-600 mb-2">
@@ -71,7 +73,9 @@ const Features: React.FC = () => {
 
           <div
             className={`hidden sm:flex gap-2 transition-all duration-700 delay-200 ${
-              isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
+              isVisible
+                ? "translate-y-0 opacity-100"
+                : "translate-y-10 opacity-0"
             }`}
           >
             <button
@@ -113,7 +117,9 @@ const Features: React.FC = () => {
                 <h3 className="text-2xl font-bold text-gray-900 mb-3 font-geist">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 mb-8 leading-relaxed">{feature.desc}</p>
+                <p className="text-gray-600 mb-8 leading-relaxed">
+                  {feature.desc}
+                </p>
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
                     {feature.badge}
@@ -142,4 +148,3 @@ const Features: React.FC = () => {
 };
 
 export default Features;
-
