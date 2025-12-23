@@ -21,28 +21,28 @@ const Features: React.FC = () => {
 
   const features = [
     {
-      title: "Custom Development",
-      desc: "Tailored software solutions built with modern tech stacks like React, Node.js, and Python. We solve complex problems with clean code.",
+      title: "Product Strategy",
+      desc: "We start by understanding your business goals and target audience. Together, we refine your concept and create a roadmap that positions you for market success.",
       icon: <Code2 className="w-6 h-6 text-gray-700" />,
-      badge: "Full Stack",
+      badge: "Strategy First",
     },
     {
-      title: "Mobile First",
-      desc: "Native and cross-platform mobile apps that users love. We build for iOS and Android using Swift, Kotlin, and React Native.",
+      title: "Custom Software",
+      desc: "We build beautiful, intuitive apps and web platforms that your customers will love. No off-the-shelf solutions—everything is tailored to your business.",
       icon: <Smartphone className="w-6 h-6 text-indigo-600" />,
-      badge: "iOS & Android",
+      badge: "Agency & Studio",
     },
     {
-      title: "Scalable Cloud",
-      desc: "Architecture designed to grow. We leverage AWS, Google Cloud, and Azure to ensure your infrastructure is robust and secure.",
+      title: "Launch Preparation",
+      desc: "Getting to market is just the beginning. We help you craft compelling messaging, prepare your launch materials, and set up the infrastructure for success.",
       icon: <Cloud className="w-6 h-6 text-blue-600" />,
-      badge: "Serverless",
+      badge: "Go-to-Market",
     },
     {
-      title: "Database Design",
-      desc: "Optimized data structures for speed and reliability. From SQL to NoSQL, we handle your data with precision.",
+      title: "Sales Funnels",
+      desc: "We design and implement conversion-optimized sales pipelines that turn visitors into customers. From landing pages to checkout flows, we maximize your revenue.",
       icon: <Database className="w-6 h-6 text-emerald-600" />,
-      badge: "High Availability",
+      badge: "Revenue Growth",
     },
   ];
 
@@ -61,11 +61,11 @@ const Features: React.FC = () => {
             }`}
           >
             <p className="text-sm font-semibold text-indigo-600 mb-2">
-              Engineering Excellence
+              Complete Business Solutions
             </p>
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 font-geist">
-              Transforming businesses <br /> with{" "}
-              <span className="text-gray-500">cutting-edge tech</span>
+              We handle everything <br /> so{" "}
+              <span className="text-gray-500">you can focus on growth</span>
             </h2>
           </div>
 

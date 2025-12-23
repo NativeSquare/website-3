@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Check, Shield, Smartphone, Zap } from "lucide-react";
+import { PORTFOLIO_URL } from "../data/config";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
 
 const MobileSection: React.FC = () => {
@@ -26,16 +27,14 @@ const MobileSection: React.FC = () => {
           >
             <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 border border-blue-100 px-3 py-1 text-xs font-medium text-blue-700 mb-6">
               <Smartphone className="w-3.5 h-3.5" />
-              Mobile Expertise
+              Agency & Studio
             </div>
 
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 font-geist mb-6">
-              Native quality, <br /> global reach.
+              We build for clients. <br /> We build for ourselves.
             </h2>
             <p className="text-gray-600 text-lg mb-8 max-w-lg leading-relaxed">
-              We craft award-winning mobile experiences for iOS and Android.
-              Whether you need a consumer app or an enterprise tool, we ensure
-              silky smooth performance.
+              As both an agency and an app studio, we bring real-world experience to every project. We know what it takes to launch and scale because we&apos;ve done it ourselves with our own apps serving 25,000+ paying users.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
@@ -45,10 +44,10 @@ const MobileSection: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-gray-900 font-geist">
-                    High Performance
+                    Proven Track Record
                   </h4>
                   <p className="text-sm text-gray-500 mt-1">
-                    60fps animations and instant load times.
+                    Our own apps generate real revenue. We know what works.
                   </p>
                 </div>
               </div>
@@ -58,10 +57,10 @@ const MobileSection: React.FC = () => {
                 </div>
                 <div>
                   <h4 className="font-bold text-gray-900 font-geist">
-                    Secure by Design
+                    Full-Service Support
                   </h4>
                   <p className="text-sm text-gray-500 mt-1">
-                    Biometric auth and encrypted data storage.
+                    From product strategy to customer acquisition.
                   </p>
                 </div>
               </div>
@@ -69,7 +68,9 @@ const MobileSection: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                href="/portfolio"
+                href={PORTFOLIO_URL}
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-black text-white px-6 py-3.5 font-medium hover:bg-gray-800 transition-colors shadow-lg"
               >
                 <svg
@@ -79,10 +80,12 @@ const MobileSection: React.FC = () => {
                 >
                   <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.74 3.4 1.86-2.93 1.75-2.46 6.09.41 7.28-.65 1.62-1.55 3.19-2.46 3.87zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
                 </svg>
-                <span>iOS Solutions</span>
+                <span>View Our Apps</span>
               </Link>
               <Link
-                href="/portfolio"
+                href={PORTFOLIO_URL}
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white text-gray-900 px-6 py-3.5 font-medium hover:bg-gray-50 transition-colors"
               >
                 <svg
@@ -92,7 +95,7 @@ const MobileSection: React.FC = () => {
                 >
                   <path d="M3.5 18.5h17v-13h-17v13zm17-14.5c.83 0 1.5.67 1.5 1.5v13c0 .83-.67 1.5-1.5 1.5h-17c-.83 0-1.5-.67-1.5-1.5v-13c0-.83.67-1.5 1.5-1.5h17zm-11 5.5h-2v4h2v-4zm4 0h-2v4h2v-4zm4 0h-2v4h2v-4z" />
                 </svg>
-                <span>Android Solutions</span>
+                <span>See Client Work</span>
               </Link>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { PORTFOLIO_URL } from "../data/config";
 
 const Footer: React.FC = () => {
   return (
@@ -28,8 +29,7 @@ const Footer: React.FC = () => {
               </span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
-              We build the software that powers the future. From startups to
-              enterprises, we are your partner in digital innovation.
+              Your full-service software agency and app studio. We turn business ideas into profitable products—handling everything from strategy and development to launch and sales.
             </p>
           </div>
 
@@ -49,18 +49,12 @@ const Footer: React.FC = () => {
                 </li>
                 <li>
                   <Link
-                    href="/portfolio"
+                    href={PORTFOLIO_URL}
+                    target="_blank"
+                    rel="noreferrer"
                     className="hover:text-white transition-colors"
                   >
                     Portfolio
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/blog"
-                    className="hover:text-white transition-colors"
-                  >
-                    Blog
                   </Link>
                 </li>
               </ul>
@@ -72,18 +66,22 @@ const Footer: React.FC = () => {
               <ul className="space-y-3 text-sm text-gray-400">
                 <li>
                   <Link
-                    href="/portfolio"
+                    href={PORTFOLIO_URL}
+                    target="_blank"
+                    rel="noreferrer"
                     className="hover:text-white transition-colors"
                   >
-                    Mobile Apps
+                    Product Development
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/portfolio"
+                    href={PORTFOLIO_URL}
+                    target="_blank"
+                    rel="noreferrer"
                     className="hover:text-white transition-colors"
                   >
-                    Web Development
+                    Launch Strategy
                   </Link>
                 </li>
               </ul>

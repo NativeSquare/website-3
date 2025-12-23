@@ -12,6 +12,7 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
+import { PORTFOLIO_URL } from "../data/config";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
 
 const Hero: React.FC = () => {
@@ -52,7 +53,7 @@ const Hero: React.FC = () => {
         </div>
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-24 sm:pt-24 sm:pb-32 lg:pt-32 lg:pb-40">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-24  sm:pb-32 lg:pb-40">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <section
             className={`order-2 lg:order-1 relative transition-all duration-1000 transform ${
@@ -68,16 +69,17 @@ const Hero: React.FC = () => {
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-geist tracking-tighter leading-[0.95] text-gray-900 mt-6">
-              Turn your ideas into{" "}
+              From idea to{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                revenue
+                market success
               </span>
             </h1>
 
             <p className="mt-6 text-lg text-gray-600 font-geist max-w-xl leading-relaxed">
-              We build high-performance mobile apps and scalable web platforms.
-              From concept to launch, we engineer software that drives business
-              growth.
+              Your full-service software agency and app studio. We take your
+              vision from ideation to launch—building your product, crafting
+              your go-to-market strategy, and setting up sales funnels that
+              convert.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
@@ -85,13 +87,15 @@ const Hero: React.FC = () => {
                 href="https://calendar.app.google/BFYre7dXNFCy6GfT6"
                 className="group inline-flex items-center justify-center gap-3 rounded-full bg-gray-900 px-8 py-3.5 text-sm font-semibold text-white shadow-xl hover:bg-black hover:scale-105 transition-all duration-300"
               >
-                <span>Start Your Project</span>
+                <span>Book a Strategy Call</span>
                 <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 group-hover:bg-white/30 transition-colors">
                   <ArrowRight className="h-3 w-3" />
                 </div>
               </Link>
               <Link
-                href="/portfolio"
+                href={PORTFOLIO_URL}
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-white/80 backdrop-blur-sm px-6 py-3.5 text-sm font-semibold text-gray-900 ring-1 ring-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm"
               >
                 <PlayCircle className="h-5 w-5 text-gray-500" />

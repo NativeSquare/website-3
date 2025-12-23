@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PORTFOLIO_URL } from "../data/config";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -45,18 +46,12 @@ const Navbar: React.FC = () => {
               About
             </Link>
             <Link
-              href="/portfolio"
-              className={`transition-colors font-geist ${isActive(
-                "/portfolio"
-              )}`}
+              href={PORTFOLIO_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="transition-colors font-geist text-gray-600 hover:text-gray-900"
             >
               Portfolio
-            </Link>
-            <Link
-              href="/blog"
-              className={`transition-colors font-geist ${isActive("/blog")}`}
-            >
-              Insights
             </Link>
             <Link
               href="/legal"
@@ -101,18 +96,13 @@ const Navbar: React.FC = () => {
                 About
               </Link>
               <Link
-                href="/portfolio"
+                href={PORTFOLIO_URL}
+                target="_blank"
+                rel="noreferrer"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="block px-3 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg font-geist"
               >
                 Portfolio
-              </Link>
-              <Link
-                href="/blog"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg font-geist"
-              >
-                Insights
               </Link>
               <Link
                 href="/legal"

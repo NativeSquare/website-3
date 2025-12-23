@@ -8,9 +8,7 @@ const About: React.FC = () => {
           We are <span className="text-indigo-600">NativeSquare</span>.
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          A collective of engineers, designers, and strategists obsessed with
-          building software that matters. We don&apos;t just write code; we
-          solve business problems.
+          We&apos;re a software agency and app studio that partners with entrepreneurs and business owners. We don&apos;t just build apps—we build businesses. From your initial idea to your first sale and beyond, we&apos;re with you every step of the way.
         </p>
       </div>
 
@@ -22,11 +20,10 @@ const About: React.FC = () => {
                 <Target size={24} />
               </div>
               <h3 className="text-lg font-bold font-geist text-gray-900 mb-2">
-                Precision
+                Results-Driven
               </h3>
               <p className="text-gray-600 text-sm">
-                We believe in pixel-perfect implementation and robust
-                architecture.
+                Every decision we make is focused on driving your business forward and maximizing ROI.
               </p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -34,10 +31,10 @@ const About: React.FC = () => {
                 <Users size={24} />
               </div>
               <h3 className="text-lg font-bold font-geist text-gray-900 mb-2">
-                Collaboration
+                True Partnership
               </h3>
               <p className="text-gray-600 text-sm">
-                We work as an extension of your team, not just a vendor.
+                Your success is our success. We&apos;re invested in your growth and work as an extension of your business.
               </p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -45,10 +42,10 @@ const About: React.FC = () => {
                 <Heart size={24} />
               </div>
               <h3 className="text-lg font-bold font-geist text-gray-900 mb-2">
-                Passion
+                Customer-Centric
               </h3>
               <p className="text-gray-600 text-sm">
-                We love what we do, and it shows in the quality of our work.
+                We build products people love to use. Beautiful design and intuitive experiences are at our core.
               </p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
@@ -56,11 +53,10 @@ const About: React.FC = () => {
                 <Award size={24} />
               </div>
               <h3 className="text-lg font-bold font-geist text-gray-900 mb-2">
-                Excellence
+                End-to-End
               </h3>
               <p className="text-gray-600 text-sm">
-                We don&apos;t settle for &quot;good enough&quot;. We aim for
-                world-class.
+                From initial concept to market launch and beyond, we handle every aspect of bringing your product to life.
               </p>
             </div>
           </div>
