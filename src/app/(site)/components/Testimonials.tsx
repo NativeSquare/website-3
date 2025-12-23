@@ -90,7 +90,9 @@ const Testimonials: React.FC = () => {
                   {testimonial.name[0]}
                 </div>
                 <div>
-                  <h4 className="font-bold text-gray-900">{testimonial.name}</h4>
+                  <h4 className="font-bold text-gray-900">
+                    {testimonial.name}
+                  </h4>
                   <p className="text-sm text-gray-500">{testimonial.company}</p>
                 </div>
               </div>
@@ -119,4 +121,3 @@ const Testimonials: React.FC = () => {
 };
 
 export default Testimonials;
-
