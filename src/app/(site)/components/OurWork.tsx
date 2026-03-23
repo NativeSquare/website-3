@@ -392,8 +392,9 @@ const OurWork: React.FC = () => {
             }}
           >
             {/* Multiple stacked copies at hotspot positions — sharp + blurred */}
-            {[0, 2, 5].map((blur) => (
+            {[0, 2, 5, 10].map((blur) => (
               <div key={`bl-${blur}`} className="absolute inset-0" style={{ filter: blur ? `blur(${blur}px)` : undefined }}>
+                {/* Left edge — covers bottom half of left side only */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/portfolio/glows/border-highlight.svg"
@@ -402,11 +403,12 @@ const OurWork: React.FC = () => {
                   style={{
                     maxWidth: "none",
                     WebkitMaskImage:
-                      "radial-gradient(ellipse 50% 70% at 5% 80%, black 0%, black 20%, transparent 70%)",
+                      "radial-gradient(ellipse 35% 55% at 3% 75%, black 0%, black 25%, transparent 70%)",
                     maskImage:
-                      "radial-gradient(ellipse 50% 70% at 5% 80%, black 0%, black 20%, transparent 70%)",
+                      "radial-gradient(ellipse 35% 55% at 3% 75%, black 0%, black 25%, transparent 70%)",
                   }}
                 />
+                {/* Bottom-left corner boost */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/portfolio/glows/border-highlight.svg"
@@ -415,9 +417,23 @@ const OurWork: React.FC = () => {
                   style={{
                     maxWidth: "none",
                     WebkitMaskImage:
-                      "radial-gradient(ellipse 45% 55% at 95% 15%, black 0%, black 20%, transparent 70%)",
+                      "radial-gradient(ellipse 40% 50% at 8% 90%, black 0%, black 25%, transparent 70%)",
                     maskImage:
-                      "radial-gradient(ellipse 45% 55% at 95% 15%, black 0%, black 20%, transparent 70%)",
+                      "radial-gradient(ellipse 40% 50% at 8% 90%, black 0%, black 25%, transparent 70%)",
+                  }}
+                />
+                {/* Top-right hotspot */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/portfolio/glows/border-highlight.svg"
+                  alt=""
+                  className="absolute block w-full h-full"
+                  style={{
+                    maxWidth: "none",
+                    WebkitMaskImage:
+                      "radial-gradient(ellipse 45% 55% at 95% 12%, black 0%, black 25%, transparent 70%)",
+                    maskImage:
+                      "radial-gradient(ellipse 45% 55% at 95% 12%, black 0%, black 25%, transparent 70%)",
                   }}
                 />
               </div>
