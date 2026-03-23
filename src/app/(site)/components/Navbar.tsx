@@ -1,125 +1,91 @@
 "use client";
 
 import { useState } from "react";
-import { PORTFOLIO_URL } from "../data/config";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
+
+const navLinks = [
+  { label: "Services", href: "#services", hasDropdown: true },
+  { label: "Open source", href: "#open-source", hasDropdown: false },
+  { label: "Products", href: "#products", hasDropdown: true },
+  { label: "Blog", href: "/blog", hasDropdown: false },
+  { label: "Company", href: "#company", hasDropdown: true },
+];
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
-
-  const isActive = (path: string) =>
-    pathname === path
-      ? "text-gray-900 font-semibold"
-      : "text-gray-600 hover:text-gray-900";
 
   return (
-    <header className="relative z-50 border-b border-gray-100 bg-white/80 backdrop-blur-md sticky top-0">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between py-4 sm:py-6">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center overflow-hidden">
-                <Image
-                  src="/NsLogo2.svg"
-                  alt="NativeSquare logo"
-                  width={20}
-                  height={20}
-                  className="w-full h-full object-cover"
-                  priority
-                />
-              </div>
-              <span className="font-bold text-xl tracking-tight font-geist text-gray-900">
-                NativeSquare
-              </span>
-            </Link>
-          </div>
+    <header className="fixed top-0 left-0 right-0 z-50">
+      <div className="mx-auto max-w-[1216px] px-6 lg:px-8">
+        <div className="flex items-center justify-between py-5 lg:py-6">
+          {/* Logo */}
+          <Link href="/" className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center">
+              <Image
+                src="/NsLogo2.svg"
+                alt="NativeSquare logo"
+                width={28}
+                height={28}
+                className="w-full h-full object-cover"
+                priority
+              />
+            </div>
+            <span className="text-[15px] font-semibold tracking-[-0.3px] text-white">
+              NativeSquare
+            </span>
+          </Link>
 
-          <div className="flex items-center gap-6 lg:gap-8">
-            <nav className="hidden md:flex items-center gap-6 lg:gap-8 text-sm font-medium">
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-7 lg:gap-8">
+            {navLinks.map((link) => (
               <Link
-                href="/about"
-                className={`transition-colors font-geist ${isActive("/about")}`}
+                key={link.label}
+                href={link.href}
+                className="flex items-center gap-1 text-[14px] leading-[20px] tracking-[-0.28px] text-white/60 hover:text-white transition-colors duration-200"
               >
-                About
+                {link.label}
+                {link.hasDropdown && (
+                  <ChevronDown size={13} strokeWidth={1.5} className="opacity-50" />
+                )}
               </Link>
-              <Link
-                href={PORTFOLIO_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="transition-colors font-geist text-gray-600 hover:text-gray-900"
-              >
-                Portfolio
-              </Link>
-              <Link
-                href="/legal"
-                className={`transition-colors font-geist ${isActive("/legal")}`}
-              >
-                Legal
-              </Link>
-            </nav>
+            ))}
+          </nav>
 
-            <Link
-              href="https://calendar.app.google/BFYre7dXNFCy6GfT6"
-              className="hidden sm:inline-flex items-center rounded-full bg-gray-900 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-gray-900/20 hover:bg-black transition-colors font-geist"
-            >
-              Start a Project
-            </Link>
-
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden inline-flex items-center rounded-lg border border-gray-200 bg-white px-2.5 py-2 text-sm text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-5 w-5" />
-              ) : (
-                <Menu className="h-5 w-5" />
-              )}
-              <span className="sr-only">Toggle navigation</span>
-            </button>
-          </div>
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden inline-flex items-center rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-white hover:bg-white/10 transition-colors"
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-5 w-5" />
+            ) : (
+              <Menu className="h-5 w-5" />
+            )}
+            <span className="sr-only">Toggle navigation</span>
+          </button>
         </div>
       </div>
 
+      {/* Mobile menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-white border-b border-gray-100 shadow-xl h-screen">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
+        <div className="md:hidden absolute top-full left-0 right-0 bg-[#0a0a0f]/95 backdrop-blur-xl border-t border-white/5">
+          <div className="mx-auto max-w-[1216px] px-6 py-4">
             <div className="space-y-1">
-              <Link
-                href="/about"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg font-geist"
-              >
-                About
-              </Link>
-              <Link
-                href={PORTFOLIO_URL}
-                target="_blank"
-                rel="noreferrer"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg font-geist"
-              >
-                Portfolio
-              </Link>
-              <Link
-                href="/legal"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block px-3 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg font-geist"
-              >
-                Legal
-              </Link>
-              <div className="pt-4 mt-2 border-t border-gray-100">
+              {navLinks.map((link) => (
                 <Link
-                  href="https://calendar.app.google/BFYre7dXNFCy6GfT6"
+                  key={link.label}
+                  href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block w-full text-center rounded-full bg-gray-900 px-4 py-3 text-sm font-medium text-white shadow-lg hover:bg-black transition-colors font-geist"
+                  className="flex items-center justify-between px-3 py-3 text-[14px] text-white/70 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
                 >
-                  Start a Project
+                  {link.label}
+                  {link.hasDropdown && (
+                    <ChevronDown size={14} className="opacity-40" />
+                  )}
                 </Link>
-              </div>
+              ))}
             </div>
           </div>
         </div>

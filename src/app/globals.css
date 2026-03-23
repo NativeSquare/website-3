@@ -1,28 +1,22 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #07070a;
+  --foreground: #ededed;
+  --font-sans: var(--font-inter);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
 }
 
 h1,
@@ -31,11 +25,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
-}
-
-.font-geist {
-  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
 }
 
 ::selection {
@@ -72,14 +62,32 @@ h6 {
   animation-timing-function: ease-out;
 }
 
-.perspective-1000 {
-  perspective: 1000px;
+@keyframes scrollLogos {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
 }
 
-.rotate-y-6 {
-  transform: rotateY(6deg);
+.animate-scroll-logos {
+  animation: scrollLogos 25s linear infinite;
 }
 
-.hover\:rotate-y-0:hover {
-  transform: rotateY(0deg);
+.animate-scroll-logos:hover {
+  animation-play-state: paused;
+}
+
+@keyframes glowRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-glow-rotate {
+  animation: glowRotate 20s linear infinite;
 }

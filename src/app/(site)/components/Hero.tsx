@@ -1,256 +1,229 @@
 "use client";
 
-import { useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import {
-  Activity,
-  ArrowRight,
-  CheckCircle,
-  ChevronUp,
-  PlayCircle,
-  Star,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { PORTFOLIO_URL } from "../data/config";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
+
+const LOGO_BRANDS = [
+  { name: "ORLT", className: "font-bold tracking-[0.25em] text-[17px] uppercase" },
+  { name: "nexus", className: "font-light text-[28px] tracking-wide" },
+  { name: "Velum", className: "font-bold italic text-[28px]" },
+  { name: "Picto", className: "font-serif italic text-[28px] tracking-wide" },
+  { name: "Dango", className: "font-serif italic text-[28px]" },
+  { name: "BRIND", className: "font-bold tracking-[0.3em] text-[17px] uppercase" },
+];
 
 const Hero: React.FC = () => {
   const { ref, isVisible } = useScrollAnimation(0);
 
-  useEffect(() => {
-    const scriptId = "unicorn-studio-script";
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement("script");
-      script.id = scriptId;
-      script.src =
-        "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js";
-      script.onload = () => {
-        // @ts-ignore
-        if (window.UnicornStudio) {
-          // @ts-ignore
-          window.UnicornStudio.init();
-        }
-      };
-      document.body.appendChild(script);
-    } else {
-      // @ts-ignore
-      if (window.UnicornStudio) {
-        // @ts-ignore
-        window.UnicornStudio.init();
-      }
-    }
-  }, []);
-
   return (
-    <main className="relative min-h-screen">
-      <div className="aura-background-component top-0 w-full -z-10 h-screen absolute">
-        <div className="aura-background-component top-0 w-full -z-10 absolute h-full">
-          <div
-            data-us-project="yACzULFKkgXAmEcep6hu"
-            className="absolute w-full h-full left-0 top-0 -z-10"
-          ></div>
-        </div>
+    <section className="relative bg-[#07070a] overflow-hidden" style={{ height: "710px" }}>
+      {/* Background image */}
+      <div className="absolute inset-0">
+        <Image
+          src="/hero/hero-background.webp"
+          alt=""
+          fill
+          priority
+          className="object-cover object-center"
+          sizes="100vw"
+          quality={90}
+        />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-24  sm:pb-32 lg:pb-40">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <section
-            className={`order-2 lg:order-1 relative transition-all duration-1000 transform ${
-              isVisible
-                ? "translate-y-0 opacity-100"
-                : "translate-y-10 opacity-0"
-            }`}
-            ref={ref}
-          >
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-gray-200/20 px-3 py-1 text-xs font-medium text-gray-700 shadow-sm mb-6">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              NativeSquare Studio
-            </div>
+      {/* Noise texture overlay */}
+      <div
+        className="absolute inset-0 opacity-[0.04] mix-blend-soft-light pointer-events-none"
+        style={{
+          backgroundImage: "url(/hero/noise-texture.png)",
+          backgroundRepeat: "repeat",
+          backgroundSize: "200px 200px",
+        }}
+      />
 
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-geist tracking-tighter leading-[0.95] text-gray-900 mt-6">
-              From idea to{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                market success
-              </span>
+      {/* Content — Figma: Hero Container at x:352, y:0, 1216x572 */}
+      <div
+        ref={ref}
+        className={`relative z-10 mx-auto max-w-[1216px] h-full px-6 lg:px-8 transition-all duration-1000 ease-out ${
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        }`}
+      >
+        {/* Main grid — no extra padding, exact Figma positions */}
+        <div className="grid grid-cols-1 lg:grid-cols-[576px_1fr] gap-10 lg:gap-0">
+          {/* Left — Text content */}
+          {/* Figma: Right Container at y:123, h:449 */}
+          <div className="order-2 lg:order-1 flex flex-col" style={{ paddingTop: "123px" }}>
+            {/* H1 — Figma: 60px, lh 60px, ls -1.5px, gradient, weight 400 */}
+            <h1
+              className="text-[clamp(2.5rem,5.5vw,60px)] font-normal tracking-[-1.5px] bg-clip-text text-transparent overflow-visible pb-1"
+              style={{
+                backgroundImage:
+                  "linear-gradient(180deg, #f5f5f5 0%, #e5e5e5 50%, #a3a3a3 100%)",
+                lineHeight: "60px",
+              }}
+            >
+              Empower ambition.
+              <br />
+              Engineer success.
             </h1>
 
-            <p className="mt-6 text-lg text-gray-600 font-geist max-w-xl leading-relaxed">
-              Your full-service software agency and app studio. We take your
-              vision from ideation to launch—building your product, crafting
-              your go-to-market strategy, and setting up sales funnels that
-              convert.
+            {/* Body — Figma: y:148 from heading top, 17.9px, lh 28px, ls -0.45px */}
+            <p
+              className="max-w-[505px] text-[clamp(15px,1.3vw,17.9px)] leading-[28px] tracking-[-0.45px]"
+              style={{
+                color: "rgba(212, 212, 212, 0.9)",
+                marginTop: "28px",
+              }}
+            >
+              We craft high-performance software solutions and cutting-edge
+              applications that empower businesses to scale and succeed in the
+              digital landscape.
             </p>
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            {/* Social proof — Figma: y:260 from Right Container top = 260-148-84=28px gap */}
+            <div style={{ marginTop: "28px" }}>
+              {/* Label — Figma: 12px, lh 16px, ls -0.3px, rgba(255,255,255,0.85), y offset 16px */}
+              <p
+                className="text-[12px] leading-[16px] tracking-[-0.3px] uppercase"
+                style={{ color: "rgba(255, 255, 255, 0.85)", marginBottom: "28px" }}
+              >
+                Already approuved by enterprises and entrepreneurs
+              </p>
+
+              {/* Upwork rating — Figma: y:320, logo 55x39, stars 23x23 */}
+              <div className="flex items-center gap-4">
+                <Image
+                  src="/hero/upwork-logo.svg"
+                  alt="Upwork"
+                  width={55}
+                  height={39}
+                  className="flex-shrink-0"
+                />
+                <div className="flex flex-col gap-[2px]">
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <Image key={i} src="/hero/star.svg" alt="" width={23} height={23} />
+                    ))}
+                  </div>
+                  <p
+                    className="text-[14px] leading-[20px] tracking-[-0.35px] bg-clip-text text-transparent"
+                    style={{
+                      backgroundImage: "linear-gradient(90deg, #f8f5f5 0%, #bababa 100%)",
+                    }}
+                  >
+                    5 stars rating on{" "}
+                    <span className="underline decoration-solid underline-offset-[3px]">
+                      upwork
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* CTAs — Figma: y:390 from Right Container top */}
+            <div className="flex items-center gap-4" style={{ marginTop: "28px" }}>
+              {/* Book a call — white bg, gradient border frame */}
               <Link
                 href="https://calendar.app.google/BFYre7dXNFCy6GfT6"
-                className="group inline-flex items-center justify-center gap-3 rounded-full bg-gray-900 px-8 py-3.5 text-sm font-semibold text-white shadow-xl hover:bg-black hover:scale-105 transition-all duration-300"
+                className="relative inline-flex rounded-full p-[1px] overflow-hidden group"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(161, 166, 191, 0.7) 0%, rgba(161, 166, 191, 0) 100%)",
+                }}
               >
-                <span>Book a Strategy Call</span>
-                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 group-hover:bg-white/30 transition-colors">
-                  <ArrowRight className="h-3 w-3" />
-                </div>
+                <span
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(96deg, rgba(94,97,110,0) 3%, rgba(94,97,110,1) 26%, rgba(94,97,110,0) 41%, rgba(94,97,110,0) 62%, rgba(94,97,110,1) 77%, rgba(94,97,110,0) 96%), linear-gradient(90deg, rgba(94,97,110,0.4), rgba(94,97,110,0.4))",
+                  }}
+                />
+                <span className="relative rounded-full bg-white px-[16px] py-[8px] text-[14px] font-semibold leading-[20px] tracking-[-0.28px] text-[#08080a] group-hover:bg-gray-100 transition-colors">
+                  Book a call
+                </span>
               </Link>
+
+              {/* Explore our work — Figma: 14px, #d4d4d4 */}
               <Link
                 href={PORTFOLIO_URL}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-full bg-white/80 backdrop-blur-sm px-6 py-3.5 text-sm font-semibold text-gray-900 ring-1 ring-gray-200 hover:bg-gray-50 transition-all duration-300 shadow-sm"
+                className="inline-flex items-center gap-1 text-[14px] leading-[20px] tracking-[-0.35px] text-[#d4d4d4] hover:text-white transition-colors duration-300"
               >
-                <PlayCircle className="h-5 w-5 text-gray-500" />
-                View Our Work
+                Explore our work
+                <ArrowRight size={16} strokeWidth={1.5} />
               </Link>
             </div>
+          </div>
 
-            <div className="mt-10 pt-8 border-t border-gray-100/50 grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div>
-                <div className="flex text-amber-500 mb-2">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star
-                      key={star}
-                      size={16}
-                      fill="currentColor"
-                      className="mr-0.5"
-                    />
-                  ))}
-                </div>
-                <p className="text-sm font-bold text-gray-900 font-geist">
-                  5 Stars on Upwork
-                </p>
+          {/* Right — Video asset */}
+          {/* Figma: Hero asset at x:705, y:41, 527x382 */}
+          <div
+            className="order-1 lg:order-2 relative flex items-start justify-end"
+            style={{ paddingTop: "41px" }}
+          >
+            <div className="relative w-[527px] max-w-full">
+              {/* Glow behind video */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none -z-10">
+                <div
+                  className="w-[90%] h-[70%] rounded-full blur-[100px] opacity-40"
+                  style={{
+                    background:
+                      "radial-gradient(ellipse at center, rgba(168, 85, 247, 0.6) 0%, rgba(236, 72, 153, 0.35) 40%, transparent 70%)",
+                  }}
+                />
               </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 font-geist">
-                  15+
-                </h3>
-                <p className="text-sm text-gray-500 mt-1">Projects Shipped</p>
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900 font-geist">
-                  25k+
-                </h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  Paying users across apps
-                </p>
-              </div>
+
+              {/* Video — Figma: mix-blend-lighten + soft elliptical mask
+                  Figma mask: blurred ellipse (rx=263.5, ry=191, blur=38.5)
+                  on a 681x536 canvas for a 527x395 video.
+                  Reproduced as a very soft radial-gradient mask */}
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="relative w-full h-auto mix-blend-lighten"
+                style={{
+                  maskImage:
+                    "radial-gradient(ellipse 77% 72% at 50% 51%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 65%, transparent 80%)",
+                  WebkitMaskImage:
+                    "radial-gradient(ellipse 77% 72% at 50% 51%, rgba(0,0,0,1) 30%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.2) 65%, transparent 80%)",
+                }}
+              >
+                <source src="/hero/hero-video.mp4" type="video/mp4" />
+              </video>
             </div>
-          </section>
+          </div>
+        </div>
 
-          <section className="order-1 lg:order-2 relative perspective-1000">
-            <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-[2rem] blur-2xl -z-10 opacity-50"></div>
+        {/* Logo carousel — Figma: at y:486, starting at x:563 within container */}
+        <div className="absolute bottom-[138px] left-6 lg:left-8 right-0 flex items-center">
+          <div className="hidden lg:block flex-shrink-0" style={{ width: "480px" }} />
 
-            <div className="relative bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-6 shadow-2xl ring-1 ring-black/5 transform rotate-y-6 hover:rotate-y-0 transition-transform duration-700 ease-out">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-900 font-geist">
-                    Project Performance
-                  </h3>
-                  <p className="text-xs text-gray-500">
-                    Live analytics across all platforms
-                  </p>
-                </div>
-                <div className="flex items-center gap-2 bg-emerald-50 px-2 py-1 rounded-full border border-emerald-100">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                  <span className="text-xs font-medium text-emerald-700">
-                    System Healthy
-                  </span>
-                </div>
-              </div>
+          <div className="flex-1 overflow-hidden relative">
+            <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-[#07070a]/80 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#07070a]/80 to-transparent z-10 pointer-events-none" />
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600">
-                      <TrendingUp size={16} />
-                    </div>
-                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
-                      +24%
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500">Total Revenue</p>
-                  <p className="text-lg font-bold text-gray-900">$2.4M</p>
-                </div>
-
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
-                      <Users size={16} />
-                    </div>
-                    <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">
-                      +12%
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500">Active Users</p>
-                  <p className="text-lg font-bold text-gray-900">84.2k</p>
-                </div>
-
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center text-amber-600">
-                      <Activity size={16} />
-                    </div>
-                    <span className="text-xs font-bold text-gray-500">
-                      99.9%
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500">Uptime</p>
-                  <p className="text-lg font-bold text-gray-900">Stable</p>
-                </div>
-
-                <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex flex-col justify-center">
-                  <div className="flex items-center gap-2 mb-1">
-                    <CheckCircle size={14} className="text-emerald-500" />
-                    <span className="text-xs font-medium text-gray-700">
-                      iOS App
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 mb-1">
-                    <CheckCircle size={14} className="text-emerald-500" />
-                    <span className="text-xs font-medium text-gray-700">
-                      Android App
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <CheckCircle size={14} className="text-emerald-500" />
-                    <span className="text-xs font-medium text-gray-700">
-                      Web Platform
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute -top-6 -right-6 bg-white rounded-xl p-3 shadow-xl border border-gray-100 animate-bounce delay-700 duration-[3000ms]">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white">
-                    <TrendingUp size={18} />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 font-medium">
-                      Monthly Growth
-                    </p>
-                    <p className="text-sm font-bold text-gray-900">+125%</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute -bottom-6 -left-6 bg-white/90 backdrop-blur rounded-xl p-3 shadow-xl border border-gray-100">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white">
-                    <ChevronUp size={20} />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-500 font-medium">
-                      Conversion Rate
-                    </p>
-                    <p className="text-sm font-bold text-gray-900">Optimized</p>
-                  </div>
-                </div>
-              </div>
+            <div className="flex animate-scroll-logos gap-16 items-center py-4">
+              {[...LOGO_BRANDS, ...LOGO_BRANDS, ...LOGO_BRANDS].map((brand, i) => (
+                <span
+                  key={`${brand.name}-${i}`}
+                  className={`select-none whitespace-nowrap flex-shrink-0 ${brand.className}`}
+                  style={{
+                    color: `rgba(255, 255, 255, ${0.35 + (i % LOGO_BRANDS.length) * 0.07})`,
+                  }}
+                >
+                  {brand.name}
+                </span>
+              ))}
             </div>
-          </section>
+          </div>
         </div>
       </div>
-    </main>
+    </section>
   );
 };
 

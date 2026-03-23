@@ -1,0 +1,5 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 1058 532" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Border highlight" style="mix-blend-mode:overlay">
+<path d="M1004 0C1033.82 0 1058 24.1766 1058 54V478C1058 507.823 1033.82 532 1004 532H54C24.1766 532 6.44344e-08 507.823 0 478V54C0 24.1766 24.1766 0 54 0H1004ZM60.1074 7C30.8363 7 7.10743 30.7289 7.10742 60V472C7.10742 501.271 30.8363 525 60.1074 525H998.107C1027.38 525 1051.11 501.271 1051.11 472V60C1051.11 30.7289 1027.38 7 998.107 7H60.1074Z" fill="var(--fill-0, white)"/>
+</g>
+</svg>

@@ -1,0 +1,27 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 1372 846" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Border Glow 4">
+<mask id="mask0_12218_139" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="157" y="157" width="1058" height="532">
+<rect id="Rectangle 240648351" x="157" y="157" width="1058" height="532" rx="54" fill="var(--fill-0, white)"/>
+</mask>
+<g mask="url(#mask0_12218_139)">
+<g id="Ellipse 43566" filter="url(#filter0_f_12218_139)">
+<ellipse cx="320.5" cy="606.5" rx="341.5" ry="173.5" fill="var(--fill-0, #0B91FF)"/>
+</g>
+<g id="Ellipse 43565" filter="url(#filter1_f_12218_139)">
+<ellipse cx="1108" cy="207" rx="245" ry="171" fill="var(--fill-0, white)"/>
+</g>
+</g>
+</g>
+<defs>
+<filter id="filter0_f_12218_139" x="-292.1" y="161.9" width="1225.2" height="889.2" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="135.55" result="effect1_foregroundBlur_12218_139"/>
+</filter>
+<filter id="filter1_f_12218_139" x="491.7" y="-335.3" width="1232.6" height="1084.6" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="185.65" result="effect1_foregroundBlur_12218_139"/>
+</filter>
+</defs>
+</svg>

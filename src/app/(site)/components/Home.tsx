@@ -1,4 +1,7 @@
 import Hero from "./Hero";
+import KPISection from "./KPISection";
+import OurWork from "./OurWork";
+import Benefits from "./Benefits";
 import Features from "./Features";
 import MobileSection from "./MobileSection";
 import Testimonials from "./Testimonials";
@@ -9,7 +12,9 @@ const Home: React.FC = () => {
   return (
     <>
       <Hero />
-      <Features />
+      <KPISection />
+      <OurWork />
+      <Benefits />
       <Testimonials />
       <MobileSection />
       <FAQ />
