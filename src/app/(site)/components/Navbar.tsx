@@ -70,7 +70,8 @@ const Navbar: React.FC = () => {
 
       {/* Mobile menu */}
       {isMobileMenuOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-[#0a0a0f]/95 backdrop-blur-xl border-t border-white/5">
+        <div className="md:hidden absolute top-full left-0 right-0 backdrop-blur-xl"
+              style={{ background: "rgba(7,7,10,0.95)", borderTop: "1px solid var(--border)" }}>
           <div className="mx-auto max-w-[1216px] px-6 py-4">
             <div className="space-y-1">
               {navLinks.map((link) => (
