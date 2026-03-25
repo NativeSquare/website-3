@@ -4,10 +4,22 @@ import { PORTFOLIO_URL } from "../data/config";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-gray-900 text-white border-t border-white/10 relative overflow-hidden">
+    <footer
+      className="text-white relative overflow-hidden"
+      style={{
+        background: "var(--background)",
+        borderTop: "1px solid var(--border)",
+      }}
+    >
+      {/* Subtle glow */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[100px]"></div>
-        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[100px]"></div>
+        <div
+          className="absolute top-0 left-[20%] w-[400px] h-[400px] rounded-full opacity-[0.03]"
+          style={{
+            background: "radial-gradient(ellipse at center, var(--glow-teal), transparent 70%)",
+            filter: "blur(100px)",
+          }}
+        />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
@@ -24,11 +36,11 @@ const Footer: React.FC = () => {
                   priority
                 />
               </div>
-              <span className="font-bold text-xl tracking-tight font-geist text-white">
+              <span className="font-bold text-xl tracking-tight text-white">
                 NativeSquare
               </span>
             </Link>
-            <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
+            <p className="text-white/35 text-sm leading-relaxed max-w-sm">
               Your full-service software agency and app studio. We turn business
               ideas into profitable products—handling everything from strategy
               and development to launch and sales.
@@ -37,15 +49,10 @@ const Footer: React.FC = () => {
 
           <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
             <div>
-              <h4 className="text-white font-semibold mb-4 font-geist">
-                Company
-              </h4>
-              <ul className="space-y-3 text-sm text-gray-400">
+              <h4 className="text-white font-semibold mb-4">Company</h4>
+              <ul className="space-y-3 text-sm text-white/35">
                 <li>
-                  <Link
-                    href="/about"
-                    className="hover:text-white transition-colors"
-                  >
+                  <Link href="/about" className="hover:text-white/70 transition-colors">
                     About Us
                   </Link>
                 </li>
@@ -54,7 +61,7 @@ const Footer: React.FC = () => {
                     href={PORTFOLIO_URL}
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white/70 transition-colors"
                   >
                     Portfolio
                   </Link>
@@ -62,16 +69,14 @@ const Footer: React.FC = () => {
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4 font-geist">
-                Services
-              </h4>
-              <ul className="space-y-3 text-sm text-gray-400">
+              <h4 className="text-white font-semibold mb-4">Services</h4>
+              <ul className="space-y-3 text-sm text-white/35">
                 <li>
                   <Link
                     href={PORTFOLIO_URL}
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white/70 transition-colors"
                   >
                     Product Development
                   </Link>
@@ -81,7 +86,7 @@ const Footer: React.FC = () => {
                     href={PORTFOLIO_URL}
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-white transition-colors"
+                    className="hover:text-white/70 transition-colors"
                   >
                     Launch Strategy
                   </Link>
@@ -89,38 +94,25 @@ const Footer: React.FC = () => {
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4 font-geist">
-                Connect
-              </h4>
-              <ul className="space-y-3 text-sm text-gray-400">
+              <h4 className="text-white font-semibold mb-4">Connect</h4>
+              <ul className="space-y-3 text-sm text-white/35">
                 <li>
-                  <Link
-                    href="/about"
-                    className="hover:text-white transition-colors"
-                  >
+                  <Link href="/about" className="hover:text-white/70 transition-colors">
                     Contact
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4 font-geist">
-                Legal
-              </h4>
-              <ul className="space-y-3 text-sm text-gray-400">
+              <h4 className="text-white font-semibold mb-4">Legal</h4>
+              <ul className="space-y-3 text-sm text-white/35">
                 <li>
-                  <Link
-                    href="/legal"
-                    className="hover:text-white transition-colors"
-                  >
+                  <Link href="/legal" className="hover:text-white/70 transition-colors">
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link
-                    href="/legal"
-                    className="hover:text-white transition-colors"
-                  >
+                  <Link href="/legal" className="hover:text-white/70 transition-colors">
                     Terms of Service
                   </Link>
                 </li>
@@ -129,15 +121,18 @@ const Footer: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-500">
-            © 2025 NativeSquare SAS. All rights reserved.
+        <div
+          className="mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
+          style={{ borderTop: "1px solid var(--border)" }}
+        >
+          <p className="text-sm text-white/25">
+            &copy; 2025 NativeSquare SAS. All rights reserved.
           </p>
-          <div className="flex gap-6 text-sm text-gray-500">
-            <Link href="/legal" className="hover:text-white transition-colors">
+          <div className="flex gap-6 text-sm text-white/25">
+            <Link href="/legal" className="hover:text-white/50 transition-colors">
               Privacy
             </Link>
-            <Link href="/legal" className="hover:text-white transition-colors">
+            <Link href="/legal" className="hover:text-white/50 transition-colors">
               Terms
             </Link>
           </div>

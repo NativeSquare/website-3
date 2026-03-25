@@ -37,22 +37,34 @@ const FAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-24 bg-white" id="faq" ref={ref}>
+    <section
+      className="py-24 bg-[var(--surface)]"
+      id="faq"
+      ref={ref}
+      style={{ borderTop: "1px solid var(--border)" }}
+    >
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <div
           className={`text-center mb-16 transition-all duration-700 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
           }`}
         >
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 mb-6 border border-indigo-100">
+          <div
+            className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-6"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid var(--border)",
+              color: "var(--glow-cyan)",
+            }}
+          >
             <HelpCircle size={24} />
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tighter text-gray-900 font-geist mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-tighter text-white mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Everything you need to know about working with us. Can't find the
-            answer you're looking for? Feel free to reach out.
+          <p className="text-white/45 max-w-2xl mx-auto leading-relaxed">
+            Everything you need to know about working with us. Can&apos;t find the
+            answer you&apos;re looking for? Feel free to reach out.
           </p>
         </div>
 
@@ -64,17 +76,21 @@ const FAQ: React.FC = () => {
           {faqs.map((faq, idx) => (
             <div
               key={idx}
-              className="border border-gray-100 rounded-2xl overflow-hidden hover:border-gray-200 transition-colors bg-white shadow-sm"
+              className="rounded-2xl overflow-hidden transition-colors"
+              style={{
+                background: "var(--background)",
+                border: `1px solid ${openIndex === idx ? "var(--border-hover)" : "var(--border)"}`,
+              }}
             >
               <button
                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
                 className="w-full flex items-center justify-between p-6 text-left focus:outline-none"
               >
-                <span className="text-lg font-semibold text-gray-900 pr-8">
+                <span className="text-lg font-semibold text-white pr-8">
                   {faq.question}
                 </span>
                 <ChevronDown
-                  className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
+                  className={`w-5 h-5 text-white/30 transition-transform duration-300 ${
                     openIndex === idx ? "rotate-180" : ""
                   }`}
                 />
@@ -86,7 +102,10 @@ const FAQ: React.FC = () => {
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <div className="p-6 pt-0 text-gray-600 leading-relaxed border-t border-gray-50">
+                <div
+                  className="p-6 pt-0 text-white/50 leading-relaxed"
+                  style={{ borderTop: "1px solid var(--border)" }}
+                >
                   {faq.answer}
                 </div>
               </div>
@@ -99,11 +118,12 @@ const FAQ: React.FC = () => {
             isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
           }`}
         >
-          <p className="text-gray-500">
+          <p className="text-white/35">
             Still have questions?{" "}
             <a
               href="mailto:admin@nativesquare.fr"
-              className="text-indigo-600 font-semibold hover:underline"
+              className="font-semibold hover:text-white/70 transition-colors"
+              style={{ color: "var(--glow-cyan)" }}
             >
               Contact our team
             </a>
