@@ -33,7 +33,8 @@ const Testimonials: React.FC = () => {
 
   return (
     <section
-      className="relative py-24 bg-[var(--background)] overflow-hidden"
+      className="relative py-24 bg-[var(--surface)] overflow-hidden"
+      style={{ borderTop: "1px solid var(--border)" }}
       id="testimonials"
       ref={ref}
     >
