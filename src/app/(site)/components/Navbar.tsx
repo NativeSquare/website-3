@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50">
-      <div className="mx-auto max-w-[1216px] px-6 lg:px-8">
+      <div className="mx-auto max-w-[1216px] px-6 lg:px-12">
         <div className="flex items-center justify-between py-5 lg:py-6">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">

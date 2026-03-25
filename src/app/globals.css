@@ -16,11 +16,13 @@
   /* Accent signature — le gradient chaud */
   --gradient-accent: linear-gradient(
     90deg,
-    #ff6b2c,
-    #ff4f6f,
-    #d946ef,
-    #8b5cf6,
-    #6366f1
+    #ffcf8a 0%,
+    #ff6b2c 15%,
+    #ff4f6f 30%,
+    #d946ef 45%,
+    #8b5cf6 60%,
+    #6366f1 75%,
+    #3b82f6 100%
   );
 
   /* CTA */
