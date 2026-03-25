@@ -1,8 +1,36 @@
 @import "tailwindcss";
 
 :root {
+  /* Base */
   --background: #07070a;
   --foreground: #ededed;
+  --surface: #0c0c14;
+  --surface-light: #12121e;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-hover: rgba(255, 255, 255, 0.12);
+
+  /* Atmosphere — glows d'ambiance */
+  --glow-cyan: #c0f7ff;
+  --glow-teal: #2a7780;
+
+  /* Accent signature — le gradient chaud */
+  --gradient-accent: linear-gradient(
+    90deg,
+    #ff6b2c,
+    #ff4f6f,
+    #d946ef,
+    #8b5cf6,
+    #6366f1
+  );
+
+  /* CTA */
+  --accent-blue: #3b82f6;
+  --accent-blue-hover: #2563eb;
+
+  /* Text */
+  --gradient-text: linear-gradient(180deg, #f5f5f5 0%, #a3a3a3 100%);
+
+  /* Fonts */
   --font-sans: var(--font-inter);
 }
 
