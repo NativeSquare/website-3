@@ -77,7 +77,7 @@ const Hero: React.FC = () => {
       {/* ─── Layer 4: Content container ─── */}
       <div
         ref={ref}
-        className={`relative mx-auto max-w-[1216px] h-full px-6 lg:px-8 pt-[100px] pb-[40px] transition-[opacity,transform] duration-1000 ease-out ${
+        className={`relative mx-auto max-w-[1216px] h-full px-6 lg:px-8 pt-[60px] pb-[20px] transition-[opacity,transform] duration-1000 ease-out ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
         }`}
       >
@@ -337,7 +337,7 @@ const Hero: React.FC = () => {
                   className="inline-flex items-center justify-center gap-2 rounded-[10px] px-10 py-4 text-[16px] font-medium leading-[22px] tracking-[-0.3px] text-white/80 transition-all duration-300 hover:text-white hover:border-white/25"
                   style={{
                     border: "1px solid rgba(255,255,255,0.2)",
-                    background: "rgba(255,255,255,0.03)",
+                    background: "#07070a",
                   }}
                 >
                   Explore our work
@@ -380,7 +380,7 @@ const Hero: React.FC = () => {
         </div>
 
         {/* ─── Logo carousel: Trusted by ─── */}
-        <div className="mt-12 pt-8" style={{ borderTop: "1px solid var(--border)" }}>
+        <div className="mt-10">
           <p className="text-[12px] uppercase tracking-[0.15em] text-white/30 mb-6">
             Trusted by Creators & Businesses
           </p>

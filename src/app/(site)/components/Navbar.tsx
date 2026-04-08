@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ChevronDown, Menu, X } from "lucide-react";
@@ -15,11 +15,24 @@ const navLinks = [
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background,backdrop-filter] duration-300 ${
+        scrolled ? "backdrop-blur-xl" : ""
+      }`}
+      style={scrolled ? { background: "rgba(7,7,10,0.7)", borderBottom: "1px solid rgba(255,255,255,0.06)" } : undefined}
+    >
       <div className="mx-auto max-w-[1216px] px-6 lg:px-12">
-        <div className="flex items-center justify-between py-5 lg:py-6">
+        <div className="flex items-center justify-between py-3.5 lg:py-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center">
