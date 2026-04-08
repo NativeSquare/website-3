@@ -1,22 +1,29 @@
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+  weight: ["400", "500"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const plusJakarta = Plus_Jakarta_Sans({
+  variable: "--font-title",
   subsets: ["latin"],
+  weight: ["500"],
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
-  title: "NativeSquare | Turn Ideas Into Revenue",
+  title: "NativeSquare | Healthcare Startup Studio",
   description:
-    "NativeSquare is a premium software agency and mobile app studio.",
+    "We build health platforms and partner with health tech visionaries. Home of Cadence, the AI running coach.",
 };
 
 export default function RootLayout({
@@ -27,7 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${geistMono.variable} antialiased bg-[#07070a] text-white selection:bg-indigo-100 selection:text-indigo-900`}
+        className={`${inter.variable} ${plusJakarta.variable} ${ibmPlexMono.variable} antialiased`}
       >
         {children}
       </body>

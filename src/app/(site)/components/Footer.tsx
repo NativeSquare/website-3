@@ -1,118 +1,127 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PORTFOLIO_URL } from "../data/config";
 
 const Footer: React.FC = () => {
   return (
     <footer
-      className="text-white relative overflow-hidden"
-      style={{
-        background: "var(--background)",
-        borderTop: "1px solid var(--border)",
-      }}
+      className="bg-[var(--gray-8)]"
+      style={{ borderTop: "1px solid var(--gray-20)" }}
     >
-      {/* Subtle glow */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div
-          className="absolute top-0 left-[20%] w-[400px] h-[400px] rounded-full opacity-[0.03]"
-          style={{
-            background: "radial-gradient(ellipse at center, var(--glow-teal), transparent 70%)",
-            filter: "blur(100px)",
-          }}
-        />
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div className="container-md py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           <div className="lg:col-span-4">
-            <Link href="/" className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center overflow-hidden">
+            <Link href="/" className="flex items-center gap-2.5 mb-6">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden">
                 <Image
                   src="/NsLogo2.svg"
                   alt="NativeSquare logo"
-                  width={20}
-                  height={20}
+                  width={28}
+                  height={28}
                   className="w-full h-full object-cover"
                   priority
                 />
               </div>
-              <span className="font-bold text-xl tracking-tight text-white">
+              <span className="text-[15px] font-medium tracking-tight text-white">
                 NativeSquare
               </span>
             </Link>
-            <p className="text-white/35 text-sm leading-relaxed max-w-sm">
-              Your full-service software agency and app studio. We turn business
-              ideas into profitable products—handling everything from strategy
-              and development to launch and sales.
+            <p className="fs-14 text-[var(--gray-40)] max-w-sm leading-relaxed">
+              Healthcare-focused startup studio building the future of health
+              technology. We create our own platforms and partner with
+              visionary health tech companies.
             </p>
           </div>
 
           <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-8">
             <div>
-              <h4 className="text-white font-semibold mb-4">Company</h4>
-              <ul className="space-y-3 text-sm text-white/35">
+              <h4 className="text-[13px] font-medium text-[var(--gray-60)] mb-4 uppercase tracking-tight">
+                Studio
+              </h4>
+              <ul className="space-y-3 text-[14px]">
                 <li>
-                  <Link href="/about" className="hover:text-white/70 transition-colors">
+                  <Link
+                    href="/about"
+                    className="text-[var(--gray-40)] hover:text-white transition-colors duration-200"
+                  >
                     About Us
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href={PORTFOLIO_URL}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-white/70 transition-colors"
+                    href="#case-studies"
+                    className="text-[var(--gray-40)] hover:text-white transition-colors duration-200"
                   >
-                    Portfolio
+                    Case Studies
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Services</h4>
-              <ul className="space-y-3 text-sm text-white/35">
+              <h4 className="text-[13px] font-medium text-[var(--gray-60)] mb-4 uppercase tracking-tight">
+                Products
+              </h4>
+              <ul className="space-y-3 text-[14px]">
                 <li>
                   <Link
-                    href={PORTFOLIO_URL}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-white/70 transition-colors"
+                    href="#products"
+                    className="text-[var(--gray-40)] hover:text-white transition-colors duration-200"
                   >
-                    Product Development
+                    Cadence
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href={PORTFOLIO_URL}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-white/70 transition-colors"
+                    href="#case-studies"
+                    className="text-[var(--gray-40)] hover:text-white transition-colors duration-200"
                   >
-                    Launch Strategy
+                    Doctr
                   </Link>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Connect</h4>
-              <ul className="space-y-3 text-sm text-white/35">
+              <h4 className="text-[13px] font-medium text-[var(--gray-60)] mb-4 uppercase tracking-tight">
+                Connect
+              </h4>
+              <ul className="space-y-3 text-[14px]">
                 <li>
-                  <Link href="/about" className="hover:text-white/70 transition-colors">
-                    Contact
-                  </Link>
+                  <a
+                    href="mailto:hello@nativesquare.fr"
+                    className="text-[var(--gray-40)] hover:text-white transition-colors duration-200"
+                  >
+                    Email
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/company/nativesquare"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[var(--gray-40)] hover:text-white transition-colors duration-200"
+                  >
+                    LinkedIn
+                  </a>
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold mb-4">Legal</h4>
-              <ul className="space-y-3 text-sm text-white/35">
+              <h4 className="text-[13px] font-medium text-[var(--gray-60)] mb-4 uppercase tracking-tight">
+                Legal
+              </h4>
+              <ul className="space-y-3 text-[14px]">
                 <li>
-                  <Link href="/legal" className="hover:text-white/70 transition-colors">
+                  <Link
+                    href="/legal"
+                    className="text-[var(--gray-40)] hover:text-white transition-colors duration-200"
+                  >
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/legal" className="hover:text-white/70 transition-colors">
+                  <Link
+                    href="/legal"
+                    className="text-[var(--gray-40)] hover:text-white transition-colors duration-200"
+                  >
                     Terms of Service
                   </Link>
                 </li>
@@ -122,17 +131,23 @@ const Footer: React.FC = () => {
         </div>
 
         <div
-          className="mt-16 pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
-          style={{ borderTop: "1px solid var(--border)" }}
+          className="mt-14 pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
+          style={{ borderTop: "1px solid var(--gray-20)" }}
         >
-          <p className="text-sm text-white/25">
+          <p className="text-[13px] text-[var(--gray-30)]">
             &copy; 2025 NativeSquare SAS. All rights reserved.
           </p>
-          <div className="flex gap-6 text-sm text-white/25">
-            <Link href="/legal" className="hover:text-white/50 transition-colors">
+          <div className="flex gap-6 text-[13px] text-[var(--gray-30)]">
+            <Link
+              href="/legal"
+              className="hover:text-[var(--gray-50)] transition-colors duration-200"
+            >
               Privacy
             </Link>
-            <Link href="/legal" className="hover:text-white/50 transition-colors">
+            <Link
+              href="/legal"
+              className="hover:text-[var(--gray-50)] transition-colors duration-200"
+            >
               Terms
             </Link>
           </div>

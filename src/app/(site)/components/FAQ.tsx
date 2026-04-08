@@ -1,34 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, HelpCircle } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
 
 const faqs = [
   {
-    question: "What services does the team offer?",
+    question: "What kind of companies do you work with?",
     answer:
-      "We provide end-to-end product development, including product strategy, UX/UI design, custom software development (web and mobile), and go-to-market execution. We also specialize in building conversion-optimized sales funnels.",
+      "We work with health tech startups, digital health companies, and organizations building health, fitness, or wellness products. From early-stage founders to funded companies with Series A+, we partner with teams that are serious about building impactful health technology.",
   },
   {
-    question: "How long does it take to build a typical MVP?",
+    question: "How is NativeSquare different from a typical dev agency?",
     answer:
-      "Most MVPs take between 6 to 12 weeks depending on the complexity. We focus on getting you to market as quickly as possible with a high-quality product that solves your core problem.",
+      "We're not vendors — we're builders who work in the same space as our clients. We build our own health platforms (like Cadence), so we understand the challenges of health tech from the inside. That means better technical decisions, regulatory awareness, and a shared understanding of what it takes to ship in healthcare.",
   },
   {
-    question: "What technologies do you use?",
+    question: "What is your approach to health tech compliance?",
     answer:
-      "We primarily work with modern, scalable stacks like React, Next.js, TypeScript, and Node.js. For mobile, we use React Native. We choose the best tools for your specific needs to ensure performance and longevity.",
+      "We build with HIPAA, GDPR health provisions, and HDS (French health data hosting) standards in mind from day one. Security and privacy are baked into our architecture — not bolted on as an afterthought.",
   },
   {
-    question: "How do you handle project communication?",
+    question: "How long does a typical engagement last?",
     answer:
-      "We believe in radical transparency. We use tools like Slack for daily communication, Loom for quick updates, and Notion or Jira for project tracking. You'll always know exactly where your project stands.",
+      "Most MVPs take 6 to 12 weeks. For ongoing partnerships, we offer monthly retainers. We use our Spec-Driven Development methodology — vision, milestones, versioned specs, tasks — so you always know exactly where your project stands.",
   },
   {
-    question: "Do you offer ongoing support after launch?",
+    question: "Do you take equity in the startups you build?",
     answer:
-      "Yes, we offer flexible maintenance and support packages to ensure your product continues to run smoothly and scales as your user base grows.",
+      "For early-stage startups we deeply believe in, we offer a shared CTO model: reduced rate combined with equity. This aligns our incentives and gives us real skin in the game.",
   },
 ];
 
@@ -38,59 +38,51 @@ const FAQ: React.FC = () => {
 
   return (
     <section
-      className="py-24 bg-[var(--surface)]"
+      className="py-24 lg:py-32"
+      style={{ background: "var(--gray-98)", color: "var(--gray-5)" }}
       id="faq"
       ref={ref}
-      style={{ borderTop: "1px solid var(--border)" }}
     >
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div className="container-sm" style={{ maxWidth: "800px" }}>
         <div
           className={`text-center mb-16 transition-all duration-700 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
           }`}
         >
-          <div
-            className="inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-6"
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid var(--border)",
-              color: "var(--glow-cyan)",
-            }}
-          >
-            <HelpCircle size={24} />
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tighter text-white mb-4">
+          <p className="text-[13px] font-medium tracking-tight text-[var(--primary-blue)] mb-4 uppercase">
+            FAQ
+          </p>
+          <h2 className="font-title fs-36 font-medium leading-none tracking-tight mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="text-white/45 max-w-2xl mx-auto leading-relaxed">
-            Everything you need to know about working with us. Can&apos;t find the
-            answer you&apos;re looking for? Feel free to reach out.
+          <p className="fs-16 leading-snug tracking-tight text-gray-40">
+            Everything you need to know about working with us.
           </p>
         </div>
 
         <div
-          className={`space-y-4 transition-all duration-1000 delay-200 ${
+          className={`space-y-3 transition-all duration-1000 delay-200 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-20 opacity-0"
           }`}
         >
           {faqs.map((faq, idx) => (
             <div
               key={idx}
-              className="rounded-2xl overflow-hidden transition-colors"
+              className="rounded-xl overflow-hidden transition-colors duration-200"
               style={{
-                background: "var(--background)",
-                border: `1px solid ${openIndex === idx ? "var(--border-hover)" : "var(--border)"}`,
+                background: "var(--gray-94)",
+                border: `1px solid ${openIndex === idx ? "var(--gray-80)" : "var(--gray-90)"}`,
               }}
             >
               <button
                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                className="w-full flex items-center justify-between p-6 text-left focus:outline-none"
+                className="w-full flex items-center justify-between p-5 text-left focus:outline-none"
               >
-                <span className="text-lg font-semibold text-white pr-8">
+                <span className="fs-15 font-medium pr-8">
                   {faq.question}
                 </span>
                 <ChevronDown
-                  className={`w-5 h-5 text-white/30 transition-transform duration-300 ${
+                  className={`w-4 h-4 flex-shrink-0 text-gray-50 transition-transform duration-300 ${
                     openIndex === idx ? "rotate-180" : ""
                   }`}
                 />
@@ -102,10 +94,7 @@ const FAQ: React.FC = () => {
                     : "max-h-0 opacity-0"
                 }`}
               >
-                <div
-                  className="p-6 pt-0 text-white/50 leading-relaxed"
-                  style={{ borderTop: "1px solid var(--border)" }}
-                >
+                <div className="px-5 pb-5 fs-15 text-gray-30 leading-relaxed">
                   {faq.answer}
                 </div>
               </div>
@@ -114,18 +103,18 @@ const FAQ: React.FC = () => {
         </div>
 
         <div
-          className={`mt-12 text-center transition-all duration-700 delay-500 ${
+          className={`mt-10 text-center transition-all duration-700 delay-500 ${
             isVisible ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
           }`}
         >
-          <p className="text-white/35">
+          <p className="text-[14px] text-gray-40">
             Still have questions?{" "}
             <a
-              href="mailto:admin@nativesquare.fr"
-              className="font-semibold hover:text-white/70 transition-colors"
-              style={{ color: "var(--glow-cyan)" }}
+              href="mailto:hello@nativesquare.fr"
+              className="font-medium transition-colors"
+              style={{ color: "var(--primary-blue)" }}
             >
-              Contact our team
+              Reach out
             </a>
           </p>
         </div>

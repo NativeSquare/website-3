@@ -1,123 +1,239 @@
 @import "tailwindcss";
 
+/* ============================================
+   DESIGN SYSTEM — Based on Vectara DA
+   ============================================ */
+
 :root {
-  /* Base */
-  --background: #07070a;
-  --foreground: #ededed;
-  --surface: #0c0c14;
-  --surface-light: #12121e;
-  --border: rgba(255, 255, 255, 0.06);
-  --border-hover: rgba(255, 255, 255, 0.12);
+  /* ── Grayscale (Vectara scale) ── */
+  --gray-5: #0b0c0e;
+  --gray-8: #121317;
+  --gray-12: #1c1d22;
+  --gray-20: #2e3038;
+  --gray-30: #464853;
+  --gray-40: #5e616e;
+  --gray-50: #777a88;
+  --gray-60: #9194a1;
+  --gray-70: #abaebb;
+  --gray-80: #c7c9d1;
+  --gray-90: #e3e4e9;
+  --gray-94: #eeeef1;
+  --gray-98: #f9fafb;
 
-  /* Atmosphere — glows d'ambiance */
-  --glow-cyan: #c0f7ff;
-  --glow-teal: #2a7780;
+  /* ── Semantic mapping ── */
+  --background: var(--gray-8);
+  --background-alt: var(--gray-5);
+  --surface: var(--gray-12);
+  --surface-hover: var(--gray-20);
+  --foreground: var(--gray-98);
 
-  /* Accent signature — le gradient chaud */
-  --gradient-accent: linear-gradient(
-    90deg,
-    #ffcf8a 0%,
-    #ff6b2c 15%,
-    #ff4f6f 30%,
-    #d946ef 45%,
-    #8b5cf6 60%,
-    #6366f1 75%,
-    #3b82f6 100%
-  );
+  /* ── Borders ── */
+  --border: var(--gray-20);
+  --border-hover: var(--gray-30);
 
-  /* CTA */
-  --accent-blue: #3b82f6;
-  --accent-blue-hover: #2563eb;
+  /* ── Text ── */
+  --text-primary: var(--gray-98);
+  --text-secondary: var(--gray-70);
+  --text-tertiary: var(--gray-50);
+  --text-muted: var(--gray-40);
 
-  /* Text */
-  --gradient-text: linear-gradient(180deg, #f5f5f5 0%, #a3a3a3 100%);
+  /* ── Primary colors ── */
+  --primary-blue: #1a79ff;
+  --primary-green: #62bf59;
+  --primary-orange: #fead34;
+  --primary-dark-orange: #fe9801;
 
-  /* Fonts */
+  /* ── Secondary colors ── */
+  --secondary-light-blue: #73b5f2;
+  --secondary-pink: #d973ce;
+  --secondary-purple: #9e79ec;
+  --secondary-red: #d22d2d;
+
+  /* ── Button states ── */
+  --button-blue: #1a79ff;
+  --button-light-blue: #4c97ff;
+  --button-dark-blue: #0060e5;
+
+  /* ── Fonts ── */
   --font-sans: var(--font-inter);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-gray-5: var(--gray-5);
+  --color-gray-8: var(--gray-8);
+  --color-gray-12: var(--gray-12);
+  --color-gray-20: var(--gray-20);
+  --color-gray-30: var(--gray-30);
+  --color-gray-40: var(--gray-40);
+  --color-gray-50: var(--gray-50);
+  --color-gray-60: var(--gray-60);
+  --color-gray-70: var(--gray-70);
+  --color-gray-80: var(--gray-80);
+  --color-gray-90: var(--gray-90);
+  --color-gray-94: var(--gray-94);
+  --color-gray-98: var(--gray-98);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 }
 
+/* ── Base ── */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-inter), "Inter", system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+}
+
+/* Title font (Vectara "esbuild" equivalent → Plus Jakarta Sans 500) */
+.font-title {
+  font-family: var(--font-title, "Plus Jakarta Sans"), system-ui, sans-serif !important;
+  font-weight: 500 !important;
 }
 
 ::selection {
-  background: #e0e7ff;
-  color: #312e81;
+  background: rgba(26, 121, 255, 0.3);
+  color: #fff;
 }
 
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+/* ── Scrollbar ── */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Responsive typography (Vectara scale) ── */
+/* fs-XX only sets font-size. Line-height & tracking come from Tailwind utilities per element. */
+.fs-64 { font-size: 64px; }
+.fs-56 { font-size: 56px; }
+.fs-40 { font-size: 40px; }
+.fs-36 { font-size: 36px; }
+.fs-32 { font-size: 32px; }
+.fs-28 { font-size: 28px; }
+.fs-24 { font-size: 24px; }
+.fs-20 { font-size: 20px; }
+.fs-18 { font-size: 18px; }
+.fs-16 { font-size: 16px; }
+.fs-15 { font-size: 15px; }
+.fs-14 { font-size: 14px; }
+.fs-13 { font-size: 13px; }
+
+@media (max-width: 1279px) {
+  .fs-64 { font-size: 56px; }
+  .fs-56 { font-size: 48px; }
+}
+@media (max-width: 1023px) {
+  .fs-64 { font-size: 48px; }
+  .fs-56 { font-size: 40px; }
+  .fs-40 { font-size: 32px; }
+  .fs-20 { font-size: 18px; }
+}
+@media (max-width: 767px) {
+  .fs-64 { font-size: 32px; line-height: 1.25; }
+  .fs-56 { font-size: 28px; line-height: 1.25; }
+  .fs-40 { font-size: 28px; }
+  .fs-36 { font-size: 24px; line-height: 1.375; }
+  .fs-32 { font-size: 20px; }
+  .fs-28 { font-size: 18px; }
+  .fs-24 { font-size: 16px; }
+  .fs-18 { font-size: 16px; }
 }
 
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* ── Container system (Vectara) ── */
+.container-md {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+.container-sm {
+  max-width: 1216px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+@media (max-width: 1439px) {
+  .container-md { padding-left: 4rem; padding-right: 4rem; }
+}
+@media (max-width: 767px) {
+  .container-md { padding-left: 1.25rem; padding-right: 1.25rem; }
+  .container-sm { padding-left: 1.25rem; padding-right: 1.25rem; }
 }
 
+/* ── Pixel mask texture (Vectara pattern) ── */
+.pixel-mask {
+  background-image: url('/images/pixel-mask.png');
+  background-size: 6px 6px;
+}
+
+/* ── Logo carousel (Vectara style) ── */
+.logos {
+  display: flex;
+  overflow: hidden;
+  gap: var(--logo-gap, 3.5rem);
+}
+
+.logos-sides-fade {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 10%,
+    #000 90%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    #000 10%,
+    #000 90%,
+    transparent 100%
+  );
+}
+
+@keyframes infinityScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-50% - var(--logo-gap, 3.5rem) / 2)); }
+}
+
+.logos-content {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--logo-gap, 3.5rem);
+  animation: infinityScroll 60s linear infinite;
+}
+
+.logos-content:hover {
+  animation-play-state: paused;
+}
+
+/* ── Animations ── */
 @keyframes fadeSlideIn {
   0% {
     opacity: 0;
-    transform: translateY(30px);
-    filter: blur(8px);
+    transform: translateY(20px);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
-    filter: blur(0px);
   }
 }
 
 .animate-on-scroll {
   opacity: 0;
   animation-fill-mode: both;
-  animation-duration: 1s;
+  animation-duration: 0.8s;
   animation-timing-function: ease-out;
 }
 
-@keyframes scrollLogos {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-33.333%);
-  }
-}
-
-.animate-scroll-logos {
-  animation: scrollLogos 25s linear infinite;
-}
-
-.animate-scroll-logos:hover {
-  animation-play-state: paused;
-}
-
-@keyframes glowRotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.animate-glow-rotate {
-  animation: glowRotate 20s linear infinite;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
