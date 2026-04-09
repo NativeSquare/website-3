@@ -178,7 +178,7 @@ h1, h2, h3, h4, h5, h6 {
 .logos {
   display: flex;
   overflow: hidden;
-  gap: var(--logo-gap, 3.5rem);
+  --logo-gap: 3.5rem;
 }
 
 .logos-sides-fade {
@@ -200,20 +200,23 @@ h1, h2, h3, h4, h5, h6 {
 
 @keyframes infinityScroll {
   0% { transform: translateX(0); }
-  100% { transform: translateX(calc(-50% - var(--logo-gap, 3.5rem) / 2)); }
+  100% { transform: translateX(calc(-100% - var(--logo-gap))); }
 }
 
 .logos-content {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  gap: var(--logo-gap, 3.5rem);
-  animation: infinityScroll 60s linear infinite;
+  gap: var(--logo-gap);
+  animation: infinityScroll 40s linear infinite;
+  pointer-events: none;
 }
 
-.logos-content:hover {
-  animation-play-state: paused;
+/* Gap between the two duplicate lists must match the internal gap */
+.logos-content + .logos-content {
+  margin-left: var(--logo-gap);
 }
+
 
 /* ── Animations ── */
 @keyframes fadeSlideIn {

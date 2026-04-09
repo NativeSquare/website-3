@@ -5,165 +5,86 @@ import Link from "next/link";
 
 const BOOKING_URL = "https://calendar.app.google/BFYre7dXNFCy6GfT6";
 
-/* Logoipsum-style SVG logos */
-const LogoA = () => (
-  <svg height="32" viewBox="0 0 120 32" fill="none">
-    <rect width="32" height="32" rx="6" fill="#2e3038" />
-    <circle cx="16" cy="16" r="8" fill="#5e616e" />
-    <text
-      x="40"
-      y="22"
-      fill="#777a88"
-      fontSize="16"
-      fontWeight="500"
-      fontFamily="Inter, sans-serif"
-    >
-      Logotype
-    </text>
-  </svg>
-);
-const LogoB = () => (
-  <svg height="32" viewBox="0 0 110 32" fill="none">
-    <circle cx="16" cy="16" r="14" fill="#2e3038" />
-    <path
-      d="M10 16h12M16 10v12"
-      stroke="#5e616e"
-      strokeWidth="2"
-      strokeLinecap="round"
+/* Logo components — white versions for dark bg */
+const LogoCadence = () => (
+  <div className="flex items-center gap-2 opacity-40">
+    <Image
+      src="/logos/cadence.png"
+      alt="Cadence"
+      width={32}
+      height={32}
+      className="h-7 w-7 rounded-md"
+      style={{ filter: "grayscale(1) brightness(2)" }}
     />
-    <text
-      x="38"
-      y="22"
-      fill="#777a88"
-      fontSize="15"
-      fontWeight="500"
-      fontFamily="Inter, sans-serif"
-    >
-      MedTech
-    </text>
-  </svg>
-);
-const LogoC = () => (
-  <svg height="32" viewBox="0 0 130 32" fill="none">
-    <rect width="28" height="28" x="2" y="2" rx="4" fill="#2e3038" />
-    <path
-      d="M9 16l5 5 9-10"
-      stroke="#5e616e"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <text
-      x="38"
-      y="22"
-      fill="#777a88"
-      fontSize="15"
-      fontWeight="500"
-      fontFamily="Inter, sans-serif"
-    >
-      HealthOS
-    </text>
-  </svg>
-);
-const LogoD = () => (
-  <svg height="32" viewBox="0 0 105 32" fill="none">
-    <path d="M4 16a12 12 0 0124 0 12 12 0 01-24 0z" fill="#2e3038" />
-    <path
-      d="M12 12l8 8M20 12l-8 8"
-      stroke="#5e616e"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    <text
-      x="34"
-      y="22"
-      fill="#777a88"
-      fontSize="15"
-      fontWeight="500"
-      fontFamily="Inter, sans-serif"
-    >
-      Nucleus
-    </text>
-  </svg>
-);
-const LogoE = () => (
-  <svg height="32" viewBox="0 0 120 32" fill="none">
-    <rect width="32" height="32" rx="16" fill="#2e3038" />
-    <circle cx="16" cy="12" r="4" fill="#5e616e" />
-    <path
-      d="M8 26c0-4.4 3.6-8 8-8s8 3.6 8 8"
-      stroke="#5e616e"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-    <text
-      x="40"
-      y="22"
-      fill="#777a88"
-      fontSize="15"
-      fontWeight="500"
-      fontFamily="Inter, sans-serif"
-    >
-      Careflow
-    </text>
-  </svg>
-);
-const LogoF = () => (
-  <svg height="32" viewBox="0 0 115 32" fill="none">
-    <rect width="28" height="28" x="2" y="2" rx="14" fill="#2e3038" />
-    <path
-      d="M10 16h12"
-      stroke="#5e616e"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-    />
-    <circle cx="16" cy="16" r="3" fill="#5e616e" />
-    <text
-      x="38"
-      y="22"
-      fill="#777a88"
-      fontSize="15"
-      fontWeight="500"
-      fontFamily="Inter, sans-serif"
-    >
-      Synapse
-    </text>
-  </svg>
-);
-const LogoG = () => (
-  <svg height="32" viewBox="0 0 100 32" fill="none">
-    <polygon points="16,2 30,28 2,28" fill="#2e3038" />
-    <circle cx="16" cy="20" r="3" fill="#5e616e" />
-    <text
-      x="36"
-      y="22"
-      fill="#777a88"
-      fontSize="15"
-      fontWeight="500"
-      fontFamily="Inter, sans-serif"
-    >
-      Praxis
-    </text>
-  </svg>
-);
-const LogoH = () => (
-  <svg height="32" viewBox="0 0 110 32" fill="none">
-    <rect width="32" height="32" rx="6" fill="#2e3038" />
-    <rect x="8" y="8" width="16" height="16" rx="3" fill="#5e616e" />
-    <text
-      x="40"
-      y="22"
-      fill="#777a88"
-      fontSize="15"
-      fontWeight="500"
-      fontFamily="Inter, sans-serif"
-    >
-      Vitalix
-    </text>
-  </svg>
+    <span className="text-[17px] font-bold tracking-[-0.04em] text-white">
+      cadence
+    </span>
+  </div>
 );
 
-const LOGOS = [LogoA, LogoB, LogoC, LogoD, LogoE, LogoF, LogoG, LogoH];
+const LogoDoctr = () => (
+  <Image
+    src="/logos/doctr-white.svg"
+    alt="Doctr"
+    width={94}
+    height={40}
+    className="h-9 w-auto"
+  />
+);
+
+const LogoFoundersFactory = () => (
+  <Image
+    src="/logos/founders-factory.svg"
+    alt="Founders Factory"
+    width={180}
+    height={58}
+    className="h-9 w-auto opacity-40"
+  />
+);
+
+const LogoRYB = () => (
+  <Image
+    src="/logos/ryb.svg"
+    alt="RYB"
+    width={35}
+    height={24}
+    className="h-7 w-auto"
+    style={{ filter: "brightness(0) invert(1)", opacity: 0.4 }}
+  />
+);
+
+const LogoStackUp = () => (
+  <span className="text-[17px] font-bold tracking-tight text-white/40 whitespace-nowrap uppercase">
+    StackUp
+  </span>
+);
+
+const LogoVerbrio = () => (
+  <Image
+    src="/logos/verbrio.avif"
+    alt="Verbrio"
+    width={120}
+    height={40}
+    className="h-8 w-auto"
+    style={{ filter: "brightness(0) invert(1)", opacity: 0.4 }}
+  />
+);
+
+const LogoSoma = () => (
+  <span className="text-[17px] font-bold tracking-tight text-white/40 whitespace-nowrap uppercase">
+    Soma
+  </span>
+);
+
+const LOGOS = [
+  () => <LogoCadence />,
+  () => <LogoDoctr />,
+  () => <LogoFoundersFactory />,
+  () => <LogoRYB />,
+  () => <LogoStackUp />,
+  () => <LogoVerbrio />,
+  () => <LogoSoma />,
+];
 
 const Hero: React.FC = () => {
   return (
@@ -178,8 +99,7 @@ const Hero: React.FC = () => {
             </h1>
 
             <p className="mt-3 fs-15 leading-snug tracking-tight text-gray-90 max-md:pr-5">
-              In-house and as partners — we build health, fitness, and wellness
-              platforms powered by AI. One vision, one craft, one standard
+              In-house and as partners. Same vision, same craft.
             </p>
 
             <div className="mt-9 flex items-center gap-x-6 max-xl:mt-8 max-lg:mt-6 max-lg:gap-x-5 max-md:flex-wrap max-md:gap-y-3">

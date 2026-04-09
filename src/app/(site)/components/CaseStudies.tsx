@@ -1,24 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
-
-const cases = [
-  {
-    title: "Doctr",
-    tag: "Health Platform",
-    description:
-      "A comprehensive platform for Canadian healthcare providers. Streamlining patient management, appointments, and clinical workflows.",
-    color: "#1a79ff",
-  },
-  {
-    title: "Brain Analytics",
-    tag: "Neuroscience",
-    description:
-      "Advanced sport and cognitive analytics platform powered by neuroscience. Measuring and improving athletic performance through brain data.",
-    color: "#9e79ec",
-  },
-];
 
 const CaseStudies: React.FC = () => {
   const { ref, isVisible } = useScrollAnimation();
@@ -49,83 +33,141 @@ const CaseStudies: React.FC = () => {
             </p>
           </div>
 
-          {/* Cards — dark cards on light background */}
+          {/* Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {cases.map((c) => (
-              <div
-                key={c.title}
-                className="group relative h-[380px] overflow-hidden rounded-lg bg-gray-5 p-8 flex flex-col justify-end transition-all duration-200 cursor-pointer hover:translate-y-[-2px]"
-              >
-                {/* Decorative header area */}
-                <div className="absolute inset-0">
-                  <svg
-                    className="absolute inset-0 w-full h-full"
-                    preserveAspectRatio="none"
-                  >
-                    {Array.from({ length: 5 }).map((_, row) =>
-                      Array.from({ length: 10 }).map((_, col) => (
-                        <circle
-                          key={`${row}-${col}`}
-                          cx={`${8 + col * 10}%`}
-                          cy={`${10 + row * 14}%`}
-                          r="1"
-                          fill="var(--gray-12)"
-                          opacity="0.8"
-                        />
-                      ))
-                    )}
-                  </svg>
-                  {/* Gradient fade to read text */}
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(to top, var(--gray-5) 35%, transparent 70%)",
-                    }}
-                  />
-                </div>
-
-                {/* Content */}
-                <div className="relative z-10">
-                  <span
-                    className="inline-block text-[12px] font-medium tracking-tight rounded-full px-3 py-1 mb-4"
-                    style={{
-                      color: c.color,
-                      background: `${c.color}20`,
-                    }}
-                  >
-                    {c.tag}
-                  </span>
-                  <h3 className="fs-24 font-medium leading-tight tracking-tight text-white mb-2">
-                    {c.title}
-                  </h3>
-                  <p className="fs-15 leading-snug tracking-tight text-gray-60 mb-5">
-                    {c.description}
-                  </p>
-                  <Link
-                    href="#"
-                    className="group/link inline-flex items-center font-medium tracking-tight transition-all duration-200 fs-15 leading-snug text-gray-98 hover:text-gray-70"
-                  >
-                    <span>Read case study</span>
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 12 12"
-                      fill="none"
-                      className="ml-1.5 transition-transform duration-200 group-hover/link:translate-x-1.5"
-                    >
-                      <path
-                        d="M4.5 2L8.5 6L4.5 10"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </Link>
-                </div>
+            {/* Doctr — branded red card */}
+            <div className="group relative h-[380px] overflow-hidden rounded-lg p-8 flex flex-col justify-end transition-all duration-200 cursor-pointer hover:translate-y-[-2px]"
+              style={{ background: "#D63838" }}
+            >
+              {/* Doctr logo centered in top area */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Image
+                  src="/logos/doctr-on-red.svg"
+                  alt="Doctr"
+                  width={160}
+                  height={68}
+                  className="w-[160px] h-auto -translate-y-6"
+                />
               </div>
-            ))}
+              {/* Gradient fade */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(to top, rgba(180,30,30,0.95) 30%, transparent 65%)",
+                }}
+              />
+
+              {/* Content */}
+              <div className="relative z-10">
+                <span className="inline-block text-[12px] font-medium tracking-tight rounded-full px-3 py-1 mb-4 text-white/80 bg-white/15">
+                  Health Platform
+                </span>
+                <h3 className="fs-24 font-medium leading-tight tracking-tight text-white mb-2">
+                  Doctr
+                </h3>
+                <p className="fs-15 leading-snug tracking-tight text-white/70 mb-5">
+                  A comprehensive platform for Canadian healthcare providers.
+                  Streamlining patient management, appointments, and clinical
+                  workflows.
+                </p>
+                <Link
+                  href="#"
+                  className="group/link inline-flex items-center font-medium tracking-tight transition-all duration-200 fs-15 leading-snug text-white hover:text-white/70"
+                >
+                  <span>Read case study</span>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    className="ml-1.5 transition-transform duration-200 group-hover/link:translate-x-1.5"
+                  >
+                    <path
+                      d="M4.5 2L8.5 6L4.5 10"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+
+            {/* StackUp Fantasy — dark green gradient card */}
+            <div className="group relative h-[380px] overflow-hidden rounded-lg p-8 flex flex-col justify-end transition-all duration-200 cursor-pointer hover:translate-y-[-2px]"
+              style={{ background: "linear-gradient(145deg, #0a2e1a 0%, #0f1f14 50%, #0b0c0e 100%)" }}
+            >
+              {/* Field lines pattern */}
+              <div className="absolute inset-0 pointer-events-none">
+                <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                  {/* Horizontal field lines */}
+                  <line x1="0" y1="25%" x2="100%" y2="25%" stroke="#1a4a2e" strokeWidth="0.5" opacity="0.5" />
+                  <line x1="0" y1="50%" x2="100%" y2="50%" stroke="#1a4a2e" strokeWidth="0.8" opacity="0.6" />
+                  <line x1="0" y1="75%" x2="100%" y2="75%" stroke="#1a4a2e" strokeWidth="0.5" opacity="0.5" />
+                  {/* Center circle */}
+                  <circle cx="50%" cy="50%" r="15%" stroke="#1a4a2e" strokeWidth="0.6" fill="none" opacity="0.4" />
+                  <circle cx="50%" cy="50%" r="2" fill="#62bf59" opacity="0.3" />
+                  {/* Vertical center line */}
+                  <line x1="50%" y1="0" x2="50%" y2="100%" stroke="#1a4a2e" strokeWidth="0.5" opacity="0.4" />
+                </svg>
+              </div>
+              {/* StackUp logo centered */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Image
+                  src="/logos/stack_up.webp"
+                  alt="StackUp Fantasy"
+                  width={200}
+                  height={100}
+                  className="w-[180px] h-auto max-md:w-[140px] -translate-y-4"
+                />
+              </div>
+              {/* Gradient fade */}
+              <div
+                className="absolute inset-0 pointer-events-none"
+                style={{
+                  background:
+                    "linear-gradient(to top, rgba(11,12,14,0.95) 30%, transparent 65%)",
+                }}
+              />
+
+              {/* Content */}
+              <div className="relative z-10">
+                <span className="inline-block text-[12px] font-medium tracking-tight rounded-full px-3 py-1 mb-4"
+                  style={{ color: "#62bf59", background: "rgba(98,191,89,0.12)" }}
+                >
+                  Fantasy Sport
+                </span>
+                <h3 className="fs-24 font-medium leading-tight tracking-tight text-white mb-2">
+                  StackUp Fantasy
+                </h3>
+                <p className="fs-15 leading-snug tracking-tight text-gray-60 mb-5">
+                  A fantasy sport platform where users build lineups, compete in contests, and win based on real player performance. Real-time scoring, draft mechanics, and social features.
+                </p>
+                <Link
+                  href="#"
+                  className="group/link inline-flex items-center font-medium tracking-tight transition-all duration-200 fs-15 leading-snug text-gray-98 hover:text-gray-70"
+                >
+                  <span>Read case study</span>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 12 12"
+                    fill="none"
+                    className="ml-1.5 transition-transform duration-200 group-hover/link:translate-x-1.5"
+                  >
+                    <path
+                      d="M4.5 2L8.5 6L4.5 10"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

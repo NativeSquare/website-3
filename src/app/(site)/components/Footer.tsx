@@ -48,7 +48,7 @@ const Footer: React.FC = () => {
                 </li>
                 <li>
                   <Link
-                    href="#case-studies"
+                    href="/case-studies"
                     className="text-[var(--gray-40)] hover:text-white transition-colors duration-200"
                   >
                     Case Studies
@@ -62,20 +62,24 @@ const Footer: React.FC = () => {
               </h4>
               <ul className="space-y-3 text-[14px]">
                 <li>
-                  <Link
-                    href="#products"
+                  <a
+                    href="https://cadence.nativesquare.fr"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-[var(--gray-40)] hover:text-white transition-colors duration-200"
                   >
                     Cadence
-                  </Link>
+                  </a>
                 </li>
                 <li>
-                  <Link
-                    href="#case-studies"
+                  <a
+                    href="https://soma.nativesquare.fr"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-[var(--gray-40)] hover:text-white transition-colors duration-200"
                   >
-                    Doctr
-                  </Link>
+                    Soma
+                  </a>
                 </li>
               </ul>
             </div>
