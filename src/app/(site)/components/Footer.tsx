@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
             <Link href="/" className="flex items-center gap-2.5 mb-6">
               <div className="w-7 h-7 rounded-lg flex items-center justify-center overflow-hidden">
                 <Image
-                  src="/NsLogo2.svg"
+                  src="/hero/ns-logo.png"
                   alt="NativeSquare logo"
                   width={28}
                   height={28}

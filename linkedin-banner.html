@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NativeSquare LinkedIn Banner</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500&family=Inter:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #2e3038;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px;
+  }
+
+  .banner {
+    width: 1584px;
+    height: 396px;
+    background: #121317;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 80px;
+  }
+
+  /* Grid overlay — same as hero: absolute, right side */
+  .grid-overlay {
+    position: absolute;
+    left: -550px;
+    top: 0;
+    width: 1000px;
+    height: auto;
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  /* Ambient glows */
+  .glow-orange {
+    position: absolute;
+    left: 50px;
+    top: -150px;
+    width: 600px;
+    height: 500px;
+    background: radial-gradient(ellipse at center, rgba(254,173,52,0.1), transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+  .glow-blue {
+    position: absolute;
+    right: -100px;
+    top: 50%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(ellipse at center, rgba(26,121,255,0.06), transparent 70%);
+    filter: blur(100px);
+    pointer-events: none;
+  }
+
+  /* Left column — text */
+  .left {
+    position: relative;
+    z-index: 10;
+    max-width: 520px;
+    flex-shrink: 0;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  .logo img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+  }
+  .logo span {
+    font-size: 15px;
+    font-weight: 500;
+    color: rgba(249,250,251,0.9);
+    letter-spacing: -0.3px;
+  }
+
+  .headline {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 56px;
+    line-height: 1.0;
+    letter-spacing: -0.04em;
+    color: #f9fafb;
+  }
+
+  .subtitle {
+    margin-top: 14px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: -0.02em;
+    color: #abaebb;
+  }
+
+  .url-row {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .url {
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: #1a79ff;
+  }
+  .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #464853;
+  }
+  .tagline {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: #5e616e;
+  }
+
+  /* Right column — asset */
+  .right {
+    position: relative;
+    flex-shrink: 0;
+  }
+  .hero-asset {
+    width: 520px;
+    height: auto;
+    position: relative;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">
+  <!-- Ambient glows -->
+  <div class="glow-orange"></div>
+  <div class="glow-blue"></div>
+
+  <!-- Grid overlay -->
+  <img src="public/hero/grid.webp" class="grid-overlay" alt="">
+
+  <!-- Left — 3D asset -->
+  <div class="right">
+    <img src="public/hero/hero_asset.webp" class="hero-asset" alt="">
+  </div>
+
+  <!-- Right — text content -->
+  <div class="left">
+    <div class="logo">
+      <img src="public/hero/ns-logo.png" alt="NativeSquare">
+      <span>NativeSquare</span>
+    </div>
+    <div class="headline">
+      Building AI-Powered<br>HealthTech
+    </div>
+    <div class="subtitle">
+      In-house and as partners. Same vision, same craft.
+    </div>
+    <div class="url-row">
+      <span class="url">nativesquare.fr</span>
+      <span class="dot"></span>
+      <span class="tagline">Healthcare Startup Studio</span>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

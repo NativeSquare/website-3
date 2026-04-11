@@ -41,7 +41,7 @@ const Navbar: React.FC = () => {
           <Link href="/" className="flex items-center gap-2.5">
             <div className="w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center">
               <Image
-                src="/NsLogo2.svg"
+                src="/hero/ns-logo.png"
                 alt="NativeSquare logo"
                 width={28}
                 height={28}
