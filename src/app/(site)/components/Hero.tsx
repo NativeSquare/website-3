@@ -22,16 +22,6 @@ const LogoCadence = () => (
   </div>
 );
 
-const LogoDoctr = () => (
-  <Image
-    src="/logos/doctr-white.svg"
-    alt="Doctr"
-    width={94}
-    height={40}
-    className="h-9 w-auto"
-  />
-);
-
 const LogoFoundersFactory = () => (
   <Image
     src="/logos/founders-factory.svg"
@@ -78,7 +68,6 @@ const LogoSoma = () => (
 
 const LOGOS = [
   () => <LogoCadence />,
-  () => <LogoDoctr />,
   () => <LogoFoundersFactory />,
   () => <LogoRYB />,
   () => <LogoStackUp />,

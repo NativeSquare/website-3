@@ -35,66 +35,6 @@ const CaseStudies: React.FC = () => {
 
           {/* Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Doctr — branded red card */}
-            <div className="group relative h-[380px] overflow-hidden rounded-lg p-8 flex flex-col justify-end transition-all duration-200 cursor-pointer hover:translate-y-[-2px]"
-              style={{ background: "#D63838" }}
-            >
-              {/* Doctr logo centered in top area */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Image
-                  src="/logos/doctr-on-red.svg"
-                  alt="Doctr"
-                  width={160}
-                  height={68}
-                  className="w-[160px] h-auto -translate-y-6"
-                />
-              </div>
-              {/* Gradient fade */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{
-                  background:
-                    "linear-gradient(to top, rgba(180,30,30,0.95) 30%, transparent 65%)",
-                }}
-              />
-
-              {/* Content */}
-              <div className="relative z-10">
-                <span className="inline-block text-[12px] font-medium tracking-tight rounded-full px-3 py-1 mb-4 text-white/80 bg-white/15">
-                  Health Platform
-                </span>
-                <h3 className="fs-24 font-medium leading-tight tracking-tight text-white mb-2">
-                  Doctr
-                </h3>
-                <p className="fs-15 leading-snug tracking-tight text-white/70 mb-5">
-                  A comprehensive platform for Canadian healthcare providers.
-                  Streamlining patient management, appointments, and clinical
-                  workflows.
-                </p>
-                <Link
-                  href="#"
-                  className="group/link inline-flex items-center font-medium tracking-tight transition-all duration-200 fs-15 leading-snug text-white hover:text-white/70"
-                >
-                  <span>Read case study</span>
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    className="ml-1.5 transition-transform duration-200 group-hover/link:translate-x-1.5"
-                  >
-                    <path
-                      d="M4.5 2L8.5 6L4.5 10"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </div>
-
             {/* Verbrio — dark purple gradient card */}
             <div className="group relative h-[380px] overflow-hidden rounded-lg p-8 flex flex-col justify-end transition-all duration-200 cursor-pointer hover:translate-y-[-2px]"
               style={{ background: "linear-gradient(145deg, #1a0e2e 0%, #130d1f 50%, #0b0c0e 100%)" }}

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 const ArrowChevron = () => (
   <svg
@@ -21,38 +22,17 @@ const ArrowChevron = () => (
   </svg>
 );
 
-const projects = [
-  {
-    title: "Doctr — Clinical Platform",
-    description: (
-      <p>
-        A comprehensive platform for{" "}
-        <strong>Canadian healthcare providers</strong>. Streamlining patient
-        management, appointments, and{" "}
-        <strong>clinical workflows</strong> with regulatory compliance baked in.
-      </p>
-    ),
-    details: [
-      <p key="1">
-        <strong>Patient management</strong> and appointment scheduling for
-        multi-location clinics.
-      </p>,
-      <p key="2">
-        <strong>HIPAA-compliant infrastructure</strong> handling sensitive
-        clinical data at scale.
-      </p>,
-      <p key="3">
-        <strong>Real-time availability</strong> system syncing across
-        practitioners and locations.
-      </p>,
-    ],
-    visual: {
-      type: "branded" as const,
-      bg: "#D63838",
-      logo: "/logos/doctr-on-red.svg",
-    },
-    tags: ["React Native", "Node.js", "PostgreSQL", "HIPAA"],
-  },
+type Project = {
+  title: string;
+  description: ReactNode;
+  details: ReactNode[];
+  visual:
+    | { type: "branded"; bg: string; logo: string }
+    | { type: "placeholder"; bg: string; logo?: string };
+  tags: string[];
+};
+
+const projects: Project[] = [
   {
     title: "Brain Analytics — Neuroscience Platform",
     description: (
