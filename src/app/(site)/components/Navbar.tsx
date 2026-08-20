@@ -12,7 +12,7 @@ const navLinks = [
   { label: "About", href: "/about" },
 ];
 
-const BOOKING_URL = "https://calendar.app.google/BFYre7dXNFCy6GfT6";
+const BOOKING_URL = "https://cal.com/nativesquare-office-orlgbk/30min";
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

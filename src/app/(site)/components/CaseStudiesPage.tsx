@@ -60,7 +60,7 @@ const projects: Project[] = [
   },
 ];
 
-const BOOKING_URL = "https://calendar.app.google/BFYre7dXNFCy6GfT6";
+const BOOKING_URL = "https://cal.com/nativesquare-office-orlgbk/30min";
 
 const CaseStudiesPage: React.FC = () => {
   return (
