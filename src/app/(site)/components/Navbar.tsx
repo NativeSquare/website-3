@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Menu, X, ArrowRight } from "lucide-react";
+import BookingLink from "./BookingLink";
 
 const navLinks = [
   { label: "Studio", href: "#studio" },
@@ -11,8 +12,6 @@ const navLinks = [
   { label: "Case Studies", href: "/case-studies" },
   { label: "About", href: "/about" },
 ];
-
-const BOOKING_URL = "https://cal.com/nativesquare-office-orlgbk/discovery-call";
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -65,10 +64,8 @@ const Navbar: React.FC = () => {
                 {link.label}
               </Link>
             ))}
-            <a
-              href={BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <BookingLink
+              source="navbar"
               className="inline-flex items-center gap-1.5 rounded-full px-6 h-[38px] text-[14px] font-medium text-white transition-colors duration-200"
               style={{
                 background: "var(--button-blue)",
@@ -82,7 +79,7 @@ const Navbar: React.FC = () => {
             >
               Get in Touch
               <ArrowRight size={14} strokeWidth={2} />
-            </a>
+            </BookingLink>
           </nav>
 
           {/* Mobile menu button */}
@@ -125,17 +122,15 @@ const Navbar: React.FC = () => {
                   {link.label}
                 </Link>
               ))}
-              <a
-                href={BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <BookingLink
+                source="navbar-mobile"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="flex items-center justify-center gap-1.5 mx-3 mt-3 rounded-full h-[42px] text-[14px] font-medium text-white"
                 style={{ background: "var(--button-blue)" }}
               >
                 Get in Touch
                 <ArrowRight size={14} strokeWidth={2} />
-              </a>
+              </BookingLink>
             </div>
           </div>
         </div>

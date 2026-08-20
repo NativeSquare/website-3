@@ -38,6 +38,7 @@ window._linkedin_data_partner_ids.push(window._linkedin_partner_id);
         `}
       </Script>
       <noscript>
+        {/* eslint-disable-next-line @next/next/no-img-element -- LinkedIn requires a raw pixel here */}
         <img
           height="1"
           width="1"

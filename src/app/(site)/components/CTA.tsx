@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
-
-const BOOKING_URL = "https://cal.com/nativesquare-office-orlgbk/discovery-call";
+import BookingLink from "./BookingLink";
 
 /* Decorative SVG — abstract molecular/connection illustration */
 const CTAIllustration = () => (
@@ -76,10 +75,8 @@ const CTA: React.FC = () => {
 
         {/* CTAs */}
         <div className="mt-9 flex items-center justify-center gap-x-5 max-xl:mt-8 max-[1023px]:mt-6 max-[1023px]:gap-x-5 max-md:flex-wrap max-md:gap-y-3">
-          <a
-            href={BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <BookingLink
+            source="cta"
             className="group inline-flex items-center justify-center font-medium tracking-tight transition-colors duration-200 rounded-full h-[46px] px-[26px] text-[16px] text-white min-w-[154px] max-[1023px]:h-[38px] max-[1023px]:min-w-[122px] max-[1023px]:px-6 max-[1023px]:text-[14px]"
             style={{ background: "var(--button-blue)" }}
             onMouseEnter={(e) =>
@@ -90,7 +87,7 @@ const CTA: React.FC = () => {
             }
           >
             <span>Book a call</span>
-          </a>
+          </BookingLink>
 
           <Link
             href="#products"

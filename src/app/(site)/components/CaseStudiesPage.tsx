@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import BookingLink from "./BookingLink";
 
 const ArrowChevron = () => (
   <svg
@@ -59,8 +60,6 @@ const projects: Project[] = [
     tags: ["Next.js", "Python", "ML/AI", "WebSocket"],
   },
 ];
-
-const BOOKING_URL = "https://cal.com/nativesquare-office-orlgbk/discovery-call";
 
 const CaseStudiesPage: React.FC = () => {
   return (
@@ -181,10 +180,8 @@ const CaseStudiesPage: React.FC = () => {
             Want to see how we can help with your project?
           </p>
           <div className="mt-6 flex items-center justify-center gap-x-5 max-md:flex-wrap max-md:gap-y-3">
-            <a
-              href={BOOKING_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <BookingLink
+              source="case-studies"
               className="inline-flex items-center justify-center font-medium tracking-tight transition-colors duration-200 rounded-full h-[46px] px-8 text-[16px] text-white min-w-[148px] max-[1023px]:h-[38px] max-[1023px]:px-6 max-[1023px]:text-[14px]"
               style={{ background: "var(--button-blue)" }}
               onMouseEnter={(e) =>
@@ -195,7 +192,7 @@ const CaseStudiesPage: React.FC = () => {
               }
             >
               Book a call
-            </a>
+            </BookingLink>
             <Link
               href="/"
               className="group inline-flex items-center font-medium tracking-tight transition-all duration-200 fs-15 leading-snug text-gray-5 hover:text-[var(--button-blue)] rounded-sm"

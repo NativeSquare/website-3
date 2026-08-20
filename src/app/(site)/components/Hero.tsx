@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-
-const BOOKING_URL = "https://cal.com/nativesquare-office-orlgbk/discovery-call";
+import BookingLink from "./BookingLink";
 
 /* Logo components — white versions for dark bg */
 const LogoCadence = () => (
@@ -92,10 +91,8 @@ const Hero: React.FC = () => {
             </p>
 
             <div className="mt-9 flex items-center gap-x-6 max-xl:mt-8 max-lg:mt-6 max-lg:gap-x-5 max-md:flex-wrap max-md:gap-y-3">
-              <a
-                href={BOOKING_URL}
-                target="_blank"
-                rel="noopener noreferrer"
+              <BookingLink
+                source="hero"
                 className="group inline-flex items-center justify-center font-medium tracking-tight transition-colors duration-200 rounded-full h-[46px] px-8 text-[16px] text-white min-w-[148px] max-lg:h-[38px] max-lg:min-w-[122px] max-lg:px-6 max-lg:text-[14px]"
                 style={{ background: "var(--button-blue)" }}
                 onMouseEnter={(e) =>
@@ -107,7 +104,7 @@ const Hero: React.FC = () => {
                 }
               >
                 <span>Let&apos;s build together</span>
-              </a>
+              </BookingLink>
 
               <Link
                 href="#case-studies"
