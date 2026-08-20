@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
 
-const BOOKING_URL = "https://cal.com/nativesquare-office-orlgbk/30min";
+const BOOKING_URL = "https://cal.com/nativesquare-office-orlgbk/discovery-call";
 
 /* Decorative SVG — abstract molecular/connection illustration */
 const CTAIllustration = () => (

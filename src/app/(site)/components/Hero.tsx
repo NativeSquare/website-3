@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const BOOKING_URL = "https://cal.com/nativesquare-office-orlgbk/30min";
+const BOOKING_URL = "https://cal.com/nativesquare-office-orlgbk/discovery-call";
 
 /* Logo components — white versions for dark bg */
 const LogoCadence = () => (

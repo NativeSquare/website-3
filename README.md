@@ -152,7 +152,7 @@ This project is private and proprietary to NativeSquare Studio.
 - **Website**: [nativesquare.studio](https://nativesquare.studio)
 - **Email**: hello@nativesquare.studio
 - **Upwork**: [View Portfolio](https://www.upwork.com/freelancers/~0135c21091b0e3745d)
-- **Calendar**: [Book a Strategy Call](https://cal.com/nativesquare-office-orlgbk/30min)
+- **Calendar**: [Book a Strategy Call](https://cal.com/nativesquare-office-orlgbk/discovery-call)
 
 ---
 
