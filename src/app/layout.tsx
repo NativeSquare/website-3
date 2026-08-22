@@ -3,6 +3,7 @@ import { Inter, Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { LinkedInInsightTag } from "./components/LinkedInInsightTag";
 import { SuiviVisite } from "./components/SuiviVisite";
+import { Analytique } from "./components/Analytique";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -40,6 +41,7 @@ export default function RootLayout({
       >
         {children}
         <LinkedInInsightTag />
+        <Analytique />
         <SuiviVisite />
       </body>
     </html>

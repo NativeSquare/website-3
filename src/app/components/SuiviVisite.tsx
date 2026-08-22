@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import posthog from "posthog-js";
 
 /**
  * Enregistre l'arrivee une fois par chargement, en passant par notre propre
@@ -24,9 +25,18 @@ export function SuiviVisite() {
         parametres,
       }),
       keepalive: true,
-    }).catch(() => {
-      /* La mesure ne doit jamais gener la page. */
-    });
+    })
+      .then((r) => r.json())
+      .then((reponse: { mesure?: boolean; visiteId?: string }) => {
+        /* Accroche l'identifiant de visite a tous les evenements PostHog qui
+           suivront : c'est la cle qui recolle l'analyse au registre Convex. */
+        if (reponse?.visiteId) {
+          posthog.register({ visiteId: reponse.visiteId, ...parametres });
+        }
+      })
+      .catch(() => {
+        /* La mesure ne doit jamais gener la page. */
+      });
   }, []);
 
   return null;

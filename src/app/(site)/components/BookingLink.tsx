@@ -1,6 +1,7 @@
 "use client";
 
 import type { AnchorHTMLAttributes, MouseEvent, ReactNode } from "react";
+import posthog from "posthog-js";
 import { lireVisiteId } from "../../lib/visite";
 
 export const BOOKING_URL =
@@ -44,6 +45,10 @@ const BookingLink: React.FC<BookingLinkProps> = ({
     onClick?.(event);
 
     const visiteId = lireVisiteId();
+    /* Le maillon manquant entre l'arrivee et la reservation : qui a clique
+       sans jamais reserver. Cal.com est un autre domaine, on ne le verra pas
+       autrement. */
+    posthog.capture("reservation_clic", { source, visiteId });
     /* Sans identifiant, ou si l'utilisateur ouvre dans un onglet a lui, on
        laisse le lien faire son travail normalement. */
     if (!visiteId || event.defaultPrevented || event.metaKey || event.ctrlKey) {
