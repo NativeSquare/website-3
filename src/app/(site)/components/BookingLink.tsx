@@ -6,10 +6,11 @@ import { lireVisiteId } from "../../lib/visite";
 export const BOOKING_URL =
   "https://cal.com/nativesquare-office-orlgbk/discovery-call";
 
-/* Conversion created in LinkedIn Campaign Manager, set as an env var in Vercel.
-   Left empty, clicks are simply not reported. */
-const LINKEDIN_CONVERSION_ID =
-  process.env.NEXT_PUBLIC_LINKEDIN_BOOKING_CONVERSION_ID;
+/* Conversion « reservation-appel » creee dans Campaign Manager le 21/08/2026,
+   declenchement par evenement. Identifiant public, il part de toute facon dans
+   le navigateur : ecrit en dur comme le tag partenaire de l'Insight Tag, une
+   variable d'environnement de moins a oublier au deploiement. */
+const LINKEDIN_CONVERSION_ID = 29592730;
 
 /* Identifiant de la question de reservation cote Cal.com, sous
    Advanced -> Booking Questions. Cal.com preremplit un champ par son
@@ -39,11 +40,7 @@ const BookingLink: React.FC<BookingLinkProps> = ({
   ...props
 }) => {
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
-    if (LINKEDIN_CONVERSION_ID) {
-      window.lintrk?.("track", {
-        conversion_id: Number(LINKEDIN_CONVERSION_ID),
-      });
-    }
+    window.lintrk?.("track", { conversion_id: LINKEDIN_CONVERSION_ID });
     onClick?.(event);
 
     const visiteId = lireVisiteId();
