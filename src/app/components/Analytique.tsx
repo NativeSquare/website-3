@@ -14,12 +14,16 @@ import posthog from "posthog-js";
  * Doctrine : atlas/agence/acquisition/moteur-de-mesure.md
  */
 
-const CLE = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+/* Jeton du projet « Default project » (254905), region UE. En ecriture seule et
+   destine aux applications publiques — PostHog le donne comme tel. Ecrit en dur
+   comme le tag partenaire LinkedIn et l'identifiant de conversion : ca part de
+   toute facon dans le navigateur, et ca supprime une variable d'environnement
+   a oublier au deploiement. */
+const CLE = "phc_sW2yDyufPLh6S4Ko5JsTPSgvBbBfpht9AKEtiU8XvLu4";
 
 export function Analytique() {
   useEffect(() => {
-    /* Sans cle, on ne charge rien : le site marche, il n'est juste pas mesure. */
-    if (!CLE || posthog.__loaded) return;
+    if (posthog.__loaded) return;
 
     posthog.init(CLE, {
       /* Le relais sur notre domaine, defini dans next.config.ts. */
