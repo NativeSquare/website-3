@@ -1,44 +1,43 @@
 import type { Metadata } from "next";
-import { Inter, Plus_Jakarta_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Figtree, Inter } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import { LinkedInInsightTag } from "./components/LinkedInInsightTag";
 import { SuiviVisite } from "./components/SuiviVisite";
 import { Analytique } from "./components/Analytique";
 
+/* Aeonik substitute — closest free match for the search-party DA. */
+const figtree = Figtree({
+  variable: "--font-title",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+});
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  weight: ["400", "500"],
-});
-
-const plusJakarta = Plus_Jakarta_Sans({
-  variable: "--font-title",
-  subsets: ["latin"],
-  weight: ["500"],
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  weight: ["400"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "NativeSquare | Healthcare Startup Studio",
+  title: "NativeSquare — AI systems for service businesses",
   description:
-    "We build health platforms and partner with health tech visionaries. Home of Cadence, the AI running coach.",
+    "Speed-to-lead calling, automatic follow-ups, AI receptionists and custom tools, wired into what you already use.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  /* Langue négociée par src/middleware.ts (FR si visiteur associable à la
+     France, EN sinon) — même URL, contenu négocié. */
+  const requestHeaders = await headers();
+  const locale = requestHeaders.get("x-ns-locale") === "fr" ? "fr" : "en";
+
   return (
-    <html lang="en">
-      <body
-        className={`${inter.variable} ${plusJakarta.variable} ${ibmPlexMono.variable} antialiased`}
-      >
+    <html lang={locale} className={`${figtree.variable} ${inter.variable}`}>
+      <body className="antialiased">
         {children}
         <LinkedInInsightTag />
         <Analytique />
