@@ -302,9 +302,11 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .services-sec .sec-head{padding-bottom:56px}
 .svc-band{position:relative;background:var(--section-gray);border-top:1px solid var(--border);padding:88px 0}
 .svc-band:last-child{border-bottom:1px solid var(--border)}
-.svc-grid{max-width:1280px;margin:0 auto;padding:0 32px;display:grid;
+/* Meme largeur utile que le titre de section : container-wide (1600px, 32px)
+   + le retrait lateral de sec-head (40px) = 72px de gouttiere. */
+.svc-grid{max-width:1600px;margin:0 auto;padding:0 72px;display:grid;
   grid-template-columns:minmax(0,1fr) minmax(0,1.18fr);gap:28px 72px;align-items:center}
-.svc-head{max-width:480px}
+.svc-head{max-width:560px}
 .svc-head .status{margin-bottom:18px;font-size:15px}
 .svc-h{font-size:32px;line-height:1.2;letter-spacing:-.02em;color:var(--gray-12)}
 .svc-p{margin-top:18px;font-size:20px;line-height:1.4;letter-spacing:-.02em;font-weight:500;color:var(--gray-40);text-wrap:pretty}
@@ -558,7 +560,7 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
   .services-sec{padding:88px 0 0}
   .services-sec .sec-head{padding-bottom:40px}
   .svc-band{padding:60px 0}
-  .svc-grid{grid-template-columns:1fr;gap:32px}
+  .svc-grid{grid-template-columns:1fr;gap:32px;padding:0 44px}
   .svc-grid.flip .svc-media-wrap{order:0}
   .svc-head{max-width:640px}
   .svc-h{font-size:26px}
