@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<!--
+  Variation C — design system extracted from https://phrasso.com/ (fetched 2026-08-30).
+  Exact tokens taken from their compiled Tailwind v4 CSS (/_next/static/immutable/chunks/*.css):
+    ink #040406 · deep bg #090805 · surface #131313 · panel #18181a · paper #ececdc
+    gold #bda277 · orange #ff6a06 · blue #0676ff · smoke #c7c9d1 · destructive #f76464
+    hairlines: white/12 on dark, ink/12 on paper · radius: 0 everywhere (rounded-none)
+    buttons: h-44/36px, px-28px, sharp, white-on-ink primary (hover #e3e4e9),
+    white/10 + backdrop-blur(5px) secondary (hover white/17); ink primary on paper (hover #1c1d22)
+  FONT APPROXIMATION: phrasso's headings use "aktiv-grotesk" (Adobe Typekit, proprietary,
+  weight 400). Closest Google Font substitute used here: "Archivo" (neo-grotesque, similar
+  neutral skeleton and tight apertures), weight 400. Body font Inter and mono font Geist Mono
+  are the genuine fonts phrasso uses (both available on Google Fonts).
+  ASSET APPROXIMATION: their hero/card photographic textures (warm blurred webp images) are
+  recreated with CSS radial-gradient washes + an inline SVG noise texture (they overlay
+  section-noise.svg at opacity .18 — same opacity used here).
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variation C — phrasso | NativeSquare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Geist+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#040406; --deep:#090805; --surface:#131313; --panel:#18181a; --paper:#ececdc;
+    --gold:#bda277; --orange:#ff6a06; --blue:#0676ff; --smoke:#c7c9d1; --destructive:#f76464;
+    --line-dark:rgba(255,255,255,.12); --line-paper:rgba(4,4,6,.12);
+    --font-heading:'Archivo','Inter',ui-sans-serif,system-ui,sans-serif;
+    --font-body:'Inter',ui-sans-serif,system-ui,sans-serif;
+    --font-mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --noise:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--ink);color:#fff;font-family:var(--font-body);letter-spacing:-0.02em;-webkit-font-smoothing:antialiased;overflow-x:clip}
+  h1,h2{font-family:var(--font-heading);font-weight:400;letter-spacing:0}
+  a{text-decoration:none;color:inherit}
+  ul{list-style:none}
+  img{max-width:100%}
+
+  .container{max-width:1344px;margin:0 auto;padding:0 32px;position:relative;z-index:10}
+  @media(max-width:767px){.container{padding:0 20px}}
+
+  /* ===== signature: full-height vertical hairline rails ===== */
+  .region{position:relative}
+  .rails{position:absolute;inset:0;pointer-events:none;z-index:5}
+  .rails::before{content:"";position:absolute;top:0;bottom:0;left:50%;transform:translateX(-50%);
+    width:min(1282px,calc(100% - 62px));border-left:1px solid var(--line-dark);border-right:1px solid var(--line-dark)}
+  .paper-region .rails::before{border-color:var(--line-paper)}
+  @media(max-width:767px){.rails::before{width:calc(100% - 38px)}}
+
+  /* full-bleed horizontal hairline */
+  .rule{position:absolute;left:50%;transform:translateX(-50%);width:100vw;height:1px;background:var(--line-dark);pointer-events:none}
+
+  /* signature: giant quarter-circle arc peeking from the side of a card row */
+  .arc{position:absolute;top:-1px;right:calc(100% + 1px);height:calc(100% + 2px);width:223px;overflow:hidden;opacity:.12;pointer-events:none;display:none}
+  .arc span{position:absolute;top:0;right:0;height:100%;aspect-ratio:1/1;border-radius:50%;border:1px solid #fff}
+  .paper-region .arc span{border-color:var(--ink)}
+  @media(min-width:1280px){.arc{display:block}}
+
+  /* ===== type ===== */
+  .kicker{font-size:16px;line-height:1.125;font-weight:500;letter-spacing:-0.02em;color:var(--gold)}
+  .paper-region .kicker{color:var(--orange)}
+  .h-display{font-size:clamp(42px,5vw,72px);line-height:1;text-wrap:balance}
+  .h-mid{font-size:clamp(36px,3.2vw,44px);line-height:1.125}
+  .mono-label{font-family:var(--font-mono);font-size:12px;line-height:1;font-weight:500;letter-spacing:0.02em;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px}
+  .mono-label .sq{width:8px;height:8px;flex-shrink:0}
+  .lead{font-size:18px;line-height:1.5;letter-spacing:-0.02em;color:rgba(255,255,255,.6)}
+  .lead strong{font-weight:500;color:#fff}
+
+  /* ===== buttons — sharp corners, phrasso spec ===== */
+  .btn{position:relative;display:inline-flex;width:fit-content;align-items:center;justify-content:center;gap:4px;
+    height:44px;padding:0 28px;border-radius:0;border:0;cursor:pointer;
+    font-family:var(--font-body);font-size:16px;line-height:1;font-weight:500;letter-spacing:-0.02em;white-space:nowrap;
+    background:#fff;color:var(--ink);transition:color .2s ease-out,background-color .2s ease-out}
+  .btn:hover{background:#e3e4e9}
+  .btn-ghost{background:rgba(255,255,255,.1);color:#fff;backdrop-filter:blur(5px)}
+  .btn-ghost:hover{background:rgba(255,255,255,.17)}
+  .btn-sm{height:36px;padding:0 18px;font-size:14px}
+  .btn-ink{background:var(--ink);color:#fff}
+  .btn-ink:hover{background:#1c1d22}
+  .btn-paper-ghost{background:rgba(4,4,6,.1);color:var(--ink);backdrop-filter:blur(5px)}
+  .btn-paper-ghost:hover{background:rgba(4,4,6,.17)}
+  .btn-full{width:100%;height:36px;font-size:16px}
+
+  /* ===== header ===== */
+  header{position:sticky;top:0;z-index:50;height:64px;width:100%;
+    background:rgba(4,4,6,.72);backdrop-filter:blur(16px);border-bottom:1px solid var(--line-dark);
+    transition:background-color .3s ease-out,border-color .3s ease-out}
+  .nav{height:64px;display:flex;align-items:center;justify-content:space-between}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand img{width:24px;height:24px;display:block}
+  .brand span{font-family:var(--font-heading);font-size:19px;letter-spacing:-0.01em;color:#fff}
+  @media(max-width:767px){header,.nav{height:52px}}
+
+  /* ===== hero ===== */
+  .hero-region{background:var(--deep)}
+  .hero-wash{position:absolute;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      radial-gradient(ellipse 52% 37% at 78% 18%, rgba(132,121,110,.30) 0%, rgba(88,78,69,.18) 42%, rgba(9,8,5,0) 78%),
+      radial-gradient(ellipse 48% 35% at 30% 40%, rgba(111,103,95,.16) 0%, rgba(65,59,53,.10) 47%, rgba(9,8,5,0) 80%),
+      radial-gradient(ellipse 44% 38% at 100% 62%, rgba(75,84,88,.18) 0%, rgba(41,48,51,.10) 48%, rgba(9,8,5,0) 80%),
+      linear-gradient(180deg, rgba(9,8,5,0) 55%, #090805 100%)}
+  .hero-noise{position:absolute;inset:0;pointer-events:none;z-index:1;background-image:var(--noise);background-repeat:repeat;opacity:.18;
+    mask-image:linear-gradient(to bottom,transparent 0,#000 192px);-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 192px)}
+  .hero{position:relative;padding:209px 0 0;color:#fff}
+  .hero h1{max-width:890px;font-size:clamp(38px,4vw,56px);line-height:1.05;text-wrap:balance}
+  .hero .lead{margin-top:24px;max-width:560px}
+  .hero-ctas{margin-top:48px;display:flex;flex-wrap:wrap;align-items:center;gap:14px}
+  @media(max-width:767px){.hero{padding-top:148px}}
+
+  /* hero media panel (their launch-video panel) hosting the agent */
+  .hero-media{position:relative;margin-top:72px}
+  .hero-media .rule.top{top:-1px}
+  .hero-media .rule.bottom{top:100%}
+  .agent-panel{position:relative;z-index:10;width:100%;min-height:340px;background:var(--panel);overflow:hidden;
+    display:flex;align-items:center;justify-content:center;padding:48px 32px}
+  .agent-panel::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:
+      radial-gradient(ellipse 54% 48% at 18% 88%, rgba(148,145,141,.28) 0%, rgba(92,87,82,.16) 42%, rgba(9,8,5,0) 82%),
+      radial-gradient(ellipse 44% 40% at 92% 10%, rgba(189,162,119,.14) 0%, rgba(9,8,5,0) 75%)}
+  .agent-panel::after{content:"";position:absolute;inset:0;pointer-events:none;background-image:var(--noise);background-repeat:repeat;opacity:.14}
+  .agent-card{position:relative;z-index:2;width:min(720px,100%);display:flex;align-items:center;justify-content:space-between;gap:24px;
+    border:1px solid rgba(255,255,255,.2);background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+    box-shadow:0 4px 32px rgba(0,0,0,.15);backdrop-filter:blur(17.5px);padding:28px 32px}
+  .agent-left{display:flex;align-items:center;gap:16px}
+  .agent-avatar{width:56px;height:56px;flex-shrink:0;background:var(--orange);color:var(--ink);
+    display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:22px;font-weight:500}
+  .agent-name{font-size:22px;line-height:1.25;font-weight:500;letter-spacing:-0.02em}
+  .agent-role{margin-top:6px;font-family:var(--font-mono);font-size:12px;line-height:1;font-weight:500;letter-spacing:0.02em;text-transform:uppercase;color:var(--smoke)}
+  .call-pill{display:flex;align-items:center;gap:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);
+    backdrop-filter:blur(5px);padding:12px 16px;font-family:var(--font-mono);font-size:12px;font-weight:500;
+    letter-spacing:0.02em;text-transform:uppercase;color:#fff;white-space:nowrap}
+  .pulse{width:8px;height:8px;flex-shrink:0;background:#4ade80;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.4)}70%{box-shadow:0 0 0 8px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+  @media(max-width:767px){.agent-card{flex-direction:column;align-items:flex-start;gap:20px;padding:24px 20px}}
+
+  /* editorial mono footnotes under the hero (their "VOL. 01 / EST. 2026") */
+  .hero-foot{display:flex;align-items:center;justify-content:space-between;padding:20px 4px 24px;
+    font-family:var(--font-mono);font-size:14px;line-height:1.5;letter-spacing:-0.02em;color:rgba(255,255,255,.32)}
+
+  /* ===== pain — dark #131313 surface with washes + noise ===== */
+  .pain-region{background:var(--surface)}
+  .pain-wash{position:absolute;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      radial-gradient(ellipse 52% 37% at 22% 34%, rgba(132,121,110,.28) 0%, rgba(88,78,69,.18) 42%, rgba(9,8,5,0) 78%),
+      radial-gradient(ellipse 48% 35% at 53% 35%, rgba(111,103,95,.2) 0%, rgba(65,59,53,.13) 47%, rgba(9,8,5,0) 80%),
+      radial-gradient(ellipse 42% 38% at 101% 35%, rgba(75,84,88,.2) 0%, rgba(41,48,51,.12) 48%, rgba(9,8,5,0) 80%),
+      radial-gradient(ellipse 54% 38% at 5% 72%, rgba(148,145,141,.42) 0%, rgba(92,87,82,.28) 42%, rgba(9,8,5,0) 82%),
+      radial-gradient(ellipse 51% 34% at 44% 72%, rgba(111,106,101,.31) 0%, rgba(70,65,61,.18) 48%, rgba(9,8,5,0) 82%),
+      radial-gradient(ellipse 44% 36% at 101% 70%, rgba(68,76,80,.2) 0%, rgba(38,44,47,.12) 50%, rgba(9,8,5,0) 82%),
+      linear-gradient(180deg, #090805 0%, rgba(9,8,5,0) 22%, rgba(9,8,5,0) 72%, #090805 100%)}
+  .pain-noise{position:absolute;inset:0;pointer-events:none;z-index:1;background-image:var(--noise);background-repeat:repeat;opacity:.18}
+  .pain{position:relative;padding:135px 0 158px;color:#fff}
+  .pain h2{margin-top:16px;max-width:768px}
+  .pain-cards{position:relative;margin-top:64px}
+  .pain-cards .rule.top{top:-1px;opacity:1;background:rgba(255,255,255,.12)}
+  .pain-cards .rule.bottom{top:100%;background:rgba(255,255,255,.12)}
+  .pain-grid{position:relative;z-index:10;display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
+  .stat-card{position:relative;min-height:378px;overflow:hidden;padding:32px;color:var(--ink);display:flex;flex-direction:column}
+  .stat-card .card-top{display:flex;align-items:flex-start;justify-content:space-between}
+  .stat-card .mono-label{font-size:15px;color:rgba(11,12,14,.7)}
+  .stat-card .letter{margin:-12px -12px 0 0;width:24px;height:24px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    border:1px solid rgba(0,0,0,.4);background:rgba(0,0,0,.1);backdrop-filter:blur(4px);
+    font-family:var(--font-mono);font-size:15px;line-height:1;font-weight:500;text-transform:uppercase;color:rgba(4,4,6,.5)}
+  .stat-card h3{margin-top:auto;padding-top:96px;font-size:clamp(26px,2.4vw,32px);line-height:1.25;font-weight:500;letter-spacing:-0.02em;font-family:var(--font-body)}
+  .stat-card p{margin-top:14px;font-size:20px;line-height:1.375;letter-spacing:-0.02em}
+  .stat-card p strong{font-weight:600}
+  .bg-a{background:linear-gradient(148.508deg,#f1f1f1 53.544%,#b9b9b9 100%)}
+  .bg-b{background:radial-gradient(ellipse 80% 60% at 20% 0%, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 60%),linear-gradient(148.508deg,#d6c6a2 40%,#93805c 100%)}
+  .bg-c{background:linear-gradient(148.508deg,#e6e6e2 50%,#b4b6b8 100%)}
+  .sq-orange{background:var(--orange)} .sq-blue{background:var(--blue)} .sq-gold{background:var(--gold)}
+  .sq-dim{background:rgba(255,255,255,.3)}
+
+  /* ===== paper sections ===== */
+  .paper-region{background:var(--paper);color:var(--ink)}
+  .paper-section{position:relative;padding:96px 0 112px}
+  .paper-rule{border-top:1px solid var(--line-paper);padding-top:32px}
+  .paper-section h2{margin-top:16px;max-width:736px}
+
+  /* benefits — their "Always included:" checklist pattern */
+  .benefits-grid{margin-top:52px;padding-top:31px;border-top:1px solid var(--line-paper);
+    display:grid;grid-template-columns:192px 1fr;gap:20px}
+  .benefits-label{padding-top:5px;font-family:var(--font-mono);font-size:12px;line-height:1;font-weight:500;letter-spacing:0.02em;text-transform:uppercase;color:#6b6c60}
+  .benefits-list{display:flex;flex-direction:column;gap:20px}
+  .benefits-list li{display:flex;align-items:center;gap:10px;font-size:20px;line-height:1.5;letter-spacing:-0.02em}
+  .check{flex-shrink:0;width:18px;height:18px}
+  @media(max-width:767px){.benefits-grid{grid-template-columns:1fr}.benefits-list li{font-size:18px;align-items:flex-start}.check{margin-top:5px}}
+
+  /* workflow — their numbered 01/02/03 pattern */
+  .steps{margin-top:64px;display:grid;grid-template-columns:repeat(4,1fr);gap:44px 32px}
+  .step-num{font-family:var(--font-mono);font-size:28px;line-height:1.25;letter-spacing:-0.02em;color:var(--orange)}
+  .step h3{margin-top:12px;font-size:clamp(22px,1.8vw,26px);line-height:1.25;font-weight:500;letter-spacing:-0.02em;font-family:var(--font-body)}
+  .step p{margin-top:10px;max-width:512px;font-size:16px;line-height:1.5;letter-spacing:-0.02em;color:rgba(4,4,6,.72)}
+
+  /* ===== comparison — dark ink ===== */
+  .dark-region{background:var(--deep)}
+  .dark-section{position:relative;padding:120px 0;color:#fff}
+  .dark-section h2{margin-top:16px}
+  .compare-grid{margin-top:64px;display:grid;grid-template-columns:1fr 1fr;gap:32px}
+  .compare-card{position:relative;border:1px solid rgba(255,255,255,.2);
+    background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+    box-shadow:0 4px 32px rgba(0,0,0,.15);backdrop-filter:blur(17.5px);padding:32px}
+  .badge-brand{display:inline-flex;align-items:center;border:1px solid rgba(255,255,255,.4);background:var(--gold);
+    color:var(--ink);padding:8px 12px;font-size:16px;line-height:1;font-weight:500;letter-spacing:-0.01em;text-transform:uppercase}
+  .badge-dim{display:inline-flex;background:rgba(255,255,255,.15);color:#fff;padding:8px 12px;
+    font-size:16px;line-height:1;font-weight:500;letter-spacing:-0.01em;text-transform:uppercase}
+  .compare-card ul{margin-top:24px}
+  .compare-card li{display:flex;gap:12px;padding:14px 0;font-size:16px;line-height:1.375;letter-spacing:-0.02em;border-top:1px solid var(--line-dark)}
+  .compare-card.win li{color:#fff}
+  .compare-card.lose li{color:rgba(255,255,255,.6)}
+  .compare-card li b{font-family:var(--font-mono);font-weight:500}
+  .compare-card.win li b{color:var(--gold)}
+  .compare-card.lose li b{color:var(--destructive)}
+  .compare-cta{margin-top:56px;display:flex;justify-content:center}
+
+  /* ===== offers — their pricing-tier cards ===== */
+  .offers-grid{margin-top:73px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .tier{position:relative;display:flex;flex-direction:column;overflow:hidden;padding:20px;
+    background:rgba(4,4,6,.5);backdrop-filter:blur(5px);color:#fff;transition:background-color .3s}
+  .tier .mono-label{color:var(--smoke)}
+  .tier h3{margin-top:36px;font-size:clamp(26px,2.2vw,32px);line-height:1.375;font-weight:500;letter-spacing:-0.025em;font-family:var(--font-body)}
+  .tier .tag{margin-top:4px;font-size:16px;line-height:1.375;letter-spacing:-0.025em;color:var(--smoke)}
+  .tier ul{margin:24px 0 28px}
+  .tier li{display:flex;align-items:flex-start;gap:10px;padding:10px 0;font-size:15px;line-height:1.45;letter-spacing:-0.02em;border-top:1px solid var(--line-dark);color:rgba(255,255,255,.8)}
+  .tier li .check{margin-top:3px;width:16px;height:16px}
+  .tier .btn{margin-top:auto}
+  .tier.active{background:var(--paper);color:var(--ink)}
+  .tier.active .mono-label{color:rgba(11,12,14,.7)}
+  .tier.active .tag{color:rgba(4,4,6,.6)}
+  .tier.active li{border-top-color:var(--line-paper);color:rgba(4,4,6,.8)}
+
+  /* ===== FAQ — paper, editorial rows ===== */
+  .faq-grid{margin-top:52px;padding-top:31px;border-top:1px solid var(--line-paper);
+    display:grid;grid-template-columns:192px 1fr;gap:20px}
+  .faq-label{padding-top:5px;font-family:var(--font-mono);font-size:12px;line-height:1;font-weight:500;letter-spacing:0.02em;text-transform:uppercase;color:#6b6c60}
+  .faq-list details{border-bottom:1px solid var(--line-paper)}
+  .faq-list summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:24px;
+    padding:22px 0;font-size:20px;line-height:1.375;font-weight:500;letter-spacing:-0.02em}
+  .faq-list summary::-webkit-details-marker{display:none}
+  .faq-list summary::after{content:"+";font-family:var(--font-mono);font-size:20px;font-weight:400;color:var(--orange);flex-shrink:0}
+  .faq-list details[open] summary::after{content:"−"}
+  .faq-list details p{padding:0 0 24px;max-width:640px;font-size:16px;line-height:1.5;letter-spacing:-0.02em;color:rgba(4,4,6,.72)}
+  @media(max-width:767px){.faq-grid{grid-template-columns:1fr}.faq-list summary{font-size:18px}}
+
+  /* ===== final CTA + footer — deep bg, washes, noise ===== */
+  .final-region{background:var(--deep)}
+  .final-wash{position:absolute;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      radial-gradient(ellipse 54% 42% at 8% 92%, rgba(148,145,141,.34) 0%, rgba(92,87,82,.2) 42%, rgba(9,8,5,0) 82%),
+      radial-gradient(ellipse 48% 38% at 62% 78%, rgba(132,121,110,.22) 0%, rgba(88,78,69,.12) 47%, rgba(9,8,5,0) 80%),
+      radial-gradient(ellipse 40% 34% at 100% 30%, rgba(75,84,88,.18) 0%, rgba(9,8,5,0) 80%),
+      linear-gradient(180deg, #090805 0%, rgba(9,8,5,0) 30%)}
+  .final-noise{position:absolute;inset:0;pointer-events:none;z-index:1;background-image:var(--noise);background-repeat:repeat;opacity:.14}
+  .final{position:relative;padding:160px 0 210px;color:#fff}
+  .final h2{margin-top:16px;max-width:832px;font-size:clamp(40px,5vw,68px);line-height:1;text-wrap:balance}
+  .final .btn{margin-top:56px}
+  footer{position:relative;z-index:10;color:#fff}
+  .foot{border-top:1px solid var(--line-dark);padding:32px 0 44px;
+    display:flex;align-items:flex-start;justify-content:space-between;gap:32px}
+  .foot-left .brand span{font-size:17px}
+  .foot-left p{margin-top:16px;font-size:14px;line-height:1;font-weight:500;letter-spacing:-0.025em;color:rgba(255,255,255,.4)}
+  .foot-links{display:flex;gap:32px}
+  .foot-links a{font-size:15px;line-height:1.25;letter-spacing:-0.02em;color:rgba(255,255,255,.6);transition:color .2s}
+  .foot-links a:hover{color:#fff}
+
+  /* ===== responsive — single column under 1024px ===== */
+  @media(max-width:1023px){
+    .pain-grid,.compare-grid,.offers-grid,.steps{grid-template-columns:1fr}
+    .stat-card{min-height:0}
+    .stat-card h3{padding-top:72px}
+    .pain{padding:96px 0 112px}
+    .dark-section,.paper-section{padding:80px 0 96px}
+    .final{padding:112px 0 140px}
+    .foot{flex-direction:column;gap:24px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <a class="brand" href="#"><img src="../public/hero/ns-logo.png" alt=""><span>NativeSquare</span></a>
+    <a class="btn btn-sm" href="#">Book a Call</a>
+  </div>
+</header>
+
+<!-- 1. HERO -->
+<div class="region hero-region">
+  <div class="hero-wash" aria-hidden="true"></div>
+  <div class="hero-noise" aria-hidden="true"></div>
+  <div class="rails" aria-hidden="true"></div>
+  <section class="hero">
+    <div class="container">
+      <h1>Innovative AI Solutions for Forward-Thinking Businesses</h1>
+      <p class="lead">Focus on running your business while our AI receptionists and sales agents handle <strong>every inbound and outbound call.</strong></p>
+      <div class="hero-ctas">
+        <a class="btn" href="#">Book a Call</a>
+        <a class="btn btn-ghost" href="#pain">Learn More</a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="hero-media">
+        <div class="rule top" aria-hidden="true"></div>
+        <div class="rule bottom" aria-hidden="true"></div>
+        <div class="agent-panel">
+          <div class="agent-card">
+            <div class="agent-left">
+              <div class="agent-avatar">E</div>
+              <div>
+                <div class="agent-name">Emma</div>
+                <div class="agent-role">Receptionist Agent</div>
+              </div>
+            </div>
+            <div class="call-pill"><span class="pulse"></span> Incoming call · answered in 0.8s</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-foot" aria-hidden="true">
+        <span>NATIVESQUARE</span>
+        <span>EST. 2026</span>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 2. PAIN -->
+<div class="region pain-region" id="pain">
+  <div class="pain-wash" aria-hidden="true"></div>
+  <div class="pain-noise" aria-hidden="true"></div>
+  <div class="rails" aria-hidden="true"></div>
+  <section class="pain">
+    <div class="container">
+      <p class="kicker">The problem</p>
+      <h2 class="h-display">Stop losing money every day</h2>
+      <div class="pain-cards">
+        <div class="rule top" aria-hidden="true"></div>
+        <div class="rule bottom" aria-hidden="true"></div>
+        <div class="arc" aria-hidden="true"><span></span></div>
+        <div class="pain-grid">
+          <article class="stat-card bg-a">
+            <div class="card-top">
+              <span class="mono-label"><span class="sq sq-blue"></span></span>
+              <span class="letter">A</span>
+            </div>
+            <h3>Questions left hanging</h3>
+            <p>Your customers want an immediate answer, not a voicemail box.</p>
+          </article>
+          <article class="stat-card bg-b">
+            <div class="card-top">
+              <span class="mono-label"><span class="sq sq-orange"></span></span>
+              <span class="letter">B</span>
+            </div>
+            <h3>Missed calls = missed revenue</h3>
+            <p>Every unanswered call is a job walking straight to your <strong>competitor.</strong></p>
+          </article>
+          <article class="stat-card bg-c">
+            <div class="card-top">
+              <span class="mono-label"><span class="sq sq-gold"></span></span>
+              <span class="letter">C</span>
+            </div>
+            <h3>Scheduling headaches</h3>
+            <p>Manual appointment booking is slow, error-prone and eats your day.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 3. BENEFITS -->
+<div class="region paper-region">
+  <div class="rails" aria-hidden="true"></div>
+  <section class="paper-section">
+    <div class="container">
+      <div class="paper-rule">
+        <p class="kicker">What you get</p>
+        <h2 class="h-mid">The perfect workflow for your business</h2>
+      </div>
+      <div class="benefits-grid">
+        <p class="benefits-label">Always on:</p>
+        <ul class="benefits-list">
+          <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> 24/7 availability</li>
+          <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> Seamless appointment booking</li>
+          <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> Automated pricing estimates</li>
+          <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> Lower costs, higher efficiency</li>
+          <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> Instant customer assistance</li>
+          <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> Lead nurturing &amp; follow-ups</li>
+          <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> Consistent service quality</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. WORKFLOW -->
+  <section class="paper-section" style="padding-top:0;">
+    <div class="container">
+      <div class="paper-rule">
+        <p class="kicker">How it works</p>
+        <h2 class="h-mid">A fully automated workflow</h2>
+      </div>
+      <div class="steps">
+        <article class="step">
+          <p class="step-num">01</p>
+          <h3>Customer calls</h3>
+          <p>The AI receptionist answers instantly and understands what the customer needs through natural conversation.</p>
+        </article>
+        <article class="step">
+          <p class="step-num">02</p>
+          <h3>Intelligent routing</h3>
+          <p>Appointments get scheduled, questions get answered, sales leads get qualified — automatically.</p>
+        </article>
+        <article class="step">
+          <p class="step-num">03</p>
+          <h3>Seamless integration</h3>
+          <p>Every interaction syncs with your CRM, updates your calendar and surfaces the insights that matter.</p>
+        </article>
+        <article class="step">
+          <p class="step-num">04</p>
+          <h3>Continuous improvement</h3>
+          <p>Your agents get sharper over time with ongoing training, feedback and monthly optimizations.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 5. COMPARE -->
+<div class="region dark-region">
+  <div class="rails" aria-hidden="true"></div>
+  <section class="dark-section">
+    <div class="container">
+      <p class="kicker">The math</p>
+      <h2 class="h-display">NativeSquare AI vs. traditional hiring</h2>
+      <div class="compare-grid">
+        <div class="compare-card win">
+          <h3 class="badge-brand">With NativeSquare AI</h3>
+          <ul>
+            <li><b>✓</b> 24/7, never off duty</li>
+            <li><b>✓</b> Instant replies, zero hold time</li>
+            <li><b>✓</b> No salaries, no training costs</li>
+            <li><b>✓</b> Unlimited simultaneous calls</li>
+            <li><b>✓</b> Same quality on every single call</li>
+          </ul>
+        </div>
+        <div class="compare-card lose">
+          <h3 class="badge-dim">Traditional hiring</h3>
+          <ul>
+            <li><b>✕</b> Limited to business hours</li>
+            <li><b>✕</b> Customers wait on hold</li>
+            <li><b>✕</b> Salaries, overhead, turnover</li>
+            <li><b>✕</b> One call at a time</li>
+            <li><b>✕</b> Quality varies by employee</li>
+          </ul>
+        </div>
+      </div>
+      <div class="compare-cta"><a class="btn" href="#">Book a Call</a></div>
+    </div>
+  </section>
+
+  <!-- 6. OFFERS -->
+  <section class="dark-section" style="padding-top:0;">
+    <div class="container">
+      <p class="kicker">The systems</p>
+      <h2 class="h-mid">Custom AI solutions, tailored to your business</h2>
+      <div class="offers-grid">
+        <article class="tier">
+          <p class="mono-label"><span class="sq sq-dim"></span>Inbound</p>
+          <h3>Inbound voice agents</h3>
+          <p class="tag">Handle customer inquiries and bookings automatically.</p>
+          <ul>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#bda277" stroke-width="1.8" stroke-linecap="square"/></svg> 24/7 AI receptionist answering every call</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#bda277" stroke-width="1.8" stroke-linecap="square"/></svg> Intelligent call routing &amp; FAQ handling</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#bda277" stroke-width="1.8" stroke-linecap="square"/></svg> Custom call flows &amp; escalation logic</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#bda277" stroke-width="1.8" stroke-linecap="square"/></svg> CRM &amp; scheduling system integration</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#bda277" stroke-width="1.8" stroke-linecap="square"/></svg> Sentiment analysis &amp; customer insights</li>
+          </ul>
+          <a class="btn btn-ghost btn-full" href="#">Book a Call</a>
+        </article>
+        <article class="tier active">
+          <p class="mono-label"><span class="sq sq-orange"></span>Outbound</p>
+          <h3>Outbound voice agents</h3>
+          <p class="tag">Automate calls for engagement, follow-ups and sales.</p>
+          <ul>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> Automated call campaigns for leads &amp; follow-ups</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> Custom scripting &amp; personalization</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> CRM integration &amp; workflow automation</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> Real-time analytics &amp; performance tracking</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#040406" stroke-width="1.8" stroke-linecap="square"/></svg> AI-driven responses in dynamic conversations</li>
+          </ul>
+          <a class="btn btn-ink btn-full" href="#">Book a Call</a>
+        </article>
+        <article class="tier">
+          <p class="mono-label"><span class="sq sq-dim"></span>Custom</p>
+          <h3>Custom workflows</h3>
+          <p class="tag">For businesses that want tailored AI to streamline their operations.</p>
+          <ul>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#bda277" stroke-width="1.8" stroke-linecap="square"/></svg> In-depth review of your business pain points</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#bda277" stroke-width="1.8" stroke-linecap="square"/></svg> Analysis of automation opportunities</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#bda277" stroke-width="1.8" stroke-linecap="square"/></svg> Custom roadmap for AI implementation</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#bda277" stroke-width="1.8" stroke-linecap="square"/></svg> Tool &amp; integration recommendations</li>
+            <li><svg class="check" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M2.5 9.5l4 4 9-9" stroke="#bda277" stroke-width="1.8" stroke-linecap="square"/></svg> Follow-up strategy session for execution</li>
+          </ul>
+          <a class="btn btn-ghost btn-full" href="#">Contact Sales</a>
+        </article>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 7. FAQ -->
+<div class="region paper-region">
+  <div class="rails" aria-hidden="true"></div>
+  <section class="paper-section">
+    <div class="container">
+      <div class="paper-rule">
+        <p class="kicker">FAQ</p>
+        <h2 class="h-mid">Questions you may have</h2>
+      </div>
+      <div class="faq-grid">
+        <p class="faq-label">12 answers:</p>
+        <div class="faq-list">
+          <details><summary>What exactly does NativeSquare do?</summary><p>We build and run AI voice agents that answer your calls, book your appointments and follow up with your leads — plugged into your existing phone number, calendar and CRM.</p></details>
+          <details><summary>How do you make sure the AI doesn't mess up a conversation?</summary><p>Every agent is trained on your services, prices and policies, tested against real scenarios before launch, and hands off to a human the moment a call goes beyond its scope.</p></details>
+          <details><summary>Do I need to change my phone system or CRM?</summary><p>No. We plug into what you already use — your number stays the same, your CRM stays the same.</p></details>
+          <details><summary>How much does this cost?</summary><p>A one-time setup fee plus a monthly retainer, sized to your call volume. We price it on a call, after we understand what missed calls currently cost you.</p></details>
+          <details><summary>What ROI should I expect, and how fast?</summary><p>Most clients see the effect within the first weeks: calls that used to go to voicemail become booked appointments. We track everything so you can read the numbers yourself.</p></details>
+          <details><summary>Do you offer support and training?</summary><p>Yes. Setup, team training and ongoing support are part of every engagement, with a monthly optimization pass.</p></details>
+          <details><summary>Can I customize how the AI sounds and speaks?</summary><p>Voice, tone, greeting, vocabulary — all of it is tailored to your business. Your customers hear your company, not a robot.</p></details>
+          <details><summary>What if I want to go back to human-only calls?</summary><p>You can, anytime. Nothing about your phone system is locked in.</p></details>
+          <details><summary>How does this handle the specific challenges of my business?</summary><p>Every deployment starts with a discovery call where we map your actual call flows and pain points. The agent is built around them, not from a template.</p></details>
+          <details><summary>What measurable improvements can I expect?</summary><p>Answer rate, time-to-answer, booked appointments, after-hours captures, follow-up completion — all measured, all reported.</p></details>
+          <details><summary>How does it integrate with our current systems?</summary><p>Through native integrations with the main CRMs, calendars and phone systems — and custom connections when needed.</p></details>
+          <details><summary>Will it scale as we grow?</summary><p>The same agent handles ten calls a day or ten at the same time. Adding locations, lines or languages is configuration, not a rebuild.</p></details>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- 8. FINAL CTA + FOOTER -->
+<div class="region final-region">
+  <div class="final-wash" aria-hidden="true"></div>
+  <div class="final-noise" aria-hidden="true"></div>
+  <div class="rails" aria-hidden="true"></div>
+  <section class="final">
+    <div class="container">
+      <p class="kicker">Let's talk</p>
+      <h2>Book a free consultation</h2>
+      <a class="btn" href="#">Book a Call</a>
+    </div>
+  </section>
+  <footer>
+    <div class="container">
+      <div class="foot">
+        <div class="foot-left">
+          <a class="brand" href="#"><img src="../public/hero/ns-logo.png" alt=""><span>NativeSquare</span></a>
+          <p>© NativeSquare</p>
+        </div>
+        <div class="foot-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>

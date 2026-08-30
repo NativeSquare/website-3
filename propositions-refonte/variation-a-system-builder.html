@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<!--
+  Variation A — design system replicated from https://system-builder.aura.build/ ("Buildr — The AI Builder OS")
+  Extracted tokens (verbatim from the template's :root):
+    bg-main:#f6f5f2  bg-surface:#f0efeb  bg-card:#fbfaf8  bg-card-hover:#f6f5f2  border:#e6e3dd
+    text:#121826  text-muted:#4b5563  text-subtle:#6b7280
+    accent:#4f46e5  accent-hover:#4338ca  accent-soft:#eef2ff  success:#10b981
+    shadow: 0 1px 2px rgba(15,23,42,.06), 0 8px 24px rgba(15,23,42,.06)
+  Fonts: Oswald (display, uppercase, tight tracking) + Inter (body) — both on Google Fonts, no substitution needed.
+         Mono accents use the template's Tailwind default mono stack (ui-monospace / Menlo / Consolas).
+  Approximations:
+    - The template's hero uses a Unicorn Studio WebGL background (external script) → approximated with static radial gradients.
+    - Iconify web-component icons → replaced with unicode glyphs / inline elements (template loads an external JS CDN, forbidden here).
+    - GSAP + ScrollTrigger reveal animations → replaced with a small inline IntersectionObserver + CSS transitions.
+    - Template loads Oswald 300/400/500 and synthesizes 600; here 600 is loaded explicitly for identical rendering.
+-->
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variation A — system-builder | NativeSquare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-main:#f6f5f2;
+  --bg-surface:#f0efeb;
+  --bg-card:#fbfaf8;
+  --bg-card-hover:#f6f5f2;
+  --border:#e6e3dd;
+  --shadow:0 1px 2px rgba(15,23,42,0.06),0 8px 24px rgba(15,23,42,0.06);
+  --text:#121826;
+  --text-muted:#4b5563;
+  --text-subtle:#6b7280;
+  --accent:#4f46e5;
+  --accent-hover:#4338ca;
+  --accent-soft:#eef2ff;
+  --success:#10b981;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Inter',sans-serif;
+  background-color:var(--bg-main);
+  color:var(--text-muted);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  font-size:16px;
+}
+img{max-width:100%;}
+a{text-decoration:none;color:inherit;}
+ul{list-style:none;}
+::selection{background:var(--accent);color:#ffffff;}
+.font-display{font-family:'Oswald',sans-serif;}
+.mono{font-family:var(--mono);}
+
+/* ── Fixed noise texture (signature element) ─────────────────────── */
+.noise-overlay{
+  position:fixed;inset:0;pointer-events:none;z-index:50;opacity:.02;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* ── Section system ──────────────────────────────────────────────── */
+.section{position:relative;overflow:hidden;padding:6rem 0 8rem;}
+.section--main{background-color:var(--bg-main);}
+.section--surface{background-color:var(--bg-surface);}
+.section-divider{border-top:1px solid rgba(230,227,221,0.55);}
+.surface-seam{
+  position:absolute;left:0;right:0;bottom:-1px;height:22px;pointer-events:none;z-index:2;
+  background:linear-gradient(to bottom,
+    rgba(15,23,42,0.055) 0%,
+    rgba(15,23,42,0.028) 18%,
+    rgba(15,23,42,0.012) 45%,
+    rgba(15,23,42,0.0) 78%);
+}
+.surface-seam::before{
+  content:"";position:absolute;left:0;right:0;top:0;height:1px;
+  background:rgba(255,255,255,0.55);opacity:0.5;
+}
+.spotlight{
+  position:absolute;top:0;left:0;right:0;height:400px;
+  background:radial-gradient(700px circle at top center, rgba(79,70,229,0.08), transparent 65%);
+  pointer-events:none;z-index:0;
+}
+.section-content{position:relative;z-index:10;max-width:80rem;margin:0 auto;padding:0 1.5rem;}
+.section-content--narrow{max-width:52rem;}
+
+/* ── Type ────────────────────────────────────────────────────────── */
+.eyebrow{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-bottom:1.5rem;}
+.eyebrow .dot{width:4px;height:4px;border-radius:9999px;background:var(--accent);flex-shrink:0;}
+.eyebrow span{
+  font-family:var(--mono);font-size:11px;font-weight:500;text-transform:uppercase;
+  letter-spacing:0.2em;color:var(--text-subtle);
+}
+.mono-label{
+  font-family:var(--mono);font-size:10px;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--text-subtle);
+}
+.mono-label--accent{color:var(--accent);}
+.display-h2{
+  font-family:'Oswald',sans-serif;font-weight:500;text-transform:uppercase;
+  letter-spacing:-0.05em;line-height:0.95;color:var(--text);
+  font-size:clamp(2.25rem,4.5vw,3.75rem);margin-bottom:1.5rem;
+}
+.display-h2 .accent{color:var(--accent);font-weight:600;}
+.section-header{max-width:56rem;margin:0 auto 4.5rem;text-align:center;}
+.section-header p.sub{
+  font-size:1rem;font-weight:300;line-height:1.65;color:var(--text-muted);
+  max-width:40rem;margin:0 auto;
+}
+
+/* ── Buttons ─────────────────────────────────────────────────────── */
+.btn-primary{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:0.75rem 2rem;background:var(--accent);color:#fff;
+  font-size:0.875rem;font-weight:600;letter-spacing:-0.01em;border-radius:0.25rem;
+  border:none;cursor:pointer;box-shadow:var(--shadow);
+  transition:all .3s;
+}
+.btn-primary:hover{background:var(--accent-hover);}
+.btn-secondary{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  padding:0.75rem 1.5rem;background:var(--bg-card);color:var(--text);
+  border:1px solid var(--border);font-size:0.875rem;font-weight:500;border-radius:0.25rem;
+  cursor:pointer;transition:all .3s;
+}
+.btn-secondary:hover{background:var(--bg-card-hover);}
+.btn-block{width:100%;}
+
+/* ── Navigation ──────────────────────────────────────────────────── */
+nav.site-nav{
+  position:fixed;top:0;width:100%;z-index:40;
+  background:rgba(251,250,248,0.9);
+  -webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  max-width:80rem;margin:0 auto;padding:0 1.5rem;height:4rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.brand{display:flex;align-items:center;gap:.65rem;cursor:pointer;}
+.brand img{width:28px;height:28px;border-radius:6px;display:block;}
+.brand span{
+  font-family:'Oswald',sans-serif;font-size:1.25rem;font-weight:500;
+  text-transform:uppercase;letter-spacing:-0.05em;color:var(--text);
+}
+.nav-cta{
+  font-size:0.75rem;padding:0.625rem 1.25rem;background:var(--accent);color:#fff;
+  font-weight:600;border-radius:0.25rem;letter-spacing:-0.01em;
+  transition:all .3s;box-shadow:var(--shadow);
+}
+.nav-cta:hover{background:var(--accent-hover);}
+
+/* ── Hero ────────────────────────────────────────────────────────── */
+.hero{
+  position:relative;overflow:hidden;z-index:10;
+  padding:9rem 1.5rem 6rem;text-align:center;
+  background:
+    radial-gradient(900px circle at 50% -10%, rgba(79,70,229,0.07), transparent 60%),
+    var(--bg-main);
+}
+.hero-inner{max-width:80rem;margin:0 auto;position:relative;display:flex;flex-direction:column;align-items:center;}
+.hero-glow{
+  position:absolute;top:-8rem;left:50%;transform:translateX(-50%);
+  width:600px;height:300px;max-width:90vw;border-radius:9999px;
+  background:rgba(79,70,229,0.10);filter:blur(100px);pointer-events:none;
+}
+.hero-content{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;width:100%;max-width:64rem;}
+.hero h1{
+  font-family:'Oswald',sans-serif;font-weight:500;text-transform:uppercase;
+  letter-spacing:-0.05em;line-height:0.95;color:var(--text);
+  font-size:clamp(2.5rem,6vw,4.5rem);margin-bottom:0.75rem;
+  filter:drop-shadow(0 1px 0 rgba(255,255,255,0.4));
+}
+.hero h1 .accent{color:var(--accent);font-weight:600;}
+.hero .lead{
+  color:var(--text-muted);font-size:clamp(1.05rem,2vw,1.25rem);font-weight:400;
+  letter-spacing:-0.01em;line-height:1.35;margin-bottom:2.5rem;max-width:38rem;
+}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:4rem;flex-wrap:wrap;}
+
+/* Window-chrome panel (signature element) — hosts the "Emma" agent */
+.win{
+  width:100%;max-width:56rem;margin:0 auto;border-radius:0.5rem;
+  border:1px solid var(--border);background:var(--bg-card);
+  box-shadow:var(--shadow);overflow:hidden;position:relative;text-align:left;
+}
+.win-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.75rem 1rem;border-bottom:1px solid var(--border);
+  background:rgba(251,250,248,0.7);
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+}
+.win-dots{display:flex;gap:0.375rem;}
+.win-dots i{
+  width:8px;height:8px;border-radius:9999px;display:block;
+  background:var(--bg-surface);border:1px solid var(--border);
+}
+.win-title{
+  font-family:var(--mono);font-size:10px;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--text-subtle);margin-left:0.5rem;
+}
+.win-tag{
+  font-family:var(--mono);font-size:9px;font-weight:600;color:var(--accent);
+  background:var(--accent-soft);padding:0.25rem 0.5rem;border-radius:0.25rem;
+  border:1px solid var(--border);text-transform:uppercase;letter-spacing:0.05em;
+}
+.win-body{position:relative;background:var(--bg-card);}
+.grid-bg{
+  position:absolute;inset:0;pointer-events:none;opacity:0.6;
+  background-image:
+    linear-gradient(to right, rgba(17,24,39,0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(17,24,39,0.06) 1px, transparent 1px);
+  background-size:2rem 2rem;
+}
+.agent-strip{
+  position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;
+  gap:1.5rem;padding:2.5rem;
+}
+.agent-left{display:flex;align-items:center;gap:1rem;}
+.agent-avatar{
+  width:52px;height:52px;border-radius:9999px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),#8b7cf6);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Oswald',sans-serif;font-weight:600;font-size:1.125rem;
+  box-shadow:0 0 0 1px var(--border), var(--shadow);
+}
+.agent-name{font-weight:600;font-size:1rem;color:var(--text);letter-spacing:-0.01em;}
+.agent-role{
+  font-family:var(--mono);font-size:10px;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--text-subtle);margin-top:0.25rem;
+}
+.call-pill{
+  display:flex;align-items:center;gap:0.625rem;
+  background:var(--accent-soft);border:1px solid var(--border);
+  color:var(--accent);border-radius:0.25rem;padding:0.625rem 1rem;
+  font-family:var(--mono);font-size:11px;letter-spacing:0.02em;white-space:nowrap;
+}
+.pulse-dot{position:relative;width:6px;height:6px;flex-shrink:0;}
+.pulse-dot::before{
+  content:"";position:absolute;inset:0;border-radius:9999px;background:var(--success);
+  animation:ping 1.6s cubic-bezier(0,0,.2,1) infinite;
+}
+.pulse-dot::after{content:"";position:absolute;inset:0;border-radius:9999px;background:var(--success);}
+@keyframes ping{0%{transform:scale(1);opacity:.75}75%,100%{transform:scale(2.6);opacity:0}}
+
+/* ── Pain cards (template use-case card pattern) ─────────────────── */
+.cards-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;text-align:left;}
+.sys-card{
+  position:relative;display:flex;flex-direction:column;padding:2rem;
+  border-radius:1rem;background:var(--bg-card);border:1px solid var(--border);
+  box-shadow:var(--shadow);overflow:hidden;height:100%;
+  transition:all .3s;
+}
+.sys-card:hover{background:var(--bg-card-hover);transform:scale(1.02);box-shadow:0 20px 40px rgba(15,23,42,0.12);}
+.sys-card .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;}
+.sys-card .card-glyph{
+  font-family:var(--mono);font-size:0.875rem;font-weight:600;color:var(--accent);
+  width:32px;height:32px;border-radius:0.25rem;background:var(--accent-soft);
+  border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+}
+.sys-card .card-index{font-family:var(--mono);font-size:10px;color:var(--text-subtle);}
+.sys-card h3{
+  font-family:'Oswald',sans-serif;font-size:1.25rem;font-weight:500;color:var(--text);
+  text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:0.75rem;
+}
+.sys-card p{font-size:0.875rem;font-weight:300;line-height:1.65;color:var(--text-muted);}
+.sys-card--accent .hairline{
+  position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right, transparent, rgba(79,70,229,0.45), transparent);opacity:0.7;
+}
+.sys-card--accent .card-wash{
+  position:absolute;inset:0;pointer-events:none;opacity:0.7;
+  background:linear-gradient(to bottom, var(--accent-soft), transparent);
+}
+.sys-card--accent > *{position:relative;z-index:1;}
+
+/* ── Benefits bento (template gap-px grid pattern) ───────────────── */
+.bento{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);border:1px solid var(--border);
+  border-radius:2rem;overflow:hidden;box-shadow:var(--shadow);text-align:left;
+}
+.bento-cell{
+  position:relative;background:var(--bg-card);padding:2rem;
+  display:flex;flex-direction:column;justify-content:space-between;gap:2rem;
+  transition:background .3s;
+}
+.bento-cell:hover{background:var(--bg-card-hover);}
+.bento-cell--wide{grid-column:span 3;flex-direction:row;align-items:center;justify-content:flex-start;gap:1.25rem;}
+.bento-cell .cell-index{
+  font-family:var(--mono);font-size:10px;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--text-subtle);
+}
+.bento-cell .cell-main{display:flex;align-items:center;gap:0.75rem;}
+.bento-cell .check{
+  font-family:var(--mono);font-size:0.75rem;font-weight:600;color:var(--accent);
+  width:20px;height:20px;border-radius:9999px;flex-shrink:0;
+  background:var(--accent-soft);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+}
+.bento-cell .cell-text{font-size:0.95rem;font-weight:600;color:var(--text);letter-spacing:-0.01em;}
+.bento-cell--hl .hairline{
+  position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right, transparent, rgba(79,70,229,0.45), transparent);opacity:0.7;
+}
+.bento-cell--hl .cell-wash{
+  position:absolute;inset:0;pointer-events:none;opacity:0.7;
+  background:linear-gradient(to bottom, var(--accent-soft), transparent);
+}
+.bento-cell--hl > *{position:relative;z-index:1;}
+
+/* ── Workflow steps (template layer-card pattern) ────────────────── */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;text-align:left;}
+.step-card{
+  position:relative;background:var(--bg-card);border:1px solid var(--border);
+  padding:1.5rem;border-radius:1rem;overflow:hidden;box-shadow:var(--shadow);
+  transition:all .3s;display:flex;flex-direction:column;
+}
+.step-card:hover{background:var(--bg-card-hover);}
+.step-card .step-label{
+  font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--text-subtle);display:block;margin-bottom:1rem;
+  border-bottom:1px solid var(--border);padding-bottom:0.5rem;width:max-content;
+}
+.step-card--hl .step-label{color:var(--accent);position:relative;z-index:1;}
+.step-card h3{font-size:1rem;font-weight:600;color:var(--text);margin-bottom:0.5rem;letter-spacing:-0.01em;}
+.step-card p{font-size:0.8rem;font-weight:300;line-height:1.65;color:var(--text-muted);}
+.step-card--hl .step-wash{
+  position:absolute;inset:0;pointer-events:none;opacity:0.7;
+  background:linear-gradient(to bottom, var(--accent-soft), transparent);
+}
+.step-card--hl > *{position:relative;z-index:1;}
+
+/* ── Comparison split panel (template creator/user view pattern) ─── */
+.compare{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border:1px solid var(--border);border-radius:1rem;overflow:hidden;
+  background:var(--bg-card);box-shadow:var(--shadow);text-align:left;
+}
+.compare-col{padding:2.5rem 3rem;position:relative;}
+.compare-col--ai{border-right:1px solid var(--border);}
+.compare-col--trad{background:var(--bg-surface);}
+.compare-badge{
+  display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;
+  text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.5rem;
+  border-radius:0.25rem;border:1px solid var(--border);margin-bottom:1.5rem;
+}
+.compare-col--ai .compare-badge{color:var(--accent);background:var(--accent-soft);}
+.compare-col--trad .compare-badge{color:var(--text-subtle);background:var(--bg-card);}
+.compare-col h3{
+  font-family:'Oswald',sans-serif;font-size:1.25rem;font-weight:500;color:var(--text);
+  text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:1.25rem;
+}
+.compare-col li{
+  display:flex;gap:0.75rem;align-items:baseline;padding:0.7rem 0;
+  font-size:0.9rem;border-top:1px solid var(--border);
+}
+.compare-col--ai li{color:var(--text-muted);}
+.compare-col--trad li{color:var(--text-subtle);font-weight:300;}
+.compare-col li b{font-family:var(--mono);font-weight:600;font-size:0.8rem;flex-shrink:0;}
+.compare-col--ai li b{color:var(--accent);}
+.compare-col--trad li b{color:var(--text-subtle);}
+.compare-cta{text-align:center;margin-top:2.5rem;}
+
+/* ── Offers (template card + mono list pattern) ──────────────────── */
+.offers{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;text-align:left;}
+.offer-card{
+  position:relative;display:flex;flex-direction:column;padding:2rem;
+  border-radius:1rem;background:var(--bg-card);border:1px solid var(--border);
+  box-shadow:var(--shadow);overflow:hidden;transition:all .3s;
+}
+.offer-card:hover{background:var(--bg-card-hover);}
+.offer-card .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;}
+.offer-card .offer-kicker{
+  font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--text-subtle);border-bottom:1px solid rgba(79,70,229,0.3);
+  padding-bottom:0.125rem;
+}
+.offer-card--mid .offer-kicker{color:var(--text);}
+.offer-card .card-index{font-family:var(--mono);font-size:10px;color:var(--text-subtle);}
+.offer-card h3{
+  font-family:'Oswald',sans-serif;font-size:1.35rem;font-weight:500;color:var(--text);
+  text-transform:uppercase;letter-spacing:-0.02em;margin-bottom:0.5rem;
+}
+.offer-card .tag{font-size:0.8rem;font-weight:300;line-height:1.55;color:var(--text-subtle);}
+.offer-card ul{margin:1.5rem 0 2rem;flex:1;}
+.offer-card li{
+  position:relative;font-size:0.85rem;font-weight:300;line-height:1.55;
+  color:var(--text-muted);padding:0.45rem 0 0.45rem 1.5rem;
+}
+.offer-card li::before{
+  content:"→";position:absolute;left:0;top:0.45rem;
+  font-family:var(--mono);font-size:0.8rem;color:var(--accent);
+}
+.offer-card--mid .hairline{
+  position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right, transparent, rgba(79,70,229,0.45), transparent);opacity:0.7;
+}
+.offer-card--mid .card-wash{
+  position:absolute;inset:0;pointer-events:none;opacity:0.7;
+  background:linear-gradient(to bottom, var(--accent-soft), transparent);
+}
+.offer-card--mid > *{position:relative;z-index:1;}
+
+/* ── FAQ (template border-row rhythm, mono indices) ──────────────── */
+.faq{max-width:48rem;margin:0 auto;text-align:left;}
+.faq details{border-bottom:1px solid var(--border);}
+.faq summary{
+  cursor:pointer;list-style:none;display:flex;align-items:baseline;gap:1rem;
+  padding:1.25rem 0;font-size:0.95rem;font-weight:500;color:var(--text);
+  letter-spacing:-0.01em;transition:color .2s;
+}
+.faq summary::-webkit-details-marker{display:none;}
+.faq summary:hover{color:var(--accent);}
+.faq .q-index{
+  font-family:var(--mono);font-size:10px;color:var(--text-subtle);flex-shrink:0;
+  padding-top:0.2rem;letter-spacing:0.1em;
+}
+.faq .q-text{flex:1;}
+.faq .q-toggle{
+  font-family:var(--mono);font-size:1rem;color:var(--text-subtle);flex-shrink:0;
+}
+.faq details[open] .q-toggle::before{content:"–";}
+.faq details:not([open]) .q-toggle::before{content:"+";}
+.faq details p{
+  padding:0 0 1.25rem 2.4rem;font-size:0.875rem;font-weight:300;
+  line-height:1.7;color:var(--text-muted);max-width:40rem;
+}
+
+/* ── Final CTA (template conversion-card pattern) ────────────────── */
+.final-section{position:relative;overflow:hidden;padding:8rem 0;background:var(--bg-surface);border-top:1px solid rgba(230,227,221,0.55);}
+.final-radial{
+  position:absolute;inset:0;pointer-events:none;z-index:0;opacity:0.04;
+  background:radial-gradient(circle at center, var(--accent), transparent 90%);
+}
+.final-spot{
+  position:absolute;top:-20%;left:0;right:0;height:600px;pointer-events:none;z-index:0;
+  background:radial-gradient(800px circle at top, rgba(79,70,229,0.12), transparent 70%);
+}
+.final-card{
+  position:relative;z-index:10;max-width:48rem;margin:0 auto;
+  border-radius:1.5rem;border:1px solid rgba(79,70,229,0.1);
+  background:rgba(251,250,248,0.9);
+  -webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);
+  padding:3.5rem 2rem;text-align:center;overflow:hidden;
+  box-shadow:0 20px 60px -15px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.7), 0 0 0 1px var(--border);
+}
+.final-card .corner-wash{
+  position:absolute;top:0;left:0;width:20rem;height:20rem;pointer-events:none;opacity:0.04;
+  background:radial-gradient(circle at top left, var(--accent), transparent 70%);
+}
+.final-card .top-hairline{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);width:66%;height:1px;
+  background:linear-gradient(to right, transparent, rgba(79,70,229,0.6), transparent);
+  box-shadow:0 1px 6px rgba(79,70,229,0.4);
+}
+.final-card h2{
+  font-family:'Oswald',sans-serif;font-weight:500;text-transform:uppercase;
+  letter-spacing:-0.05em;line-height:0.95;color:var(--text);
+  font-size:clamp(2.5rem,5vw,3.75rem);margin-bottom:2.5rem;position:relative;z-index:10;
+}
+.final-card h2 .accent{color:var(--accent);font-weight:600;}
+.final-card .btn-primary{
+  padding:0.875rem 2.5rem;border-radius:0.5rem;
+  box-shadow:0 4px 14px rgba(79,70,229,0.3);
+}
+.final-card .btn-primary:hover{
+  box-shadow:0 6px 20px rgba(79,70,229,0.4);transform:translateY(-2px);
+}
+
+/* ── Footer ──────────────────────────────────────────────────────── */
+footer{background:var(--bg-card);border-top:1px solid var(--border);padding:1.5rem 0;}
+.footer-inner{
+  max-width:80rem;margin:0 auto;padding:0 1.5rem;
+  display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.footer-inner .copyright{
+  font-family:var(--mono);font-size:10px;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--text-subtle);
+}
+.footer-links{display:flex;gap:1.5rem;}
+.footer-links a{
+  font-family:var(--mono);font-size:10px;text-transform:uppercase;
+  letter-spacing:0.1em;color:var(--text-subtle);transition:color .2s;
+}
+.footer-links a:hover{color:var(--text);}
+
+/* ── Scroll reveal ───────────────────────────────────────────────── */
+.animate-on-scroll{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s cubic-bezier(.25,1,.5,1);}
+.animate-on-scroll.in-view{opacity:1;transform:translateY(0);}
+.hero-anim{opacity:0;transform:translateY(24px);animation:rise .9s cubic-bezier(.25,1,.5,1) forwards;}
+.hero-anim.d1{animation-delay:.15s}
+.hero-anim.d2{animation-delay:.3s}
+.hero-anim.d3{animation-delay:.45s}
+.hero-anim.d4{animation-delay:.6s}
+@keyframes rise{to{opacity:1;transform:translateY(0);}}
+@media (prefers-reduced-motion: reduce){
+  .animate-on-scroll,.hero-anim{opacity:1;transform:none;animation:none;transition:none;}
+  .pulse-dot::before{animation:none;}
+}
+
+/* ── Responsive ──────────────────────────────────────────────────── */
+@media (max-width:1023px){
+  .section{padding:4.5rem 0 6rem;}
+  .cards-3,.steps,.offers{grid-template-columns:1fr;}
+  .bento{grid-template-columns:1fr;border-radius:1.5rem;}
+  .bento-cell--wide{grid-column:span 1;}
+  .compare{grid-template-columns:1fr;}
+  .compare-col--ai{border-right:none;border-bottom:1px solid var(--border);}
+  .compare-col{padding:2rem 1.5rem;}
+  .agent-strip{flex-direction:column;text-align:center;padding:2rem 1.5rem;}
+  .agent-left{flex-direction:column;text-align:center;}
+  .hero{padding:8rem 1rem 4.5rem;}
+  .section-header{margin-bottom:3rem;}
+}
+@media (max-width:639px){
+  .hero-actions{flex-direction:column;width:100%;padding:0 1rem;}
+  .hero-actions a{width:100%;}
+  .win-title{display:none;}
+  .footer-inner{justify-content:center;text-align:center;}
+}
+</style>
+</head>
+<body class="antialiased">
+<div class="noise-overlay"></div>
+
+<!-- Navigation -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="brand" href="#">
+      <img src="../public/hero/ns-logo.png" alt="">
+      <span>NativeSquare</span>
+    </a>
+    <a class="nav-cta" href="#">Book a Call</a>
+  </div>
+</nav>
+
+<!-- 1. HERO -->
+<main class="hero">
+  <div class="hero-inner">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="eyebrow hero-anim">
+        <div class="dot"></div>
+        <span>AI Receptionists &amp; Sales Agents</span>
+        <div class="dot"></div>
+      </div>
+      <h1 class="hero-anim d1">
+        Innovative AI Solutions
+        <br>
+        <span class="accent">for Forward-Thinking Businesses</span>
+      </h1>
+      <p class="lead hero-anim d2">Focus on running your business while our AI receptionists and sales agents handle every inbound and outbound call.</p>
+      <div class="hero-actions hero-anim d3">
+        <a class="btn-primary" href="#">Book a Call</a>
+        <a class="btn-secondary" href="#">Learn More</a>
+      </div>
+
+      <!-- Agent panel — window-chrome signature element -->
+      <div class="win hero-anim d4">
+        <div class="win-head">
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <div class="win-dots"><i></i><i></i><i></i></div>
+            <span class="win-title">Agent_Preview::v1.0</span>
+          </div>
+          <span class="win-tag">LIVE</span>
+        </div>
+        <div class="win-body">
+          <div class="grid-bg"></div>
+          <div class="agent-strip">
+            <div class="agent-left">
+              <div class="agent-avatar">E</div>
+              <div>
+                <div class="agent-name">Emma</div>
+                <div class="agent-role">Receptionist Agent</div>
+              </div>
+            </div>
+            <div class="call-pill"><span class="pulse-dot"></span> Incoming call · answered in 0.8s</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="surface-seam" aria-hidden="true"></div>
+</main>
+
+<!-- 2. PAIN -->
+<section id="pain" class="section section--surface section-divider">
+  <div class="spotlight"></div>
+  <div class="section-content">
+    <div class="section-header animate-on-scroll">
+      <div class="eyebrow">
+        <div class="dot"></div>
+        <span>The problem</span>
+        <div class="dot"></div>
+      </div>
+      <h2 class="display-h2">
+        Stop losing money
+        <br>
+        <span class="accent">every day</span>
+      </h2>
+    </div>
+    <div class="cards-3">
+      <div class="sys-card animate-on-scroll">
+        <div class="card-top">
+          <span class="card-glyph">?</span>
+          <span class="card-index">01</span>
+        </div>
+        <h3>Questions left hanging</h3>
+        <p>Your customers want an immediate answer, not a voicemail box.</p>
+      </div>
+      <div class="sys-card sys-card--accent animate-on-scroll">
+        <div class="hairline"></div>
+        <div class="card-wash"></div>
+        <div class="card-top">
+          <span class="card-glyph">$</span>
+          <span class="card-index">02</span>
+        </div>
+        <h3>Missed calls = missed revenue</h3>
+        <p>Every unanswered call is a job walking straight to your competitor.</p>
+      </div>
+      <div class="sys-card animate-on-scroll">
+        <div class="card-top">
+          <span class="card-glyph">⏱</span>
+          <span class="card-index">03</span>
+        </div>
+        <h3>Scheduling headaches</h3>
+        <p>Manual appointment booking is slow, error-prone and eats your day.</p>
+      </div>
+    </div>
+  </div>
+  <div class="surface-seam" aria-hidden="true"></div>
+</section>
+
+<!-- 3. BENEFITS -->
+<section class="section section--main section-divider">
+  <div class="spotlight"></div>
+  <div class="section-content">
+    <div class="section-header animate-on-scroll">
+      <div class="eyebrow">
+        <div class="dot"></div>
+        <span>What you get</span>
+        <div class="dot"></div>
+      </div>
+      <h2 class="display-h2">
+        The perfect workflow
+        <br>
+        <span class="accent">for your business</span>
+      </h2>
+    </div>
+    <div class="bento animate-on-scroll">
+      <div class="bento-cell bento-cell--hl">
+        <div class="hairline"></div>
+        <div class="cell-wash"></div>
+        <span class="cell-index">01</span>
+        <div class="cell-main"><span class="check">✓</span><span class="cell-text">24/7 availability</span></div>
+      </div>
+      <div class="bento-cell bento-cell--hl">
+        <div class="hairline"></div>
+        <div class="cell-wash"></div>
+        <span class="cell-index">02</span>
+        <div class="cell-main"><span class="check">✓</span><span class="cell-text">Seamless appointment booking</span></div>
+      </div>
+      <div class="bento-cell bento-cell--hl">
+        <div class="hairline"></div>
+        <div class="cell-wash"></div>
+        <span class="cell-index">03</span>
+        <div class="cell-main"><span class="check">✓</span><span class="cell-text">Automated pricing estimates</span></div>
+      </div>
+      <div class="bento-cell">
+        <span class="cell-index">04</span>
+        <div class="cell-main"><span class="check">✓</span><span class="cell-text">Lower costs, higher efficiency</span></div>
+      </div>
+      <div class="bento-cell">
+        <span class="cell-index">05</span>
+        <div class="cell-main"><span class="check">✓</span><span class="cell-text">Instant customer assistance</span></div>
+      </div>
+      <div class="bento-cell">
+        <span class="cell-index">06</span>
+        <div class="cell-main"><span class="check">✓</span><span class="cell-text">Lead nurturing &amp; follow-ups</span></div>
+      </div>
+      <div class="bento-cell bento-cell--wide">
+        <span class="cell-index">07</span>
+        <div class="cell-main"><span class="check">✓</span><span class="cell-text">Consistent service quality</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. WORKFLOW -->
+<section class="section section--main" style="padding-top:0;">
+  <div class="section-content">
+    <div class="section-header animate-on-scroll">
+      <div class="eyebrow">
+        <div class="dot"></div>
+        <span>How it works</span>
+        <div class="dot"></div>
+      </div>
+      <h2 class="display-h2">
+        A fully automated
+        <br>
+        <span class="accent">workflow</span>
+      </h2>
+    </div>
+    <div class="steps">
+      <div class="step-card animate-on-scroll">
+        <span class="step-label">01 / 04</span>
+        <h3>Customer calls</h3>
+        <p>The AI receptionist answers instantly and understands what the customer needs through natural conversation.</p>
+      </div>
+      <div class="step-card step-card--hl animate-on-scroll">
+        <div class="step-wash"></div>
+        <span class="step-label">02 / 04</span>
+        <h3>Intelligent routing</h3>
+        <p>Appointments get scheduled, questions get answered, sales leads get qualified — automatically.</p>
+      </div>
+      <div class="step-card animate-on-scroll">
+        <span class="step-label">03 / 04</span>
+        <h3>Seamless integration</h3>
+        <p>Every interaction syncs with your CRM, updates your calendar and surfaces the insights that matter.</p>
+      </div>
+      <div class="step-card step-card--hl animate-on-scroll">
+        <div class="step-wash"></div>
+        <span class="step-label">04 / 04</span>
+        <h3>Continuous improvement</h3>
+        <p>Your agents get sharper over time with ongoing training, feedback and monthly optimizations.</p>
+      </div>
+    </div>
+  </div>
+  <div class="surface-seam" aria-hidden="true"></div>
+</section>
+
+<!-- 5. COMPARE -->
+<section class="section section--surface section-divider">
+  <div class="spotlight"></div>
+  <div class="section-content">
+    <div class="section-header animate-on-scroll">
+      <div class="eyebrow">
+        <div class="dot"></div>
+        <span>The math</span>
+        <div class="dot"></div>
+      </div>
+      <h2 class="display-h2">
+        NativeSquare AI
+        <br>
+        <span class="accent">vs. traditional hiring</span>
+      </h2>
+    </div>
+    <div class="compare animate-on-scroll">
+      <div class="compare-col compare-col--ai">
+        <span class="compare-badge">AI::Active</span>
+        <h3>With NativeSquare AI</h3>
+        <ul>
+          <li><b>✓</b> 24/7, never off duty</li>
+          <li><b>✓</b> Instant replies, zero hold time</li>
+          <li><b>✓</b> No salaries, no training costs</li>
+          <li><b>✓</b> Unlimited simultaneous calls</li>
+          <li><b>✓</b> Same quality on every single call</li>
+        </ul>
+      </div>
+      <div class="compare-col compare-col--trad">
+        <span class="compare-badge">Legacy::Mode</span>
+        <h3>Traditional hiring</h3>
+        <ul>
+          <li><b>✕</b> Limited to business hours</li>
+          <li><b>✕</b> Customers wait on hold</li>
+          <li><b>✕</b> Salaries, overhead, turnover</li>
+          <li><b>✕</b> One call at a time</li>
+          <li><b>✕</b> Quality varies by employee</li>
+        </ul>
+      </div>
+    </div>
+    <div class="compare-cta animate-on-scroll">
+      <a class="btn-primary" href="#">Book a Call</a>
+    </div>
+  </div>
+  <div class="surface-seam" aria-hidden="true"></div>
+</section>
+
+<!-- 6. OFFERS -->
+<section class="section section--main section-divider">
+  <div class="spotlight"></div>
+  <div class="section-content">
+    <div class="section-header animate-on-scroll">
+      <div class="eyebrow">
+        <div class="dot"></div>
+        <span>The systems</span>
+        <div class="dot"></div>
+      </div>
+      <h2 class="display-h2">
+        Custom AI solutions,
+        <br>
+        <span class="accent">tailored to your business</span>
+      </h2>
+    </div>
+    <div class="offers">
+      <div class="offer-card animate-on-scroll">
+        <div class="card-top">
+          <span class="offer-kicker">Inbound</span>
+          <span class="card-index">01</span>
+        </div>
+        <h3>Inbound voice agents</h3>
+        <div class="tag">Handle customer inquiries and bookings automatically.</div>
+        <ul>
+          <li>24/7 AI receptionist answering every call</li>
+          <li>Intelligent call routing &amp; FAQ handling</li>
+          <li>Custom call flows &amp; escalation logic</li>
+          <li>CRM &amp; scheduling system integration</li>
+          <li>Sentiment analysis &amp; customer insights</li>
+        </ul>
+        <a class="btn-primary btn-block" href="#">Book a Call</a>
+      </div>
+      <div class="offer-card offer-card--mid animate-on-scroll">
+        <div class="hairline"></div>
+        <div class="card-wash"></div>
+        <div class="card-top">
+          <span class="offer-kicker">Outbound</span>
+          <span class="card-index">02</span>
+        </div>
+        <h3>Outbound voice agents</h3>
+        <div class="tag">Automate calls for engagement, follow-ups and sales.</div>
+        <ul>
+          <li>Automated call campaigns for leads &amp; follow-ups</li>
+          <li>Custom scripting &amp; personalization</li>
+          <li>CRM integration &amp; workflow automation</li>
+          <li>Real-time analytics &amp; performance tracking</li>
+          <li>AI-driven responses in dynamic conversations</li>
+        </ul>
+        <a class="btn-primary btn-block" href="#">Book a Call</a>
+      </div>
+      <div class="offer-card animate-on-scroll">
+        <div class="card-top">
+          <span class="offer-kicker">Custom</span>
+          <span class="card-index">03</span>
+        </div>
+        <h3>Custom workflows</h3>
+        <div class="tag">For businesses that want tailored AI to streamline their operations.</div>
+        <ul>
+          <li>In-depth review of your business pain points</li>
+          <li>Analysis of automation opportunities</li>
+          <li>Custom roadmap for AI implementation</li>
+          <li>Tool &amp; integration recommendations</li>
+          <li>Follow-up strategy session for execution</li>
+        </ul>
+        <a class="btn-secondary btn-block" href="#">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. FAQ -->
+<section class="section section--main" style="padding-top:0;">
+  <div class="section-content">
+    <div class="section-header animate-on-scroll">
+      <div class="eyebrow">
+        <div class="dot"></div>
+        <span>FAQ</span>
+        <div class="dot"></div>
+      </div>
+      <h2 class="display-h2">
+        Questions
+        <br>
+        <span class="accent">you may have</span>
+      </h2>
+    </div>
+    <div class="faq animate-on-scroll">
+      <details>
+        <summary><span class="q-index">01</span><span class="q-text">What exactly does NativeSquare do?</span><span class="q-toggle"></span></summary>
+        <p>We build and run AI voice agents that answer your calls, book your appointments and follow up with your leads — plugged into your existing phone number, calendar and CRM.</p>
+      </details>
+      <details>
+        <summary><span class="q-index">02</span><span class="q-text">How do you make sure the AI doesn't mess up a conversation?</span><span class="q-toggle"></span></summary>
+        <p>Every agent is trained on your services, prices and policies, tested against real scenarios before launch, and hands off to a human the moment a call goes beyond its scope.</p>
+      </details>
+      <details>
+        <summary><span class="q-index">03</span><span class="q-text">Do I need to change my phone system or CRM?</span><span class="q-toggle"></span></summary>
+        <p>No. We plug into what you already use — your number stays the same, your CRM stays the same.</p>
+      </details>
+      <details>
+        <summary><span class="q-index">04</span><span class="q-text">How much does this cost?</span><span class="q-toggle"></span></summary>
+        <p>A one-time setup fee plus a monthly retainer, sized to your call volume. We price it on a call, after we understand what missed calls currently cost you.</p>
+      </details>
+      <details>
+        <summary><span class="q-index">05</span><span class="q-text">What ROI should I expect, and how fast?</span><span class="q-toggle"></span></summary>
+        <p>Most clients see the effect within the first weeks: calls that used to go to voicemail become booked appointments. We track everything so you can read the numbers yourself.</p>
+      </details>
+      <details>
+        <summary><span class="q-index">06</span><span class="q-text">Do you offer support and training?</span><span class="q-toggle"></span></summary>
+        <p>Yes. Setup, team training and ongoing support are part of every engagement, with a monthly optimization pass.</p>
+      </details>
+      <details>
+        <summary><span class="q-index">07</span><span class="q-text">Can I customize how the AI sounds and speaks?</span><span class="q-toggle"></span></summary>
+        <p>Voice, tone, greeting, vocabulary — all of it is tailored to your business. Your customers hear your company, not a robot.</p>
+      </details>
+      <details>
+        <summary><span class="q-index">08</span><span class="q-text">What if I want to go back to human-only calls?</span><span class="q-toggle"></span></summary>
+        <p>You can, anytime. Nothing about your phone system is locked in.</p>
+      </details>
+      <details>
+        <summary><span class="q-index">09</span><span class="q-text">How does this handle the specific challenges of my business?</span><span class="q-toggle"></span></summary>
+        <p>Every deployment starts with a discovery call where we map your actual call flows and pain points. The agent is built around them, not from a template.</p>
+      </details>
+      <details>
+        <summary><span class="q-index">10</span><span class="q-text">What measurable improvements can I expect?</span><span class="q-toggle"></span></summary>
+        <p>Answer rate, time-to-answer, booked appointments, after-hours captures, follow-up completion — all measured, all reported.</p>
+      </details>
+      <details>
+        <summary><span class="q-index">11</span><span class="q-text">How does it integrate with our current systems?</span><span class="q-toggle"></span></summary>
+        <p>Through native integrations with the main CRMs, calendars and phone systems — and custom connections when needed.</p>
+      </details>
+      <details>
+        <summary><span class="q-index">12</span><span class="q-text">Will it scale as we grow?</span><span class="q-toggle"></span></summary>
+        <p>The same agent handles ten calls a day or ten at the same time. Adding locations, lines or languages is configuration, not a rebuild.</p>
+      </details>
+    </div>
+  </div>
+  <div class="surface-seam" aria-hidden="true"></div>
+</section>
+
+<!-- 8. FINAL CTA -->
+<section class="final-section">
+  <div class="final-radial"></div>
+  <div class="final-spot"></div>
+  <div class="section-content">
+    <div class="final-card animate-on-scroll">
+      <div class="corner-wash"></div>
+      <div class="top-hairline"></div>
+      <div class="eyebrow">
+        <div class="dot"></div>
+        <span>Let's talk</span>
+        <div class="dot"></div>
+      </div>
+      <h2>
+        Book a free
+        <br>
+        <span class="accent">consultation</span>
+      </h2>
+      <a class="btn-primary" href="#">Book a Call</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-inner">
+    <span class="copyright">© NativeSquare</span>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var els = document.querySelectorAll(".animate-on-scroll");
+  if (reduced || !("IntersectionObserver" in window)) {
+    els.forEach(function(el){ el.classList.add("in-view"); });
+    return;
+  }
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) {
+        entry.target.classList.add("in-view");
+        io.unobserve(entry.target);
+      }
+    });
+  }, { rootMargin: "0px 0px -12% 0px" });
+  els.forEach(function(el){ io.observe(el); });
+})();
+</script>
+
+</body>
+</html>

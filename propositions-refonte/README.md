@@ -16,6 +16,19 @@ Trois maquettes autonomes (double-clic pour ouvrir dans le navigateur, aucune d�
 - **Conservé sous le capot** : BookingLink (conversion LinkedIn + PostHog + préremplissage Cal.com), SuiviVisite, Insight Tag. Tous les boutons des maquettes sont des `#` — à l'intégration ils passent par `BookingLink` avec leur `source`.
 - Le nom d'agent « Emma » et le client fictif « Summit Roofing » (variante C) sont des placeholders.
 
+## Round 2 — six variations sur templates (30/08/2026)
+
+Base retenue au round 1 : le design lumineux (variante B). Six déclinaisons, **contenu identique à la variante B mot pour mot**, chacune copiant la DA exacte d'un template fourni (extraction des CSS compilés du site source ; fontes propriétaires remplacées par l'équivalent Google Fonts le plus proche, noté en commentaire en tête de chaque fichier).
+
+| Fichier | Template copié | Signature |
+| --- | --- | --- |
+| `variation-a-system-builder.html` | system-builder.aura.build | papier chaud #f6f5f2, titres Oswald uppercase, accent indigo, panneaux « window-chrome », bento |
+| `variation-b-predictive-real.html` | predictive-real-23.aura.build | blueprint zinc #F4F4F5, angles vifs, rouge #EB5757, labels mono `GRID_SYSTEM_V.01`, nav flottante |
+| `variation-c-phrasso.html` | phrasso.com | éditorial sombre #040406 + papier crème #ececdc, or/orange, zéro radius, rails verticaux |
+| `variation-d-polarsignals.html` | polarsignals.com | blanc + cartes plates à coins gradient, triangle violet #726AFF, section sombre, footer noir |
+| `variation-e-search-party.html` | search-party-next.vercel.app | pastel chaud #F7F5F3, croix « + » aux angles, pointillés, blobs, Figtree (≈ Aeonik) |
+| `variation-f-cluely-verbrio.html` | cluely (pixelpoint) via l'implémentation Verbrio de conference.care | dégradé gris + blobs blancs flous, boutons à glow bleu radial, **la barre IA Verbrio animée en hero** (Emma) |
+
 ## Sauvegarde
 
 Le site actuel (HealthTech) est figé sur la branche `sauvegarde/site-healthtech-avant-refonte-2026-08`.

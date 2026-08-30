@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<!--
+  Variation D — design system repliqué depuis https://www.polarsignals.com/ (relevé du 30/08/2026)
+
+  TOKENS EXTRAITS (CSS compilé /_next/static/chunks/*.css + use.typekit.net/zgi6hai.css) :
+  - Fond page :            #FFFFFF (—background: 0 0% 100%)
+  - Section claire alt :   hsl(210 20% 98%)  ≈ #F9FAFB  (gray-98)
+  - Cartes plates :        #F6F6F6 et hsl(240 3% 94%) ≈ #EFEFF1 (—card)
+  - Section sombre :       hsl(230 10% 12%)  ≈ #1B1D22  (gray-12) — code block: #1C1D22
+  - Footer :               hsl(240 20% 2%)   ≈ #040406  (—black)
+  - Texte titres :         #040406 · corps: hsl(228 10% 20%) #2E3038 (gray-20) · muted: hsl(240 4% 46%)
+  - Bordures :             hsl(228 10% 80%) #C7C9D1 (gray-80) · hsl(230 12% 90%) (gray-90)
+  - Bouton primaire :      bg hsl(228 12% 8%) #121417, texte hsl(0 0% 98%), radius 6px, hover hsl(228 10% 20%)
+  - Bouton secondaire :    bg #fff, border 1px #2E3038, radius 6px, texte noir, hover bg rgba(46,48,56,.05)
+  - Accent signature :     violet #726AFF (triangle ▲ des kickers, hovers de liens)
+  - Gradients coin de carte (carrés 16–24px, angle 135deg) :
+      bleu  #ADBFFF → #536AF7  ·  rose #FFCBEF → #FF3794  ·  vert (133deg) #DEFF73 → #00DE94
+  - Gradient pastel signature (hero / CTA) : radial 50% 100% at 50% 0%,
+      #F6EEF5 0%, #F7EDEB 49.91%, #F8E7C6 75.6%, #91BFFB 100%
+  - Pilules "verre" : linear 180deg rgba(255,255,255,.60) → rgba(255,255,255,.20), shadow 0 10px 20px rgba(0,0,0,.08)
+  - Motif "code-barres" : rangées de barres verticales blanches opacité .2 (6.2px / pas 18.6px / h 77px)
+  - Surlignage citations : #DCE3FE
+  - Radius : boutons 6px (—button-radius-sm .375rem), cartes 0 (angles vifs), pilules 24px/full
+  - Titres : Articulat CF (Adobe Typekit), graisse 400, line-height 1.125, letter-spacing -0.02em
+  - Corps : Inter, letter-spacing -0.025em (tracking-tight partout)
+  - Mono : Geist Mono / JetBrains Mono — kickers en mono UPPERCASE 13px précédés du triangle violet
+
+  APPROXIMATIONS (polices propriétaires indisponibles sur Google Fonts) :
+  - Articulat CF (Typekit) → "Figtree" 400/500 (grotesque géométrique la plus proche sur Google Fonts)
+  - Geist Mono (fichier local Next.js) → "JetBrains Mono" (Polar Signals utilise déjà JetBrains Mono pour son bloc code)
+  - Le visuel vidéo du hero et le motif SVG "code-barres" sont recréés en CSS (gradient + repeating-linear-gradient)
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Variation D — polarsignals | NativeSquare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --background:#ffffff;
+    --black:hsl(240 20% 2%);            /* #040406 */
+    --primary:hsl(228 12% 8%);          /* #121417 */
+    --primary-foreground:hsl(0 0% 98%);
+    --gray-12:hsl(230 10% 12%);         /* #1B1D22 */
+    --gray-20:hsl(228 10% 20%);         /* #2E3038 */
+    --gray-30:hsl(231 9% 30%);
+    --gray-40:hsl(229 8% 40%);
+    --gray-60:hsl(229 8% 60%);
+    --gray-80:hsl(228 10% 80%);         /* #C7C9D1 */
+    --gray-90:hsl(230 12% 90%);
+    --gray-94:hsl(220 10% 94%);
+    --gray-98:hsl(210 20% 98%);         /* #F9FAFB */
+    --card:hsl(240 3% 94%);             /* #EFEFF1 */
+    --card-flat:#F6F6F6;
+    --muted-foreground:hsl(240 4% 46%);
+    --purple:#726AFF;
+    --green-600:#00a544;
+    --grad-blue:linear-gradient(135deg,#ADBFFF 0%,#536AF7 100%);
+    --grad-pink:linear-gradient(135deg,#FFCBEF 0%,#FF3794 100%);
+    --grad-green:linear-gradient(133deg,#DEFF73 0%,#00DE94 148.03%);
+    --grad-pastel:radial-gradient(50% 100% at 50% 0%,#F6EEF5 0%,#F7EDEB 49.91%,#F8E7C6 75.6%,#91BFFB 100%);
+    --glass:linear-gradient(180deg,rgba(255,255,255,.60) 0%,rgba(255,255,255,.20) 100%);
+    --glass-shadow:0 .625rem 1.25rem 0 rgba(0,0,0,.08);
+    --font-heading:'Figtree',ui-sans-serif,system-ui,sans-serif;
+    --font-body:'Inter',ui-sans-serif,system-ui,sans-serif;
+    --font-mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --btn-radius:.375rem; /* --button-radius-sm */
+    --tracking-tight:-0.025em;
+    --tracking-snug:-0.02em;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--background);
+    color:var(--black);
+    font-family:var(--font-body);
+    letter-spacing:var(--tracking-tight);
+    -webkit-font-smoothing:antialiased;
+    display:flex;min-height:100svh;flex-direction:column;
+  }
+  img{max-width:100%}
+  a{text-decoration:none;color:inherit}
+  ul{list-style:none}
+
+  /* ---- layout ---- */
+  .container{margin:0 auto;width:100%;max-width:100rem;padding:0 1.25rem} /* max-w-400 + px-5 */
+  @media(min-width:768px){.container{padding:0 2rem}} /* md:px-8 */
+
+  /* ---- type ---- */
+  h1,h2{
+    font-family:var(--font-heading);
+    font-weight:400;                 /* Polar Signals: font-normal sur les display headings */
+    line-height:1.125;               /* leading-tighter */
+    letter-spacing:var(--tracking-snug);
+    color:var(--black);
+    text-wrap:balance;
+  }
+  .kicker{
+    display:inline-flex;width:fit-content;align-items:center;gap:.5rem;
+    font-family:var(--font-mono);font-weight:500;text-transform:uppercase;
+    font-size:.8125rem;line-height:1;letter-spacing:var(--tracking-tight);
+    color:var(--gray-20);
+  }
+  @media(min-width:1024px){.kicker{font-size:.875rem}}
+  .kicker svg{flex-shrink:0}
+  .muted-half{color:var(--muted-foreground)}
+
+  /* ---- buttons (relevés : h-8/h-10/h-11, px-4/px-5, radius 6px, text-sm/base, font-medium) ---- */
+  .btn{
+    position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.25rem;
+    white-space:nowrap;font-weight:500;letter-spacing:var(--tracking-tight);
+    height:2.5rem;padding:0 1.25rem;font-size:.875rem;line-height:1;
+    border-radius:var(--btn-radius);
+    background:var(--primary);color:var(--primary-foreground);
+    transition:background-color .3s ease,border-color .3s ease,color .3s ease;
+    cursor:pointer;
+  }
+  .btn:hover{background:var(--gray-20)}
+  @media(min-width:1024px){.btn.btn-lg{height:2.75rem;font-size:1rem}}
+  .btn-secondary{
+    background:var(--background);color:var(--black);
+    border:1px solid #2E3038;
+  }
+  .btn-secondary:hover{background:rgba(46,48,56,.05);border-color:var(--gray-20)}
+  .btn-secondary.on-gradient{background:transparent}
+  .btn-sm{height:2rem;padding:0 1rem}
+  .btn-block{width:100%}
+
+  /* ---- barcode stripes pattern (recréé depuis patterns.*.svg : barres 6.2px, pas 18.6px, h 77px, blanc .2) ---- */
+  .stripes{
+    position:absolute;height:4.85rem;pointer-events:none;
+    background:repeating-linear-gradient(90deg,rgba(255,255,255,.2) 0,rgba(255,255,255,.2) 6.2px,transparent 6.2px,transparent 18.6px);
+  }
+
+  /* ============ HEADER (sticky, bg white/90 + blur, min-h-13.25) ============ */
+  .site-header{
+    position:sticky;top:0;z-index:50;display:flex;align-items:center;
+    min-height:3.3125rem;
+    border-bottom:1px solid transparent;
+    background:hsl(0 0% 100% / .9);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+  }
+  .site-header .container{display:flex;align-items:center;justify-content:space-between;padding-top:.75rem;padding-bottom:.75rem}
+  .brand{display:inline-flex;align-items:center;gap:.5625rem;font-size:.9375rem;font-weight:500;letter-spacing:var(--tracking-tight);color:var(--black)}
+  .brand img{display:block;height:1.3125rem;width:auto;flex-shrink:0} /* h-5.25, comme le logo PS */
+
+  /* ============ HERO ============ */
+  .hero{
+    border-bottom:1px solid var(--gray-80);
+    padding:3rem 0 1.5rem;
+  }
+  @media(min-width:768px){.hero{padding:3.5rem 0 1.5rem}}
+  @media(min-width:1280px){.hero{padding:7.5rem 0 2.5rem}}
+  .hero-header{display:flex;width:100%;flex-direction:column;align-items:flex-start;gap:1.5rem}
+  @media(min-width:1024px){.hero-header{flex-direction:row;align-items:flex-end;justify-content:space-between}}
+  .hero-copy{display:flex;max-width:48rem;min-width:0;flex-direction:column}
+  .hero h1{font-size:1.875rem}
+  @media(min-width:768px){.hero h1{font-size:2.25rem}}
+  @media(min-width:1024px){.hero h1{max-width:42.5rem;font-size:2.75rem}}
+  @media(min-width:1280px){.hero h1{font-size:3rem}}
+  .hero .lead{
+    margin-top:1rem;max-width:42rem;font-size:1rem;line-height:1.5;
+    letter-spacing:var(--tracking-tight);color:var(--gray-20);
+  }
+  @media(min-width:768px){.hero .lead{max-width:32rem}}
+  @media(min-width:1280px){.hero .lead{margin-top:1.25rem;font-size:1.125rem}}
+  .hero-ctas{display:flex;width:100%;flex-direction:column;gap:.75rem;padding-bottom:.4375rem}
+  .hero-ctas .btn{width:100%}
+  @media(min-width:640px){
+    .hero-ctas{width:auto;flex-direction:row;flex-wrap:wrap;align-items:center;column-gap:.625rem}
+    .hero-ctas .btn{width:auto}
+  }
+  @media(min-width:1024px){.hero-ctas{column-gap:1rem;padding-bottom:.75rem}}
+
+  /* visuel hero : panneau gradient pastel plein cadre (remplace la vidéo), angles vifs */
+  .hero-visual{
+    position:relative;margin-top:2.5rem;overflow:hidden;
+    aspect-ratio:1536/576;min-height:20rem;
+    background:radial-gradient(64.63% 100% at 50% 0%,#F6EEF5 0%,#F7EDEB 49.91%,#F8E7C6 75.6%,#91BFFB 100%);
+    display:flex;align-items:center;justify-content:center;
+    padding:1.5rem;
+  }
+  .hero-visual .stripes.s1{left:0;bottom:0;width:38%}
+  .hero-visual .stripes.s2{right:6%;top:0;width:22%}
+  .hero-visual .stripes.s3{right:0;bottom:18%;width:14%}
+
+  /* l'élément agent "Emma" en pilule verre signature */
+  .agent-card{
+    position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:1.25rem;
+    width:100%;max-width:45rem;
+    border-radius:1.5rem;
+    background:var(--glass);
+    box-shadow:var(--glass-shadow);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    padding:1.5rem 1.75rem;
+  }
+  .agent-left{display:flex;align-items:center;gap:.875rem}
+  .agent-avatar{
+    width:3.25rem;height:3.25rem;border-radius:9999px;flex-shrink:0;
+    background:var(--grad-blue);
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-heading);font-weight:500;font-size:1.125rem;
+  }
+  .agent-name{font-size:1rem;font-weight:600;letter-spacing:var(--tracking-tight);color:var(--black);line-height:1.25}
+  .agent-role{margin-top:.25rem;font-size:.8125rem;letter-spacing:var(--tracking-tight);color:var(--muted-foreground)}
+  .call-pill{
+    display:inline-flex;align-items:center;gap:.625rem;
+    border-radius:1.5rem;padding:.625rem 1rem;
+    background:var(--glass);box-shadow:var(--glass-shadow);
+    font-family:var(--font-mono);font-weight:500;font-size:.8125rem;line-height:1;
+    letter-spacing:var(--tracking-tight);color:var(--gray-30);
+    white-space:nowrap;
+  }
+  .pulse{width:.5rem;height:.5rem;border-radius:9999px;background:#00DE94;animation:pulse 1.6s infinite}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(0,222,148,.45)}
+    70%{box-shadow:0 0 0 .5rem rgba(0,222,148,0)}
+    100%{box-shadow:0 0 0 0 rgba(0,222,148,0)}
+  }
+
+  /* ============ SECTIONS (rythme relevé : py-16 → xl très généreux) ============ */
+  .section{padding:4rem 0}
+  @media(min-width:768px){.section{padding:5.5rem 0}}
+  @media(min-width:1280px){.section{padding:7.5rem 0}}
+  .section-header{display:flex;flex-direction:column;gap:1rem}
+  @media(min-width:768px){.section-header{gap:1.125rem}}
+  .section-h2{font-size:2rem}
+  @media(min-width:768px){.section-h2{font-size:2.25rem}}
+  @media(min-width:1024px){.section-h2{font-size:2.75rem}}
+  @media(min-width:1280px){.section-h2{font-size:3.5rem}}
+
+  /* ============ PAIN — cartes plates + carrés gradient en coin (signature) ============ */
+  .pain .section-h2{max-width:62rem}
+  .cards-grid{
+    margin-top:3.5rem;display:grid;grid-template-columns:1fr;gap:1.5rem;
+  }
+  @media(min-width:1024px){.cards-grid{grid-template-columns:repeat(3,1fr);gap:1.125rem;margin-top:3.5rem}}
+  .flat-card{
+    position:relative;display:flex;flex-direction:column;overflow:hidden;
+    background:var(--card-flat);
+    padding:1.5rem 1.5rem 2rem;
+    min-height:16rem;
+  }
+  @media(min-width:1024px){.flat-card{padding:2rem 1.75rem 2.25rem}}
+  .corner{position:absolute;top:0;right:0;z-index:20;width:1rem;height:1rem}
+  @media(min-width:768px){.corner{width:1.25rem;height:1.25rem}}
+  @media(min-width:1024px){.corner{width:1.5rem;height:1.5rem}}
+  .corner.blue{background:var(--grad-blue)}
+  .corner.pink{background:var(--grad-pink)}
+  .corner.green{background:var(--grad-green)}
+  .flat-card h3{
+    font-size:1.125rem;line-height:1.375;font-weight:500;
+    letter-spacing:var(--tracking-tight);color:var(--black);
+  }
+  @media(min-width:1280px){.flat-card h3{font-size:1.5rem}}
+  .flat-card p{
+    margin-top:.625rem;font-size:1rem;line-height:1.375;
+    letter-spacing:var(--tracking-tight);color:var(--gray-40);
+  }
+
+  /* ============ BENEFITS — grille façon "features" (icône + libellé) ============ */
+  .benefits-grid{
+    margin-top:2.5rem;display:grid;grid-template-columns:1fr;gap:2.25rem 4rem;
+  }
+  @media(min-width:1024px){.benefits-grid{grid-template-columns:repeat(3,1fr);margin-top:3.5rem;gap:3rem}}
+  .benefit{display:flex;align-items:center;gap:1rem}
+  .benefit .tile{
+    width:2rem;height:2rem;flex-shrink:0;
+    background:var(--grad-green);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gray-12);font-weight:600;font-size:.9375rem;line-height:1;
+  }
+  .benefit span.label{
+    font-size:1.125rem;line-height:1.375;font-weight:500;
+    letter-spacing:var(--tracking-tight);color:var(--black);
+  }
+
+  /* ============ WORKFLOW — section sombre gray-12 (signature "Core Platform") ============ */
+  .dark-section{background:var(--gray-12);color:#fff}
+  .dark-section{padding:4rem 0}
+  @media(min-width:768px){.dark-section{padding:6.25rem 0}}
+  @media(min-width:1280px){.dark-section{padding:9rem 0 8rem}}
+  .dark-section .kicker{color:#fff}
+  .dark-section .section-h2{color:#fff;max-width:64rem}
+  @media(min-width:1280px){.dark-section .section-h2{font-size:3.25rem}}
+  .steps-grid{
+    margin-top:3rem;display:grid;grid-template-columns:1fr;gap:2.5rem;
+  }
+  @media(min-width:1024px){.steps-grid{grid-template-columns:repeat(2,1fr);gap:2rem;margin-top:3.5rem}}
+  @media(min-width:1280px){.steps-grid{grid-template-columns:repeat(4,1fr)}}
+  .step{border-top:1px solid var(--gray-20);padding-top:1.5rem;display:flex;flex-direction:column}
+  .step .num{
+    font-family:var(--font-mono);font-weight:500;font-size:.8125rem;line-height:1;
+    letter-spacing:var(--tracking-tight);color:var(--gray-60);
+  }
+  .step h3{
+    margin-top:1.25rem;font-family:var(--font-body);font-size:1.125rem;line-height:1.375;
+    font-weight:600;letter-spacing:var(--tracking-tight);color:#fff;
+  }
+  @media(min-width:1024px){.step h3{font-size:1.25rem}}
+  .step p{
+    margin-top:.5rem;font-size:1rem;line-height:1.375;
+    letter-spacing:var(--tracking-tight);color:var(--gray-80);
+  }
+
+  /* ============ COMPARE — fond gray-98 ============ */
+  .compare-section{background:var(--gray-98)}
+  .compare-grid{margin-top:3rem;display:grid;grid-template-columns:1fr;gap:1.5rem}
+  @media(min-width:1024px){.compare-grid{grid-template-columns:repeat(2,1fr);gap:1.125rem;margin-top:3.5rem}}
+  .compare-card{position:relative;overflow:hidden;background:#fff;padding:1.75rem 1.75rem 1rem}
+  @media(min-width:1024px){.compare-card{padding:2rem 2rem 1.25rem}}
+  .compare-card.trad{background:var(--card-flat)}
+  .compare-card h3{
+    font-family:var(--font-body);font-size:1.125rem;line-height:1.375;font-weight:600;
+    letter-spacing:var(--tracking-tight);color:var(--black);margin-bottom:1.25rem;
+  }
+  @media(min-width:1024px){.compare-card h3{font-size:1.25rem}}
+  .compare-card.trad h3{color:var(--gray-30)}
+  .compare-card li{
+    display:flex;gap:.625rem;align-items:baseline;
+    border-top:1px solid var(--gray-90);padding:.875rem 0;
+    font-size:.9375rem;line-height:1.375;letter-spacing:var(--tracking-tight);color:var(--gray-20);
+  }
+  .compare-card.trad li{color:var(--gray-40)}
+  .compare-card li b{font-weight:600}
+  .compare-card.ai li b{color:var(--green-600)}
+  .compare-card.trad li b{color:var(--muted-foreground)}
+  .compare-cta{margin-top:2.5rem}
+
+  /* ============ OFFERS — cartes plates bg-card, coin gradient, listes à triangles ============ */
+  .offers-grid{margin-top:3.5rem;display:grid;grid-template-columns:1fr;gap:1.5rem}
+  @media(min-width:1024px){.offers-grid{grid-template-columns:repeat(3,1fr);gap:1.125rem}}
+  .offer{
+    position:relative;display:flex;flex-direction:column;overflow:hidden;
+    background:var(--card-flat);
+    padding:1.75rem 1.75rem 2rem;
+  }
+  @media(min-width:1024px){.offer{padding:2rem 1.75rem 2rem}}
+  .offer h3{
+    font-family:var(--font-body);font-size:1.125rem;line-height:1.375;font-weight:600;
+    letter-spacing:var(--tracking-tight);color:var(--black);
+  }
+  @media(min-width:1280px){.offer h3{font-size:1.25rem}}
+  .offer .tag{
+    margin-top:.5rem;font-size:.9375rem;line-height:1.375;
+    letter-spacing:var(--tracking-tight);color:var(--muted-foreground);
+  }
+  .offer ul{margin:1.5rem 0 1.75rem;flex:1;border-top:1px solid var(--gray-90)}
+  .offer li{
+    display:flex;align-items:baseline;gap:.625rem;
+    border-bottom:1px solid var(--gray-90);
+    padding:.75rem 0;
+    font-size:.875rem;line-height:1.375;letter-spacing:var(--tracking-tight);color:var(--gray-40);
+  }
+  .offer li svg{flex-shrink:0;transform:translateY(-1px)}
+  .offer .btn-secondary{background:transparent}
+  .offer .btn-secondary:hover{background:rgba(46,48,56,.05)}
+
+  /* ============ FAQ — 2 colonnes xl (kicker à gauche), accordéon border-t, icône + ============ */
+  .faq-layout{display:flex;flex-direction:column;gap:1rem}
+  @media(min-width:1280px){
+    .faq-layout{display:grid;grid-template-columns:auto 1fr;align-items:start;column-gap:9rem}
+    .faq-kicker-col{padding-top:1.125rem}
+  }
+  .faq-kicker-col{margin-bottom:2rem}
+  @media(min-width:1280px){.faq-kicker-col{margin-bottom:0}}
+  .faq-h2{font-size:1.875rem;max-width:40rem}
+  @media(min-width:768px){.faq-h2{font-size:2.25rem}}
+  @media(min-width:1024px){.faq-h2{font-size:2.5rem}}
+  @media(min-width:1280px){.faq-h2{font-size:3.25rem}}
+  .faq-list{margin-top:2.5rem;border-top:1px solid var(--gray-90)}
+  @media(min-width:768px){.faq-list{margin-top:3.5rem}}
+  .faq-list details{border-bottom:1px solid var(--gray-90)}
+  .faq-list details:last-child{border-bottom:0}
+  .faq-list summary{
+    display:flex;align-items:center;justify-content:space-between;gap:1.5rem;
+    padding:.875rem 0;cursor:pointer;list-style:none;
+    transition:color .2s ease;
+  }
+  @media(min-width:768px){.faq-list summary{padding:1.5rem 0}}
+  .faq-list summary::-webkit-details-marker{display:none}
+  .faq-list summary:hover{color:rgba(4,4,6,.8)}
+  .faq-q{
+    flex:1;font-size:1.125rem;line-height:1.25;font-weight:500;
+    letter-spacing:var(--tracking-tight);color:var(--black);
+  }
+  @media(min-width:1024px){.faq-q{font-size:1.25rem}}
+  .faq-icon{position:relative;display:flex;width:1.5rem;height:1.5rem;flex-shrink:0;align-items:center;justify-content:center}
+  .faq-icon::before,.faq-icon::after{
+    content:"";position:absolute;background:var(--black);
+  }
+  .faq-icon::before{width:.875rem;height:1.5px}
+  .faq-icon::after{width:1.5px;height:.875rem;transition:transform .2s ease;transform-origin:center}
+  details[open] .faq-icon::after{transform:rotate(-90deg) scaleX(0)}
+  .faq-list details p{
+    max-width:44rem;padding:0 0 1.5rem;
+    font-size:1rem;line-height:1.5;letter-spacing:var(--tracking-tight);color:var(--gray-40);
+  }
+
+  /* ============ FINAL CTA — gradient pastel plein cadre + motif code-barres ============ */
+  .cta-final{position:relative;overflow:hidden;background:var(--grad-pastel)}
+  .cta-final .stripes.s1{right:0;top:0;width:30%}
+  .cta-final .stripes.s2{right:12%;bottom:0;width:42%}
+  .cta-final .stripes.s3{left:0;bottom:22%;width:10%}
+  .cta-inner{position:relative;z-index:10;padding:3.5rem 0}
+  @media(min-width:1024px){.cta-inner{padding:5rem 0}}
+  .cta-stack{display:flex;max-width:40rem;flex-direction:column;gap:3.5rem}
+  @media(min-width:768px){.cta-stack{gap:7rem}}
+  @media(min-width:1024px){.cta-stack{gap:12rem}}
+  .cta-final h2{font-size:1.75rem}
+  @media(min-width:768px){.cta-final h2{font-size:2rem}}
+  @media(min-width:1024px){.cta-final h2{font-size:2.5rem}}
+  @media(min-width:1280px){.cta-final h2{font-size:2.75rem}}
+  .cta-final .kicker{margin-bottom:1rem}
+  .cta-actions{display:flex;width:100%;flex-direction:column;gap:.75rem}
+  .cta-actions .btn{width:100%}
+  @media(min-width:640px){
+    .cta-actions{flex-direction:row;flex-wrap:wrap;align-items:center;gap:1rem}
+    .cta-actions .btn{width:auto}
+  }
+
+  /* ============ FOOTER — bg noir #040406 ============ */
+  .site-footer{background:var(--black);padding:2rem 0 2.5rem;margin-top:auto}
+  @media(min-width:768px){.site-footer{padding:2.5rem 0 4.5rem}}
+  .footer-row{
+    display:flex;flex-direction:column;gap:3rem;
+  }
+  @media(min-width:768px){.footer-row{flex-direction:row;align-items:flex-start;justify-content:space-between}}
+  .footer-brand{display:flex;flex-direction:column;gap:1rem}
+  .footer-brand .brand{color:#fff}
+  .footer-brand .brand img{height:1.5rem}
+  .footer-copy{
+    font-size:.875rem;line-height:1.25;font-weight:500;
+    letter-spacing:var(--tracking-tight);color:var(--gray-40);
+  }
+  .footer-links{display:flex;gap:2rem}
+  .footer-links a{
+    font-size:.9375rem;line-height:1.375;font-weight:500;
+    letter-spacing:var(--tracking-tight);color:var(--gray-60);
+    transition:color .2s ease;
+  }
+  .footer-links a:hover{color:#fff}
+
+  /* ============ responsive : tout en une colonne < 1024px géré par les grids ci-dessus ============ */
+  @media(max-width:1023px){
+    .agent-card{flex-direction:column;text-align:center;gap:1rem}
+    .agent-left{flex-direction:column;text-align:center;gap:.75rem}
+    .hero-visual{aspect-ratio:auto;padding:3rem 1.25rem}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAVBAR ============ -->
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="#">
+      <img src="../public/hero/ns-logo.png" alt="NativeSquare">
+      NativeSquare
+    </a>
+    <a class="btn btn-sm" href="#">Book a Call</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ 1. HERO ============ -->
+<section class="hero">
+  <div class="container">
+    <header class="hero-header">
+      <div class="hero-copy">
+        <h1>Innovative AI Solutions for Forward-Thinking Businesses</h1>
+        <p class="lead">Focus on running your business while our AI receptionists and sales agents handle every inbound and outbound call.</p>
+      </div>
+      <div class="hero-ctas">
+        <a class="btn btn-lg" href="#">Book a Call</a>
+        <a class="btn btn-lg btn-secondary" href="#pain">Learn More</a>
+      </div>
+    </header>
+
+    <!-- visuel hero : gradient pastel signature + motif code-barres + élément agent "Emma" -->
+    <div class="hero-visual">
+      <span class="stripes s1" aria-hidden="true"></span>
+      <span class="stripes s2" aria-hidden="true"></span>
+      <span class="stripes s3" aria-hidden="true"></span>
+      <div class="agent-card">
+        <div class="agent-left">
+          <div class="agent-avatar">E</div>
+          <div>
+            <div class="agent-name">Emma</div>
+            <div class="agent-role">Receptionist Agent</div>
+          </div>
+        </div>
+        <div class="call-pill"><span class="pulse"></span> Incoming call &middot; answered in 0.8s</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. PAIN ============ -->
+<section class="section pain" id="pain">
+  <div class="container">
+    <header class="section-header">
+      <span class="kicker">
+        <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg>
+        The problem
+      </span>
+      <h2 class="section-h2">Stop losing money every day</h2>
+    </header>
+    <div class="cards-grid">
+      <div class="flat-card">
+        <span class="corner blue" aria-hidden="true"></span>
+        <h3>Questions left hanging</h3>
+        <p>Your customers want an immediate answer, not a voicemail box.</p>
+      </div>
+      <div class="flat-card">
+        <span class="corner pink" aria-hidden="true"></span>
+        <h3>Missed calls = missed revenue</h3>
+        <p>Every unanswered call is a job walking straight to your competitor.</p>
+      </div>
+      <div class="flat-card">
+        <span class="corner green" aria-hidden="true"></span>
+        <h3>Scheduling headaches</h3>
+        <p>Manual appointment booking is slow, error-prone and eats your day.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. BENEFITS ============ -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <header class="section-header">
+      <span class="kicker">
+        <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg>
+        What you get
+      </span>
+      <h2 class="section-h2">The perfect workflow for your business</h2>
+    </header>
+    <ul class="benefits-grid">
+      <li class="benefit"><span class="tile" aria-hidden="true">&#10003;</span><span class="label">24/7 availability</span></li>
+      <li class="benefit"><span class="tile" aria-hidden="true">&#10003;</span><span class="label">Seamless appointment booking</span></li>
+      <li class="benefit"><span class="tile" aria-hidden="true">&#10003;</span><span class="label">Automated pricing estimates</span></li>
+      <li class="benefit"><span class="tile" aria-hidden="true">&#10003;</span><span class="label">Lower costs, higher efficiency</span></li>
+      <li class="benefit"><span class="tile" aria-hidden="true">&#10003;</span><span class="label">Instant customer assistance</span></li>
+      <li class="benefit"><span class="tile" aria-hidden="true">&#10003;</span><span class="label">Lead nurturing &amp; follow-ups</span></li>
+      <li class="benefit"><span class="tile" aria-hidden="true">&#10003;</span><span class="label">Consistent service quality</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 4. WORKFLOW — section sombre ============ -->
+<section class="dark-section">
+  <div class="container">
+    <header class="section-header">
+      <span class="kicker">
+        <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg>
+        How it works
+      </span>
+      <h2 class="section-h2">A fully automated workflow</h2>
+    </header>
+    <ul class="steps-grid">
+      <li class="step">
+        <span class="num">01</span>
+        <h3>Customer calls</h3>
+        <p>The AI receptionist answers instantly and understands what the customer needs through natural conversation.</p>
+      </li>
+      <li class="step">
+        <span class="num">02</span>
+        <h3>Intelligent routing</h3>
+        <p>Appointments get scheduled, questions get answered, sales leads get qualified &mdash; automatically.</p>
+      </li>
+      <li class="step">
+        <span class="num">03</span>
+        <h3>Seamless integration</h3>
+        <p>Every interaction syncs with your CRM, updates your calendar and surfaces the insights that matter.</p>
+      </li>
+      <li class="step">
+        <span class="num">04</span>
+        <h3>Continuous improvement</h3>
+        <p>Your agents get sharper over time with ongoing training, feedback and monthly optimizations.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 5. COMPARE — fond gray-98 ============ -->
+<section class="section compare-section">
+  <div class="container">
+    <header class="section-header">
+      <span class="kicker">
+        <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg>
+        The math
+      </span>
+      <h2 class="section-h2">NativeSquare AI vs. traditional hiring</h2>
+    </header>
+    <div class="compare-grid">
+      <div class="compare-card ai">
+        <span class="corner green" aria-hidden="true"></span>
+        <h3>With NativeSquare AI</h3>
+        <ul>
+          <li><b>&#10003;</b> 24/7, never off duty</li>
+          <li><b>&#10003;</b> Instant replies, zero hold time</li>
+          <li><b>&#10003;</b> No salaries, no training costs</li>
+          <li><b>&#10003;</b> Unlimited simultaneous calls</li>
+          <li><b>&#10003;</b> Same quality on every single call</li>
+        </ul>
+      </div>
+      <div class="compare-card trad">
+        <h3>Traditional hiring</h3>
+        <ul>
+          <li><b>&#10005;</b> Limited to business hours</li>
+          <li><b>&#10005;</b> Customers wait on hold</li>
+          <li><b>&#10005;</b> Salaries, overhead, turnover</li>
+          <li><b>&#10005;</b> One call at a time</li>
+          <li><b>&#10005;</b> Quality varies by employee</li>
+        </ul>
+      </div>
+    </div>
+    <div class="compare-cta">
+      <a class="btn btn-lg" href="#">Book a Call</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. OFFERS ============ -->
+<section class="section">
+  <div class="container">
+    <header class="section-header">
+      <span class="kicker">
+        <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg>
+        The systems
+      </span>
+      <h2 class="section-h2">Custom AI solutions, tailored to your business</h2>
+    </header>
+    <div class="offers-grid">
+      <div class="offer">
+        <span class="corner blue" aria-hidden="true"></span>
+        <h3>Inbound voice agents</h3>
+        <div class="tag">Handle customer inquiries and bookings automatically.</div>
+        <ul>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> 24/7 AI receptionist answering every call</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> Intelligent call routing &amp; FAQ handling</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> Custom call flows &amp; escalation logic</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> CRM &amp; scheduling system integration</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> Sentiment analysis &amp; customer insights</li>
+        </ul>
+        <a class="btn btn-block btn-secondary" href="#">Book a Call</a>
+      </div>
+      <div class="offer">
+        <span class="corner pink" aria-hidden="true"></span>
+        <h3>Outbound voice agents</h3>
+        <div class="tag">Automate calls for engagement, follow-ups and sales.</div>
+        <ul>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> Automated call campaigns for leads &amp; follow-ups</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> Custom scripting &amp; personalization</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> CRM integration &amp; workflow automation</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> Real-time analytics &amp; performance tracking</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> AI-driven responses in dynamic conversations</li>
+        </ul>
+        <a class="btn btn-block" href="#">Book a Call</a>
+      </div>
+      <div class="offer">
+        <span class="corner green" aria-hidden="true"></span>
+        <h3>Custom workflows</h3>
+        <div class="tag">For businesses that want tailored AI to streamline their operations.</div>
+        <ul>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> In-depth review of your business pain points</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> Analysis of automation opportunities</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> Custom roadmap for AI implementation</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> Tool &amp; integration recommendations</li>
+          <li><svg width="10" height="9" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg> Follow-up strategy session for execution</li>
+        </ul>
+        <a class="btn btn-block btn-secondary" href="#">Contact Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. FAQ ============ -->
+<section class="section" style="padding-top:0;">
+  <div class="container">
+    <div class="faq-layout">
+      <div class="faq-kicker-col">
+        <span class="kicker">
+          <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg>
+          FAQ
+        </span>
+      </div>
+      <div>
+        <h2 class="faq-h2">Questions<br><span class="muted-half">you may have</span></h2>
+        <div class="faq-list">
+          <details>
+            <summary><span class="faq-q">What exactly does NativeSquare do?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>We build and run AI voice agents that answer your calls, book your appointments and follow up with your leads &mdash; plugged into your existing phone number, calendar and CRM.</p>
+          </details>
+          <details>
+            <summary><span class="faq-q">How do you make sure the AI doesn't mess up a conversation?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>Every agent is trained on your services, prices and policies, tested against real scenarios before launch, and hands off to a human the moment a call goes beyond its scope.</p>
+          </details>
+          <details>
+            <summary><span class="faq-q">Do I need to change my phone system or CRM?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>No. We plug into what you already use &mdash; your number stays the same, your CRM stays the same.</p>
+          </details>
+          <details>
+            <summary><span class="faq-q">How much does this cost?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>A one-time setup fee plus a monthly retainer, sized to your call volume. We price it on a call, after we understand what missed calls currently cost you.</p>
+          </details>
+          <details>
+            <summary><span class="faq-q">What ROI should I expect, and how fast?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>Most clients see the effect within the first weeks: calls that used to go to voicemail become booked appointments. We track everything so you can read the numbers yourself.</p>
+          </details>
+          <details>
+            <summary><span class="faq-q">Do you offer support and training?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>Yes. Setup, team training and ongoing support are part of every engagement, with a monthly optimization pass.</p>
+          </details>
+          <details>
+            <summary><span class="faq-q">Can I customize how the AI sounds and speaks?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>Voice, tone, greeting, vocabulary &mdash; all of it is tailored to your business. Your customers hear your company, not a robot.</p>
+          </details>
+          <details>
+            <summary><span class="faq-q">What if I want to go back to human-only calls?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>You can, anytime. Nothing about your phone system is locked in.</p>
+          </details>
+          <details>
+            <summary><span class="faq-q">How does this handle the specific challenges of my business?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>Every deployment starts with a discovery call where we map your actual call flows and pain points. The agent is built around them, not from a template.</p>
+          </details>
+          <details>
+            <summary><span class="faq-q">What measurable improvements can I expect?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>Answer rate, time-to-answer, booked appointments, after-hours captures, follow-up completion &mdash; all measured, all reported.</p>
+          </details>
+          <details>
+            <summary><span class="faq-q">How does it integrate with our current systems?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>Through native integrations with the main CRMs, calendars and phone systems &mdash; and custom connections when needed.</p>
+          </details>
+          <details>
+            <summary><span class="faq-q">Will it scale as we grow?</span><span class="faq-icon" aria-hidden="true"></span></summary>
+            <p>The same agent handles ten calls a day or ten at the same time. Adding locations, lines or languages is configuration, not a rebuild.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. FINAL CTA — gradient pastel + code-barres ============ -->
+<section class="cta-final">
+  <span class="stripes s1" aria-hidden="true"></span>
+  <span class="stripes s2" aria-hidden="true"></span>
+  <span class="stripes s3" aria-hidden="true"></span>
+  <div class="cta-inner">
+    <div class="container">
+      <div class="cta-stack">
+        <div>
+          <span class="kicker">
+            <svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M6.5 0L13 11.25H0L6.5 0Z" fill="#726AFF"/></svg>
+            Let's talk
+          </span>
+          <h2 style="margin-top:1rem;">Book a free consultation</h2>
+        </div>
+        <div class="cta-actions">
+          <a class="btn btn-lg" href="#">Book a Call</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-row">
+      <div class="footer-brand">
+        <a class="brand" href="#">
+          <img src="../public/hero/ns-logo.png" alt="NativeSquare">
+          NativeSquare
+        </a>
+        <p class="footer-copy">&copy; NativeSquare</p>
+      </div>
+      <nav class="footer-links" aria-label="Footer navigation">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+      </nav>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
