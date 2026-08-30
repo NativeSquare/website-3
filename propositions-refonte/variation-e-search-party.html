@@ -127,17 +127,56 @@
   .hero .lead{margin-top:32px;max-width:616px;text-align:center;font-size:20px;line-height:1.375;letter-spacing:-.02em;color:var(--gray-40);text-wrap:pretty}
   .hero-ctas{margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 
-  /* Agent strip — mapped onto the template's bordered white panel */
-  .agent-strip{margin-top:72px;width:100%;max-width:672px;background:#fff;border:1px solid var(--gray-90);
-    padding:24px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px;text-align:left}
+  /* Live-call demo — mapped onto the template's bordered white panel.
+     ~11s CSS master timeline: incoming ring → answered → transcript → booked → fade & loop.
+     Static base styles = the end state, so prefers-reduced-motion shows a finished call. */
+  .live-call{--loop:11s;margin-top:72px;width:100%;max-width:672px;background:#fff;border:1px solid var(--gray-90);
+    padding:24px 28px;text-align:left}
   .agent-left{display:flex;align-items:center;gap:14px}
   .agent-avatar{width:56px;height:56px;border-radius:20%;flex:none;box-shadow:var(--shadow-tile);
     background:linear-gradient(135deg,#FFE5B2,#FF99BD);color:var(--ink);
     display:flex;align-items:center;justify-content:center;font-family:var(--font-title);font-weight:500;font-size:22px}
   .agent-name{font-weight:500;font-size:17px;letter-spacing:-.02em}
   .agent-role{font-size:14px;color:var(--gray-40);letter-spacing:-.02em;margin-top:2px}
-  .call-pill{display:flex;align-items:center;gap:10px;border:1px solid var(--gray-90);border-radius:9999px;
+  .lc-head{display:flex;align-items:center;justify-content:space-between;gap:20px}
+  .lc-status{display:grid;justify-items:end}
+  .lc-state{grid-area:1/1;display:inline-flex;align-items:center;gap:10px;border:1px solid var(--gray-90);border-radius:9999px;
     background:var(--gray-98);padding:9px 16px;font-size:14px;font-weight:500;letter-spacing:-.02em;color:var(--gray-30);white-space:nowrap}
+  .lc-bez{position:relative;width:18px;height:18px;border-radius:50%;border:1px solid #C0BEBE;background:#fff;
+    box-shadow:0 1px 2px 0 rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;flex:none}
+  .lc-bez .dot{width:10px;height:10px;border-radius:50%}
+  .lc-state-in{opacity:0;animation:lc-in var(--loop) linear infinite}
+  .lc-state-in .lc-bez::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:1px solid var(--yellow);
+    animation:lc-ring 1.4s cubic-bezier(0,0,.2,1) infinite}
+  .lc-state-ans{animation:lc-ans var(--loop) linear infinite}
+  @keyframes lc-ring{0%{transform:scale(1);opacity:.9}80%,100%{transform:scale(2.1);opacity:0}}
+  @keyframes lc-in{0%,12%{opacity:1}15%,100%{opacity:0}}
+  @keyframes lc-ans{0%,13%{opacity:0}16%,91%{opacity:1}96%,100%{opacity:0}}
+  .lc-body{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .lc-row{display:flex;align-items:flex-end;gap:8px}
+  .lc-row.emma{justify-content:flex-end}
+  .lc-face{width:22px;height:22px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-title);font-weight:500;font-size:11px;color:var(--ink)}
+  .lc-row.caller .lc-face{background:var(--gray-94)}
+  .lc-row.emma .lc-face{background:linear-gradient(135deg,#FFE5B2,#FF99BD)}
+  .lc-bubble{max-width:75%;padding:10px 14px;font-size:14.5px;line-height:1.4;letter-spacing:-.01em;color:var(--gray-12);border-radius:14px}
+  .lc-row.caller .lc-bubble{background:var(--gray-94);border-bottom-left-radius:4px}
+  .lc-row.emma .lc-bubble{background:linear-gradient(135deg,#E5FFFF,#BCEEFE);border-bottom-right-radius:4px}
+  .lc-b1{animation:lc-b1 var(--loop) cubic-bezier(.4,0,.2,1) infinite}
+  .lc-b2{animation:lc-b2 var(--loop) cubic-bezier(.4,0,.2,1) infinite}
+  .lc-b3{animation:lc-b3 var(--loop) cubic-bezier(.4,0,.2,1) infinite}
+  @keyframes lc-b1{0%,19%{opacity:0;transform:translateY(6px)}23%,91%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}
+  @keyframes lc-b2{0%,35%{opacity:0;transform:translateY(6px)}39%,91%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}
+  @keyframes lc-b3{0%,53%{opacity:0;transform:translateY(6px)}57%,91%{opacity:1;transform:none}96%,100%{opacity:0;transform:none}}
+  .lc-result{position:relative;margin-top:18px;padding-top:16px;display:flex;gap:10px;flex-wrap:wrap}
+  .lc-chip{display:inline-flex;align-items:center;gap:8px;border-radius:9999px;padding:7px 14px;font-size:13.5px;font-weight:500;letter-spacing:-.01em}
+  .lc-chip svg{flex:none;display:block}
+  .lc-chip.booked{background:rgba(109,194,119,.13);border:1px solid rgba(109,194,119,.5);color:#33793E}
+  .lc-chip.sync{background:var(--gray-98);border:1px solid var(--gray-90);color:var(--gray-30)}
+  .lc-r1{animation:lc-r1 var(--loop) cubic-bezier(.34,1.3,.64,1) infinite}
+  .lc-r2{animation:lc-r2 var(--loop) cubic-bezier(.34,1.3,.64,1) infinite}
+  @keyframes lc-r1{0%,66%{opacity:0;transform:scale(.92)}70%,91%{opacity:1;transform:scale(1)}96%,100%{opacity:0;transform:scale(1)}}
+  @keyframes lc-r2{0%,69%{opacity:0;transform:scale(.92)}73%,91%{opacity:1;transform:scale(1)}96%,100%{opacity:0;transform:scale(1)}}
 
   /* ============ Section header patterns ============ */
   .sec-head{position:relative;padding:56px 40px}
@@ -263,6 +302,90 @@
   .a-orange{left:98px;top:100%;height:204px;width:734px;background:linear-gradient(270deg,#FFB266 7.19%,#FFE5B2 73.58%)}
   .a-cyan{right:-162px;bottom:-318px;height:346px;width:736px;background:linear-gradient(45deg,#87E1FF 43.51%,#CCF6FF 72.56%)}
 
+  /* ============ Pain scenes (animated SVG inside the pastel tiles) ============ */
+  .tile svg{display:block;overflow:visible}
+  .pq-q{animation:pq-q 4.8s ease-in-out infinite}
+  @keyframes pq-q{0%,8%{opacity:0;transform:translateY(3px)}16%,58%{opacity:1;transform:none}72%,100%{opacity:0;transform:none}}
+  .pq-wait{opacity:0;animation:pq-wait 4.8s linear infinite}
+  @keyframes pq-wait{0%,74%{opacity:0}80%,94%{opacity:1}100%{opacity:0}}
+  .pm-phone{transform-box:fill-box;transform-origin:center;animation:pm-shake 4.5s ease-in-out infinite}
+  @keyframes pm-shake{0%,3%{transform:rotate(0)}5%{transform:rotate(-6deg)}7%{transform:rotate(5deg)}9%{transform:rotate(-3deg)}11%,100%{transform:rotate(0)}}
+  .pm-badge{transform-box:fill-box;transform-origin:center;animation:pm-pop 4.5s ease-in-out infinite}
+  @keyframes pm-pop{0%,31%,35%,64%,68%,100%{transform:scale(1)}33%,66%{transform:scale(1.16)}}
+  .pm-n1,.pm-n2{opacity:0}
+  .pm-n1{animation:pm-n1 4.5s linear infinite}
+  .pm-n2{animation:pm-n2 4.5s linear infinite}
+  .pm-n3{animation:pm-n3 4.5s linear infinite}
+  @keyframes pm-n1{0%,32%{opacity:1}33%,100%{opacity:0}}
+  @keyframes pm-n2{0%,32%{opacity:0}33%,65%{opacity:1}66%,100%{opacity:0}}
+  @keyframes pm-n3{0%,65%{opacity:0}66%,100%{opacity:1}}
+  .pm-cash{opacity:0;animation:pm-cash 4.5s ease-in infinite}
+  @keyframes pm-cash{0%,38%{opacity:0;transform:translate(0,0)}46%{opacity:1}68%,100%{opacity:0;transform:translate(9px,-14px)}}
+  .pc-a,.pc-b{transform-box:fill-box;transform-origin:center}
+  .pc-a{animation:pc-a 5.5s cubic-bezier(.4,0,.2,1) infinite}
+  .pc-b{animation:pc-b 5.5s cubic-bezier(.4,0,.2,1) infinite}
+  @keyframes pc-a{0%,18%{transform:translate(0,0)}38%{transform:translate(9px,5px) rotate(-3deg)}44%{transform:translate(7px,4px) rotate(2deg)}58%,78%{transform:translate(15px,9px)}96%,100%{transform:translate(0,0)}}
+  @keyframes pc-b{0%,18%{transform:translate(0,0)}38%{transform:translate(-8px,-5px) rotate(3deg)}44%{transform:translate(-6px,-4px) rotate(-2deg)}58%,78%{transform:translate(-15px,-9px)}96%,100%{transform:translate(0,0)}}
+
+  /* ============ Benefit icon tiles (static) ============ */
+  .b-ico{width:36px;height:36px;border-radius:20%;box-shadow:var(--shadow-tile);flex:none;
+    display:flex;align-items:center;justify-content:center}
+  .b-ico svg{width:20px;height:20px;display:block}
+
+  /* ============ Workflow mini-diagrams ============ */
+  .wf{position:relative;height:112px;border-radius:16px;box-shadow:var(--shadow-tile);
+    background:linear-gradient(135deg,#FAF9FA,#F0F0EF);display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .wf-num{position:absolute;top:10px;left:14px;font-family:var(--font-title);font-weight:500;font-size:12px;letter-spacing:.06em;color:var(--gray-50)}
+  .wf svg{display:block;overflow:visible}
+  .workflow .card h3{margin-top:32px}
+  .wf1-bar{transform-box:fill-box;transform-origin:center;animation:wf1-bar 1.8s ease-in-out infinite}
+  @keyframes wf1-bar{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
+  .wf1-dot{opacity:0;animation:wf1-dot 1.8s linear infinite}
+  @keyframes wf1-dot{0%{opacity:0;transform:translateX(0)}15%{opacity:1}70%{opacity:1}88%,100%{opacity:0;transform:translateX(52px)}}
+  .wf1-ring{transform-box:fill-box;transform-origin:center;opacity:0;animation:wf1-ring 1.8s cubic-bezier(0,0,.2,1) infinite}
+  @keyframes wf1-ring{0%,55%{transform:scale(.75);opacity:0}68%{opacity:.55}100%{transform:scale(1.35);opacity:0}}
+  .wf2-d{opacity:0}
+  .wf2-d1{animation:wf2-d1 5.4s linear infinite}
+  .wf2-d2{animation:wf2-d2 5.4s linear infinite}
+  .wf2-d3{animation:wf2-d3 5.4s linear infinite}
+  @keyframes wf2-d1{0%{opacity:0;transform:translate(0,0)}3%{opacity:1}11%{transform:translate(48px,0)}26%{opacity:1;transform:translate(126px,-28px)}29%,100%{opacity:0;transform:translate(126px,-28px)}}
+  @keyframes wf2-d2{0%,33%{opacity:0;transform:translate(0,0)}36%{opacity:1}44%{transform:translate(48px,0)}59%{opacity:1;transform:translate(126px,0)}62%,100%{opacity:0;transform:translate(126px,0)}}
+  @keyframes wf2-d3{0%,66%{opacity:0;transform:translate(0,0)}69%{opacity:1}77%{transform:translate(48px,0)}92%{opacity:1;transform:translate(126px,28px)}95%,100%{opacity:0;transform:translate(126px,28px)}}
+  .wf3-ring{animation:wf3-ring 9s linear infinite}
+  @keyframes wf3-ring{to{stroke-dashoffset:-90}}
+  .wf3-orbit{transform-box:view-box;transform-origin:100px 46px;animation:wf3-orbit 9s linear infinite}
+  @keyframes wf3-orbit{to{transform:rotate(360deg)}}
+  .wf4-bar{transform-box:fill-box;transform-origin:bottom;animation:wf4-bar 5s cubic-bezier(.4,0,.2,1) infinite}
+  @keyframes wf4-bar{0%,14%{transform:scaleY(.25)}40%,88%{transform:scaleY(1)}98%,100%{transform:scaleY(.25)}}
+  .wf4-line{animation:wf4-line 5s ease-in-out infinite}
+  @keyframes wf4-line{0%,22%{stroke-dasharray:120;stroke-dashoffset:120}60%,88%{stroke-dasharray:120;stroke-dashoffset:0}98%,100%{stroke-dasharray:120;stroke-dashoffset:120}}
+  .wf4-tip{animation:wf4-tip 5s linear infinite}
+  @keyframes wf4-tip{0%,55%{opacity:0}62%,88%{opacity:1}94%,100%{opacity:0}}
+
+  /* ============ Compare chips (static) ============ */
+  .frame-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+  .frame-head h3{margin-bottom:0}
+  .cmp-chip{display:inline-flex;align-items:center;gap:7px;border-radius:9999px;padding:5px 12px;
+    font-size:12.5px;font-weight:600;letter-spacing:0;white-space:nowrap;flex:none}
+  .cmp-chip svg{display:block}
+  .chip-ai{background:rgba(109,194,119,.12);border:1px solid rgba(109,194,119,.45);color:#33793E}
+  .chip-trad{background:var(--gray-94);border:1px solid var(--gray-90);color:var(--gray-40)}
+
+  /* ============ Offer icon tiles (static) ============ */
+  .tile-sm{width:64px;height:64px;border-radius:20%;box-shadow:var(--shadow-tile);
+    display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+  .tile-sm svg{display:block}
+
+  /* ============ Final CTA waveform accent ============ */
+  .cta-wave{position:relative;z-index:10;width:64px;height:64px;margin-bottom:28px;border-radius:50%;
+    border:1px solid #C0BEBE;background:#fff;box-shadow:0 1px 2px 0 rgba(0,0,0,.05);
+    display:flex;align-items:center;justify-content:center;gap:3px}
+  .cta-wave::after{content:"";position:absolute;inset:-2px;border-radius:50%;border:1px solid var(--blue);opacity:0;
+    animation:cta-ring 2.6s cubic-bezier(0,0,.2,1) infinite}
+  @keyframes cta-ring{0%{transform:scale(1);opacity:.5}70%,100%{transform:scale(1.45);opacity:0}}
+  .wbar{width:4px;border-radius:2px;background:var(--blue);animation:wbar 1.6s ease-in-out infinite}
+  @keyframes wbar{0%,100%{transform:scaleY(.6)}50%{transform:scaleY(1.35)}}
+
   /* ============ Responsive ============ */
   @media (max-width:1023px){
     .hero{padding-top:96px}
@@ -270,8 +393,10 @@
     .hero .lead{font-size:18px}
     .hero-art.left,.hero-art.right{display:none}
     .hero-art.md{display:block}
-    .agent-strip{flex-direction:column;text-align:center;align-items:center}
-    .agent-left{flex-direction:column;text-align:center}
+    .live-call{padding:20px}
+    .lc-head{flex-direction:column;align-items:flex-start;gap:14px}
+    .lc-status{justify-items:start}
+    .lc-bubble{max-width:88%}
     .statement{font-size:32px}
     .final-cta h2{font-size:40px}
     .sec-head{padding:40px 24px}
@@ -301,6 +426,12 @@
     .footer-pattern{display:none}
     .footer-pattern.mobile{display:block}
   }
+  /* All demo assets are authored with their finished state as the static base,
+     so killing the animations leaves a legible end state. */
+  @media (prefers-reduced-motion:reduce){
+    .live-call *,.live-call *::after,.tile svg *,.wf svg *,
+    .cta-wave,.cta-wave *,.cta-wave::after,.pulse{animation:none!important}
+  }
 </style>
 </head>
 <body>
@@ -327,18 +458,52 @@
       <a class="btn btn-primary" href="#">Book a Call</a>
       <a class="btn btn-secondary" href="#pain">Learn More</a>
     </div>
-    <div class="agent-strip corners">
+    <!-- Live-call demo: UI microcopy only, ~11s CSS loop -->
+    <div class="live-call corners">
       <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-      <div class="agent-left">
-        <div class="agent-avatar">E</div>
-        <div>
-          <div class="agent-name">Emma</div>
-          <div class="agent-role">Receptionist Agent</div>
+      <div class="lc-head">
+        <div class="agent-left">
+          <div class="agent-avatar">E</div>
+          <div>
+            <div class="agent-name">Emma</div>
+            <div class="agent-role">Receptionist Agent</div>
+          </div>
+        </div>
+        <div class="lc-status">
+          <span class="lc-state lc-state-in">
+            <span class="lc-bez"><span class="dot" style="background:var(--yellow)"></span></span>
+            Incoming call · 9:42 PM
+          </span>
+          <span class="lc-state lc-state-ans">
+            <span class="lc-bez"><span class="dot pulse" style="background:var(--green)"></span></span>
+            Answered by Emma · 0.8s
+          </span>
         </div>
       </div>
-      <div class="call-pill">
-        <span class="bez" style="width:18px;height:18px;border-radius:50%;border:1px solid #C0BEBE;background:#fff;box-shadow:0 1px 2px 0 rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;flex:none"><span class="pulse" style="display:block;width:10px;height:10px;border-radius:50%;background:var(--green)"></span></span>
-        Incoming call · answered in 0.8s
+      <div class="lc-body">
+        <div class="lc-row caller lc-b1">
+          <span class="lc-face"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#686564" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.3-3.3 4.1-5 7.5-5s6.2 1.7 7.5 5"/></svg></span>
+          <div class="lc-bubble">Hi, are you still open? I'd like to book an appointment.</div>
+        </div>
+        <div class="lc-row emma lc-b2">
+          <div class="lc-bubble">We are! I have Thursday 2:30 PM or Friday 10 AM free. Which suits you?</div>
+          <span class="lc-face">E</span>
+        </div>
+        <div class="lc-row caller lc-b3">
+          <span class="lc-face"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#686564" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.3-3.3 4.1-5 7.5-5s6.2 1.7 7.5 5"/></svg></span>
+          <div class="lc-bubble">Thursday, perfect.</div>
+        </div>
+      </div>
+      <div class="lc-result">
+        <span class="hr-dash" style="top:0" aria-hidden="true"></span>
+        <span class="lc-chip booked lc-r1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v3.5M16 3v3.5M9 14.5l2.2 2.2 4-4"/></svg>
+          Appointment booked · Thu 2:30 PM
+        </span>
+        <span class="lc-chip sync lc-r2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2.5l3.5 3.5L17 9.5M3.5 11V9.5a4 4 0 0 1 4-4h13M7 21.5L3.5 18 7 14.5M20.5 13v1.5a4 4 0 0 1-4 4h-13"/></svg>
+          Synced to CRM &amp; calendar
+        </span>
       </div>
     </div>
   </div>
@@ -356,19 +521,50 @@
     <div class="grid-cards">
       <div class="card corners">
         <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="tile" style="background:linear-gradient(135deg,#E5FFFF,#BCEEFE)">?</div>
+        <div class="tile" style="background:linear-gradient(135deg,#E5FFFF,#BCEEFE)">
+          <svg width="54" height="54" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+            <path d="M15 11h26a8 8 0 0 1 8 8v11a8 8 0 0 1-8 8H27l-8 7v-7h-4a8 8 0 0 1-8-8V19a8 8 0 0 1 8-8z" fill="#fff" stroke="#353231" stroke-width="1.8" stroke-linejoin="round"/>
+            <text class="pq-q" x="28" y="30.5" text-anchor="middle" font-size="16" font-weight="500" fill="#060504" style="font-family:var(--font-title)">?</text>
+            <g class="pq-wait" fill="#9B9897">
+              <circle cx="21.5" cy="25" r="1.8"/><circle cx="28" cy="25" r="1.8"/><circle cx="34.5" cy="25" r="1.8"/>
+            </g>
+          </svg>
+        </div>
         <h3>Questions left hanging</h3>
         <p>Your customers want an immediate answer, not a voicemail box.</p>
       </div>
       <div class="card corners">
         <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="tile" style="background:linear-gradient(135deg,#FFE5B2,#FFD499)">$</div>
+        <div class="tile" style="background:linear-gradient(135deg,#FFE5B2,#FFD499)">
+          <svg width="54" height="54" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+            <g transform="translate(9,13) scale(1.45)" stroke="#353231" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+              <g class="pm-phone">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" fill="#fff"/>
+              </g>
+            </g>
+            <text class="pm-cash" x="42" y="43" text-anchor="middle" font-size="13" font-weight="600" fill="#33793E" style="font-family:var(--font-sans)">$</text>
+            <g class="pm-badge">
+              <circle cx="42" cy="14" r="9.5" fill="#D42D2D"/>
+              <text class="pm-n1" x="42" y="18" text-anchor="middle" font-size="11" font-weight="600" fill="#fff" style="font-family:var(--font-sans)">1</text>
+              <text class="pm-n2" x="42" y="18" text-anchor="middle" font-size="11" font-weight="600" fill="#fff" style="font-family:var(--font-sans)">2</text>
+              <text class="pm-n3" x="42" y="18" text-anchor="middle" font-size="11" font-weight="600" fill="#fff" style="font-family:var(--font-sans)">3</text>
+            </g>
+          </svg>
+        </div>
         <h3>Missed calls = missed revenue</h3>
         <p>Every unanswered call is a job walking straight to your competitor.</p>
       </div>
       <div class="card corners">
         <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="tile" style="background:linear-gradient(135deg,#FFB2D7,#FF99BD)">⏱</div>
+        <div class="tile" style="background:linear-gradient(135deg,#FFB2D7,#FF99BD)">
+          <svg width="54" height="54" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+            <rect x="9" y="12" width="38" height="34" rx="6" fill="#fff" stroke="#353231" stroke-width="1.8"/>
+            <path d="M9 21h38" stroke="#353231" stroke-width="1.8"/>
+            <path d="M19 8v7M37 8v7" stroke="#353231" stroke-width="1.8" stroke-linecap="round"/>
+            <rect class="pc-a" x="14" y="26" width="13" height="7" rx="2.5" fill="#92DCF5"/>
+            <rect class="pc-b" x="29" y="35" width="13" height="7" rx="2.5" fill="#FFB266"/>
+          </svg>
+        </div>
         <h3>Scheduling headaches</h3>
         <p>Manual appointment booking is slow, error-prone and eats your day.</p>
       </div>
@@ -385,13 +581,13 @@
         <div class="pill" style="margin-bottom:24px">What you get</div>
         <h2 class="statement">The perfect workflow for your business</h2>
         <div class="benefit-list">
-          <div class="benefit"><span class="bez" style="width:18px;height:18px;border-radius:50%;border:1px solid #C0BEBE;background:#fff;box-shadow:0 1px 2px 0 rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;flex:none"><span style="display:block;width:10px;height:10px;border-radius:50%;background:var(--green)"></span></span> 24/7 availability</div>
-          <div class="benefit"><span class="bez" style="width:18px;height:18px;border-radius:50%;border:1px solid #C0BEBE;background:#fff;box-shadow:0 1px 2px 0 rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;flex:none"><span style="display:block;width:10px;height:10px;border-radius:50%;background:var(--green)"></span></span> Seamless appointment booking</div>
-          <div class="benefit"><span class="bez" style="width:18px;height:18px;border-radius:50%;border:1px solid #C0BEBE;background:#fff;box-shadow:0 1px 2px 0 rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;flex:none"><span style="display:block;width:10px;height:10px;border-radius:50%;background:var(--green)"></span></span> Automated pricing estimates</div>
-          <div class="benefit"><span class="bez" style="width:18px;height:18px;border-radius:50%;border:1px solid #C0BEBE;background:#fff;box-shadow:0 1px 2px 0 rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;flex:none"><span style="display:block;width:10px;height:10px;border-radius:50%;background:var(--green)"></span></span> Lower costs, higher efficiency</div>
-          <div class="benefit"><span class="bez" style="width:18px;height:18px;border-radius:50%;border:1px solid #C0BEBE;background:#fff;box-shadow:0 1px 2px 0 rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;flex:none"><span style="display:block;width:10px;height:10px;border-radius:50%;background:var(--green)"></span></span> Instant customer assistance</div>
-          <div class="benefit"><span class="bez" style="width:18px;height:18px;border-radius:50%;border:1px solid #C0BEBE;background:#fff;box-shadow:0 1px 2px 0 rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;flex:none"><span style="display:block;width:10px;height:10px;border-radius:50%;background:var(--green)"></span></span> Lead nurturing &amp; follow-ups</div>
-          <div class="benefit"><span class="bez" style="width:18px;height:18px;border-radius:50%;border:1px solid #C0BEBE;background:#fff;box-shadow:0 1px 2px 0 rgba(0,0,0,.05);display:flex;align-items:center;justify-content:center;flex:none"><span style="display:block;width:10px;height:10px;border-radius:50%;background:var(--green)"></span></span> Consistent service quality</div>
+          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#E5FFFF,#BCEEFE)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.2 1.9"/></svg></span> 24/7 availability</div>
+          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#FFE5B2,#FFD499)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v3.5M16 3v3.5M9 14.5l2.2 2.2 4-4"/></svg></span> Seamless appointment booking</div>
+          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#FFB2D7,#FF99BD)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10.5V5a2 2 0 0 0-2-2h-5.5a2 2 0 0 0-1.42.59l-7.5 7.5a2 2 0 0 0 0 2.82l5.01 5.01a2 2 0 0 0 2.82 0l7.5-7.5A2 2 0 0 0 20 10.5z"/><circle cx="15" cy="8" r="1.3"/></svg></span> Automated pricing estimates</div>
+          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#CCF6FF,#92DCF5)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 16.5l-8-8-5 5-6-6"/><path d="M15.5 16.5h6v-6"/></svg></span> Lower costs, higher efficiency</div>
+          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#D6DFFF,#B2C2FF)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 13.5v-2a7.5 7.5 0 0 1 15 0v2"/><rect x="3" y="13" width="4.4" height="7" rx="2.2"/><rect x="16.6" y="13" width="4.4" height="7" rx="2.2"/></svg></span> Instant customer assistance</div>
+          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#FFE5B2,#FFB266)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2.5l3.5 3.5L17 9.5M3.5 11V9.5a4 4 0 0 1 4-4h13M7 21.5L3.5 18 7 14.5M20.5 13v1.5a4 4 0 0 1-4 4h-13"/></svg></span> Lead nurturing &amp; follow-ups</div>
+          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#FFD499,#FF99BD)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.7 5.4 6 .9-4.3 4.2 1 5.9-5.4-2.8-5.4 2.8 1-5.9L3.4 9.8l6-.9L12 3.5z"/></svg></span> Consistent service quality</div>
         </div>
       </div>
       <span class="blob glow-orange" aria-hidden="true"></span>
@@ -415,25 +611,96 @@
     <div class="grid-cards">
       <div class="card corners">
         <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="tile" style="background:linear-gradient(135deg,#FAF9FA,#F0F0EF)">01</div>
+        <div class="wf">
+          <span class="wf-num">01</span>
+          <svg width="200" height="88" viewBox="0 0 200 88" fill="none" aria-hidden="true">
+            <rect class="wf1-bar" x="30" y="38" width="4" height="12" rx="2" fill="#0083F5"/>
+            <rect class="wf1-bar" style="animation-delay:.1s" x="38" y="32" width="4" height="24" rx="2" fill="#0083F5"/>
+            <rect class="wf1-bar" style="animation-delay:.2s" x="46" y="27" width="4" height="34" rx="2" fill="#0083F5"/>
+            <rect class="wf1-bar" style="animation-delay:.3s" x="54" y="34" width="4" height="20" rx="2" fill="#0083F5"/>
+            <rect class="wf1-bar" style="animation-delay:.4s" x="62" y="30" width="4" height="28" rx="2" fill="#0083F5"/>
+            <rect class="wf1-bar" style="animation-delay:.5s" x="70" y="37" width="4" height="14" rx="2" fill="#0083F5"/>
+            <path d="M84 44h48" stroke="#B4B2B1" stroke-width="1.2" stroke-dasharray="4 4"/>
+            <circle class="wf1-dot" cx="86" cy="44" r="3" fill="#0083F5"/>
+            <rect class="wf1-ring" x="138" y="26" width="36" height="36" rx="10" stroke="#6DC277" stroke-width="1.5"/>
+            <rect x="138" y="26" width="36" height="36" rx="10" fill="#fff" stroke="#E6E5E5"/>
+            <g transform="translate(147,35) scale(0.75)" stroke="#353231" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </g>
+          </svg>
+        </div>
         <h3>Customer calls</h3>
         <p>The AI receptionist answers instantly and understands what the customer needs through natural conversation.</p>
       </div>
       <div class="card corners">
         <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="tile" style="background:linear-gradient(135deg,#FAF9FA,#F0F0EF)">02</div>
+        <div class="wf">
+          <span class="wf-num">02</span>
+          <svg width="200" height="88" viewBox="0 0 200 88" fill="none" aria-hidden="true">
+            <path d="M34 44h30" stroke="#B4B2B1" stroke-width="1.2"/>
+            <path d="M64 44l78-28M64 44h78M64 44l78 28" stroke="#B4B2B1" stroke-width="1.2" stroke-dasharray="4 4"/>
+            <circle cx="64" cy="44" r="2.5" fill="#353231"/>
+            <rect x="6" y="30" width="28" height="28" rx="9" fill="#fff" stroke="#E6E5E5"/>
+            <g transform="translate(13,37) scale(0.58)" stroke="#353231" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </g>
+            <rect x="142" y="2" width="28" height="28" rx="9" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="149" y="10.5" width="14" height="11.5" rx="2.5" stroke="#353231" stroke-width="1.5"/>
+            <path d="M149 14.5h14M152.5 8.5v3M159.5 8.5v3" stroke="#353231" stroke-width="1.5" stroke-linecap="round"/>
+            <rect x="142" y="30" width="28" height="28" rx="9" fill="#fff" stroke="#E6E5E5"/>
+            <text x="156" y="49" text-anchor="middle" font-size="13" font-weight="500" fill="#353231" style="font-family:var(--font-title)">?</text>
+            <rect x="142" y="58" width="28" height="28" rx="9" fill="#fff" stroke="#E6E5E5"/>
+            <g transform="translate(149,65) scale(0.58)" stroke="#353231" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 10.5V5a2 2 0 0 0-2-2h-5.5a2 2 0 0 0-1.42.59l-7.5 7.5a2 2 0 0 0 0 2.82l5.01 5.01a2 2 0 0 0 2.82 0l7.5-7.5A2 2 0 0 0 20 10.5z"/><circle cx="15" cy="8" r="1.3"/>
+            </g>
+            <circle class="wf2-d wf2-d1" cx="16" cy="44" r="3" fill="#0083F5"/>
+            <circle class="wf2-d wf2-d2" cx="16" cy="44" r="3" fill="#0083F5"/>
+            <circle class="wf2-d wf2-d3" cx="16" cy="44" r="3" fill="#0083F5"/>
+          </svg>
+        </div>
         <h3>Intelligent routing</h3>
         <p>Appointments get scheduled, questions get answered, sales leads get qualified — automatically.</p>
       </div>
       <div class="card corners">
         <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="tile" style="background:linear-gradient(135deg,#FAF9FA,#F0F0EF)">03</div>
+        <div class="wf">
+          <span class="wf-num">03</span>
+          <svg width="200" height="88" viewBox="0 0 200 88" fill="none" aria-hidden="true">
+            <circle class="wf3-ring" cx="100" cy="46" r="27" stroke="#B4B2B1" stroke-width="1.2" stroke-dasharray="4 5"/>
+            <g class="wf3-orbit">
+              <circle cx="127" cy="46" r="3" fill="#0083F5"/>
+              <circle cx="73" cy="46" r="3" fill="#6DC277"/>
+            </g>
+            <rect x="88" y="7" width="24" height="24" rx="8" fill="#fff" stroke="#E6E5E5"/>
+            <g transform="translate(93,12) scale(0.58)" stroke="#353231" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </g>
+            <rect x="64.6" y="47.5" width="24" height="24" rx="8" fill="#fff" stroke="#E6E5E5"/>
+            <ellipse cx="76.6" cy="55" rx="5.5" ry="2.2" stroke="#353231" stroke-width="1.4"/>
+            <path d="M71.1 55v9c0 1.2 2.5 2.2 5.5 2.2s5.5-1 5.5-2.2v-9M71.1 59.5c0 1.2 2.5 2.2 5.5 2.2s5.5-1 5.5-2.2" stroke="#353231" stroke-width="1.4"/>
+            <rect x="111.4" y="47.5" width="24" height="24" rx="8" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="116.9" y="55" width="13" height="11" rx="2.5" stroke="#353231" stroke-width="1.4"/>
+            <path d="M116.9 58.8h13M120.2 52.8v3M126.6 52.8v3" stroke="#353231" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
         <h3>Seamless integration</h3>
         <p>Every interaction syncs with your CRM, updates your calendar and surfaces the insights that matter.</p>
       </div>
       <div class="card corners">
         <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="tile" style="background:linear-gradient(135deg,#FAF9FA,#F0F0EF)">04</div>
+        <div class="wf">
+          <span class="wf-num">04</span>
+          <svg width="200" height="88" viewBox="0 0 200 88" fill="none" aria-hidden="true">
+            <path d="M32 70h136" stroke="#CDCCCB" stroke-width="1"/>
+            <rect class="wf4-bar" x="40" y="56" width="14" height="14" rx="4" fill="#BCEEFE"/>
+            <rect class="wf4-bar" style="animation-delay:.12s" x="64" y="48" width="14" height="22" rx="4" fill="#BCEEFE"/>
+            <rect class="wf4-bar" style="animation-delay:.24s" x="88" y="40" width="14" height="30" rx="4" fill="#BCEEFE"/>
+            <rect class="wf4-bar" style="animation-delay:.36s" x="112" y="30" width="14" height="40" rx="4" fill="#92DCF5"/>
+            <rect class="wf4-bar" style="animation-delay:.48s" x="136" y="20" width="14" height="50" rx="4" fill="#92DCF5"/>
+            <path class="wf4-line" d="M47 52l24-8 24-8 24-10 24-12" stroke="#060504" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <path class="wf4-tip" d="M135 14h8v8" stroke="#060504" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
         <h3>Continuous improvement</h3>
         <p>Your agents get sharper over time with ongoing training, feedback and monthly optimizations.</p>
       </div>
@@ -450,7 +717,10 @@
     <div class="compare-grid">
       <div class="media-frame frame-ai corners">
         <span class="inset" aria-hidden="true"></span>
-        <h3>With NativeSquare AI</h3>
+        <div class="frame-head">
+          <h3>With NativeSquare AI</h3>
+          <span class="cmp-chip chip-ai"><svg width="15" height="12" viewBox="0 0 15 12" fill="currentColor" aria-hidden="true"><rect x="0" y="4" width="2" height="4" rx="1"/><rect x="3.25" y="2" width="2" height="8" rx="1"/><rect x="6.5" y="0" width="2" height="12" rx="1"/><rect x="9.75" y="2.5" width="2" height="7" rx="1"/><rect x="13" y="4.5" width="2" height="3" rx="1"/></svg>0.8s</span>
+        </div>
         <ul>
           <li><b>✓</b> 24/7, never off duty</li>
           <li><b>✓</b> Instant replies, zero hold time</li>
@@ -461,7 +731,10 @@
       </div>
       <div class="media-frame frame-trad">
         <span class="inset" aria-hidden="true"></span>
-        <h3>Traditional hiring</h3>
+        <div class="frame-head">
+          <h3>Traditional hiring</h3>
+          <span class="cmp-chip chip-trad"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 6.5V12l3.5 2"/></svg>9–5</span>
+        </div>
         <ul>
           <li><b>✕</b> Limited to business hours</li>
           <li><b>✕</b> Customers wait on hold</li>
@@ -493,6 +766,12 @@
       <div class="grid-cards offers-grid">
         <div class="card corners">
           <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+          <div class="tile-sm" style="background:linear-gradient(135deg,#E5FFFF,#BCEEFE)">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              <path d="M16 2v6h6M23 1l-7 7"/>
+            </svg>
+          </div>
           <h3>Inbound voice agents</h3>
           <div class="offer-tag">Handle customer inquiries and bookings automatically.</div>
           <ul>
@@ -506,6 +785,12 @@
         </div>
         <div class="card corners">
           <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+          <div class="tile-sm" style="background:linear-gradient(135deg,#FFE5B2,#FFD499)">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              <path d="M22 8V2h-6M15 9l7-7"/>
+            </svg>
+          </div>
           <h3>Outbound voice agents</h3>
           <div class="offer-tag">Automate calls for engagement, follow-ups and sales.</div>
           <ul>
@@ -519,6 +804,12 @@
         </div>
         <div class="card corners">
           <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+          <div class="tile-sm" style="background:linear-gradient(135deg,#D6DFFF,#B2C2FF)">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="5" cy="6" r="2.6"/><circle cx="19" cy="6" r="2.6"/><circle cx="12" cy="18.5" r="2.6"/>
+              <path d="M7.6 6h8.8M6.2 8.3l4.6 8M17.8 8.3l-4.6 8"/>
+            </svg>
+          </div>
           <h3>Custom workflows</h3>
           <div class="offer-tag">For businesses that want tailored AI to streamline their operations.</div>
           <ul>
@@ -568,6 +859,13 @@
   <span class="blob b-amber" style="position:absolute;border-radius:100%" aria-hidden="true"></span>
   <span class="blob b-pink2" style="position:absolute;border-radius:100%" aria-hidden="true"></span>
   <span class="veil" aria-hidden="true"></span>
+  <div class="cta-wave" aria-hidden="true">
+    <span class="wbar" style="height:10px"></span>
+    <span class="wbar" style="height:18px;animation-delay:.12s"></span>
+    <span class="wbar" style="height:24px;animation-delay:.24s"></span>
+    <span class="wbar" style="height:16px;animation-delay:.36s"></span>
+    <span class="wbar" style="height:9px;animation-delay:.48s"></span>
+  </div>
   <div class="pill">Let's talk</div>
   <h2>Book a free consultation</h2>
   <a class="btn btn-primary" href="#">Book a Call</a>

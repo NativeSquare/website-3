@@ -37,6 +37,16 @@ A et B éliminées par Alex. Passe sur les quatre restantes :
 - **E (search-party)** : art hero tablette/mobile (`bg-md.svg`) et arche footer mobile embarqués, rayons de blur alignés sur le template — 108 Ko.
 - **F** : **reconstruite sur les screenshots de la vraie landing Verbrio** (`Bureau/Project screenshots/Verbrio/RAW/`) — hero à règles hairline dans le titre, bords aurora striés, barre prompt d'Emma (machine à écrire), 4 tuiles pastel néomorphiques flottantes, carte « Emma — Response » à surlignages + badges sources, grille How-it-works à croisillons. Le screenshot 4 étant la section mobile (pas de footer sur la réf), CTA final et footer sont extrapolés du système. Le code d'origine de cette landing n'existe ni en local, ni sur GitHub, ni sur Vercel — seuls les screenshots font foi.
 
+## Round 4 — assets de compréhension sur les finalistes D et E (30/08/2026)
+
+Finale entre D (polarsignals) et E (search-party). Principe vocalchat : chaque asset doit faire comprendre le produit instantanément. Ajouté dans les deux, décliné dans chaque DA :
+1. **Module hero « appel en direct »** (boucle ~11-12 s) : Incoming call → Answered by AI Emma · 0.8s → 3 répliques → Appointment booked + sync CRM/calendrier.
+2. **Scènes animées sur les 3 cartes douleur** : question sans réponse, compteur d'appels manqués + $ qui s'évapore, calendrier qui se télescope.
+3. **Icônes statiques** : 7 bénéfices + 3 offres.
+4. **Mini-schémas animés du workflow** : onde → routage à 3 branches → triangle de sync → courbe qui se dessine.
+5. **Chips comparatif** (« 0.8s » vs « 9–5 ») et accent waveform sur le CTA final.
+Copy inchangé ; microcopy de démo uniquement dans les assets ; `prefers-reduced-motion` fige sur l'état final. D ≈ 508 Ko, E ≈ 130 Ko.
+
 ## Sauvegarde
 
 Le site actuel (HealthTech) est figé sur la branche `sauvegarde/site-healthtech-avant-refonte-2026-08`.
