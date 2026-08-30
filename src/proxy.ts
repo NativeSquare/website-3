@@ -11,6 +11,11 @@ import type { NextRequest } from "next/server";
 export const NS_LOCALE_HEADER = "x-ns-locale";
 
 function detectLocale(request: NextRequest): "en" | "fr" {
+  /* ?lang=en / ?lang=fr force la langue — pour verifier les deux versions
+     quel que soit le navigateur ou le pays. */
+  const force = request.nextUrl.searchParams.get("lang");
+  if (force === "en" || force === "fr") return force;
+
   if (request.headers.get("x-vercel-ip-country") === "FR") return "fr";
 
   const acceptLanguage = request.headers.get("accept-language") ?? "";
