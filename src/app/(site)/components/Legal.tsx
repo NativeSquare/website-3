@@ -99,7 +99,7 @@ const Legal: React.FC = () => {
                     </h4>
                     <ul className="space-y-2 text-[14px] leading-relaxed text-gray-30">
                       <li><strong className="text-gray-5">Company:</strong> NativeSquare SAS</li>
-                      <li><strong className="text-gray-5">Head Office:</strong> 9 rue des Colonnes, 75002 Paris, France</li>
+                      <li><strong className="text-gray-5">Head Office:</strong> 60 rue François Ier, 75008 Paris, France</li>
                       <li><strong className="text-gray-5">SIREN:</strong> 995 089 851</li>
                       <li><strong className="text-gray-5">SIRET (head office):</strong> 995 089 851 00019</li>
                       <li><strong className="text-gray-5">VAT:</strong> FR87995089851</li>
