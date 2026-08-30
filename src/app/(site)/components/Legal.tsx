@@ -65,11 +65,11 @@ const Legal: React.FC = () => {
                   For any questions regarding our terms or your data rights:
                 </p>
                 <a
-                  href="mailto:admin@nativesquare.fr"
+                  href="mailto:office@nativesquare.fr"
                   className="text-[14px] font-medium tracking-tight"
                   style={{ color: "var(--primary-blue)" }}
                 >
-                  admin@nativesquare.fr
+                  office@nativesquare.fr
                 </a>
               </div>
             </div>
@@ -181,7 +181,7 @@ const Legal: React.FC = () => {
                     <li><strong className="text-gray-5">Portability:</strong> The right to request that we transfer your data to another organization.</li>
                   </ul>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30 mt-4">
-                    To exercise these rights, please contact us at <strong className="text-gray-5">admin@nativesquare.fr</strong>.
+                    To exercise these rights, please contact us at <strong className="text-gray-5">office@nativesquare.fr</strong>.
                   </p>
 
                   <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">4. Data Retention</h3>
