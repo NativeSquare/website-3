@@ -54,3 +54,7 @@ Le site actuel (HealthTech) est figé sur la branche `sauvegarde/site-healthtech
 ## Prochaine étape
 
 Alex choisit une variante (ou un mix) → affinage → intégration Next dans `src/app/(site)` → GO explicite avant tout push (déploiement Vercel).
+
+## Round 5 — passe finale sur la gagnante E (30/08/2026)
+
+E gagne. Passe vocalchat appliquée : hero en 2 colonnes (asset à droite) avec carte persona « Sales call with Emma » (avatar memoji SVG dessiné, halo aurora conique, waveform bicolore, timer CSS live) + 3 chips flottantes ; How-it-works agrandi (~236px) avec l'arbre de routage à timer 0:08 et les vrais logos Gmail/Google Calendar/Slack/WhatsApp/HubSpot en orbite dans Seamless integration ; scène missed-revenue refaite (pièce $ qui tombe et se brise, la plus grosse des trois) ; nouveau logo NativeSquare en SVG inline (grille 3×3 bleue, opacités en cascade 1.0→0.16, 2 matrices alternatives en commentaire). ~152 Ko.
