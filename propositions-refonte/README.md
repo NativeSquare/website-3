@@ -29,6 +29,14 @@ Base retenue au round 1 : le design lumineux (variante B). Six déclinaisons, **
 | `variation-e-search-party.html` | search-party-next.vercel.app | pastel chaud #F7F5F3, croix « + » aux angles, pointillés, blobs, Figtree (≈ Aeonik) |
 | `variation-f-cluely-verbrio.html` | cluely (pixelpoint) via l'implémentation Verbrio de conference.care | dégradé gris + blobs blancs flous, boutons à glow bleu radial, **la barre IA Verbrio animée en hero** (Emma) |
 
+## Round 3 — passe de fidélité (30/08/2026)
+
+A et B éliminées par Alex. Passe sur les quatre restantes :
+- **C (phrasso)** : 8 vrais assets du site embarqués en base64 (hero-background flippé + fondu droit, noise SVG exact, 3 textures photo des cartes douleur, 2 glows, poster du CTA final, verre du tier actif) — 776 Ko.
+- **D (polarsignals)** : poster réel de la vidéo hero, patterns.svg barcode authentique (hero + CTA), wash bleu du CTA, wash violet de la section compare — 495 Ko.
+- **E (search-party)** : art hero tablette/mobile (`bg-md.svg`) et arche footer mobile embarqués, rayons de blur alignés sur le template — 108 Ko.
+- **F** : **reconstruite sur les screenshots de la vraie landing Verbrio** (`Bureau/Project screenshots/Verbrio/RAW/`) — hero à règles hairline dans le titre, bords aurora striés, barre prompt d'Emma (machine à écrire), 4 tuiles pastel néomorphiques flottantes, carte « Emma — Response » à surlignages + badges sources, grille How-it-works à croisillons. Le screenshot 4 étant la section mobile (pas de footer sur la réf), CTA final et footer sont extrapolés du système. Le code d'origine de cette landing n'existe ni en local, ni sur GitHub, ni sur Vercel — seuls les screenshots font foi.
+
 ## Sauvegarde
 
 Le site actuel (HealthTech) est figé sur la branche `sauvegarde/site-healthtech-avant-refonte-2026-08`.
