@@ -23,6 +23,15 @@
   falling dollar coin that shatters; ns-logo.png replaced everywhere by an inline 3×3 rounded-square
   SVG mark in #0083F5 with an opacity cascade (alternate matrices in a comment next to the navbar SVG).
   All original page copy is verbatim; only asset/microcopy changed. No external assets beyond Google Fonts.
+  Restructure pass (2026-08-30): new copy + new IA modeled on the reference page's own anatomy —
+  centered hero followed by a full-width framed node-graph panel (grid background, YOUR BUSINESS center
+  node with dashed frame corners, labeled chips wired to a green "$ More booked jobs" chip, SMIL dots
+  traveling the lines, corner captions); five large alternating service bands (reference "In Beta"
+  pattern): speed-to-lead race (new), CRM reactivation list (new), the Emma persona card (moved from
+  the hero, enlarged), overnight automations (new), tool-logo orbit (reused, ink center tile);
+  what-you-get icon-card grid; compare/FAQ/final CTA reworded. Logo switched from blue to ink,
+  every CTA is now the one blue "Book a Call" button; the offers grid and workflow mini-panels
+  were absorbed into the service bands.
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,12 +73,9 @@
     font-family:var(--font-sans);font-weight:500;letter-spacing:-.025em;font-size:16px;
     height:44px;border-radius:10px;padding:0 24px;text-decoration:none;cursor:pointer;
     transition:background-color .15s cubic-bezier(.4,0,.2,1),box-shadow .15s cubic-bezier(.4,0,.2,1)}
-  .btn-primary{background:var(--ink);color:#fff;box-shadow:var(--shadow-button)}
-  .btn-primary:hover{background:var(--gray-20)}
-  .btn-primary:active{background:var(--gray-8)}
-  .btn-secondary{background:#fff;color:var(--ink);box-shadow:var(--shadow-secondary)}
-  .btn-secondary:hover{box-shadow:var(--shadow-secondary-hover)}
-  .btn-secondary:active{background:var(--gray-98)}
+  .btn-primary{background:var(--blue);color:#fff;box-shadow:var(--shadow-button)}
+  .btn-primary:hover{background:var(--blue-hover)}
+  .btn-primary:active{background:var(--blue-active)}
   .btn-sm{height:32px;border-radius:8px;padding:0 18px;font-size:14px}
 
   /* ============ Signature: uppercase pill badge ============ */
@@ -129,20 +135,47 @@
   .hero-art.left{bottom:0;left:0}
   .hero-art.right{top:0;right:0}
   .hero-art.md{display:none;top:0;right:-20px;height:100%} /* bg-md.svg — tablet/mobile hero art (lg:hidden in template) */
-  .hero-inner{position:relative;z-index:20;max-width:1232px;margin:0 auto;padding:56px 32px 104px;
-    display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,1fr);gap:56px;align-items:center}
-  .hero-copy{display:flex;flex-direction:column;align-items:flex-start;text-align:left}
-  .hero h1{font-size:52px;line-height:1.06;letter-spacing:-.025em;font-weight:500;text-wrap:balance;max-width:620px}
-  .hero .lead{margin-top:28px;max-width:560px;font-size:20px;line-height:1.375;letter-spacing:-.02em;color:var(--gray-40);text-wrap:pretty}
-  .hero-ctas{margin-top:36px;display:flex;gap:12px;flex-wrap:wrap}
+  .hero-inner{position:relative;z-index:20;max-width:896px;margin:0 auto;padding:64px 32px 92px;
+    display:flex;flex-direction:column;align-items:center;text-align:center}
+  .hero-inner .pill{margin-bottom:22px;background:rgba(255,255,255,.45)}
+  .hero h1{font-size:58px;line-height:1.05;letter-spacing:-.025em;font-weight:500;text-wrap:balance;max-width:840px}
+  .hero .lead{margin-top:26px;max-width:680px;font-size:20px;line-height:1.375;letter-spacing:-.02em;color:var(--gray-40);text-wrap:pretty}
+  .hero-ctas{margin-top:36px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 
-  /* Persona call card — "Sales call with Emma", modeled on the aurora-glow call card idea.
+  /* ============ Hero node-graph panel (reference "how-it-works" anatomy in the E DA) ============ */
+  .graph-sec{position:relative}
+  .panel-wrap{position:relative}
+  .glow-orange{left:-96px;bottom:-64px;height:90%;width:38%;background:linear-gradient(to bottom,transparent,#FFD499);opacity:.5;filter:blur(64px)}
+  .glow-blue{right:-48px;bottom:-64px;height:90%;width:28%;background:#92DCF5;opacity:.3;filter:blur(64px)}
+  .graph-panel{position:relative;z-index:10;background:#fff;border:1px solid var(--border);border-top:0;overflow:hidden}
+  .graph-panel::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(to right,#F1EEE9 1px,transparent 1px),linear-gradient(to bottom,#F1EEE9 1px,transparent 1px);
+    background-size:46px 46px;
+    -webkit-mask-image:radial-gradient(120% 105% at 55% 45%,#000 55%,transparent 100%);
+    mask-image:radial-gradient(120% 105% at 55% 45%,#000 55%,transparent 100%)}
+  .gp-blob{position:absolute;left:32%;top:16%;width:42%;height:56%;border-radius:100%;background:#FFE5B2;opacity:.26;filter:blur(80px);pointer-events:none}
+  .gp-blob.b2{left:6%;top:50%;width:26%;height:42%;background:#BCEEFE;opacity:.22}
+  .gp-head{position:absolute;z-index:20;top:44px;left:48px;max-width:430px;font-size:34px;line-height:1.15;letter-spacing:-.02em;font-weight:500;text-wrap:balance}
+  .gp-caps{position:absolute;z-index:20;left:48px;right:48px;bottom:30px;display:flex;justify-content:space-between;gap:16px;pointer-events:none}
+  .gp-cap{font-weight:500;letter-spacing:-.02em;font-size:18px;line-height:1.375;color:#1F1F1F}
+  .gp-svg{position:relative;z-index:10;display:block;width:100%;height:auto}
+  .gp-svg.gp-mobile{display:none}
+  @media (max-width:800px){
+    .graph-panel::before{top:128px}
+    .gp-head{position:static;max-width:100%;padding:30px 24px 0;font-size:26px}
+    .gp-svg.gp-desktop{display:none}
+    .gp-svg.gp-mobile{display:block;max-width:520px;margin:10px auto 0;padding:0 10px}
+    .gp-caps{position:static;padding:2px 24px 24px;margin-top:2px}
+    .gp-cap{font-size:15px}
+  }
+
+  /* Persona call card — "Sales call with Emma", now the AI-receptionist service band's visual.
      ~11s CSS master timeline: incoming ring → answered → 2-bubble exchange → booked → fade & loop.
      Header (avatar + title + waveform + live timer) is persistent; everything else is opacity-only.
      Static base styles = the finished-call end state, so prefers-reduced-motion shows a booked call. */
   @property --t{syntax:"<integer>";inherits:false;initial-value:0}
   @property --ang{syntax:"<angle>";inherits:false;initial-value:0deg}
-  .hero-asset{position:relative;width:100%;max-width:540px;justify-self:end;padding:24px 18px}
+  .svc-emma{position:relative;width:100%;max-width:560px;margin:0 auto;padding:16px 10px}
   .persona-wrap{position:relative}
   .persona-glow{position:absolute;inset:-9px;border-radius:37px;z-index:0;pointer-events:none;
     background:conic-gradient(from var(--ang) at 50% 50%,#BCEEFE,#B2C2FF,#FF99BD,#FFE5B2,#BCEEFE);
@@ -235,22 +268,35 @@
   .pain .grid-cards{grid-template-columns:repeat(3,1fr)}
   .pain .grid-cards .card+.card{margin-left:-1px}
 
-  /* ============ Benefits — big bordered white panel with glows ============ */
-  .benefits-sec{padding:144px 0 104px}
-  .panel-wrap{position:relative}
-  .panel{position:relative;z-index:10;background:#fff;border:1px solid var(--border);padding:72px 64px 56px}
-  .panel .statement{margin-top:0}
-  .benefit-list{margin-top:56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px 40px}
-  .benefit{display:flex;align-items:center;gap:10px;font-weight:500;letter-spacing:-.025em;font-size:20px;line-height:1.375;color:#1F1F1F}
-  .glow-orange{left:-96px;bottom:-64px;height:90%;width:38%;background:linear-gradient(to bottom,transparent,#FFD499);opacity:.5;filter:blur(64px)}
-  .glow-blue{right:-48px;bottom:-64px;height:90%;width:28%;background:#92DCF5;opacity:.3;filter:blur(64px)}
+  /* ============ Services — big alternating feature bands (reference "In Beta" pattern) ============ */
+  .services-sec{padding:120px 0 0}
+  .services-sec .sec-head{padding-bottom:56px}
+  .svc-band{position:relative;background:var(--section-gray);border-top:1px solid var(--border);padding:88px 0}
+  .svc-band:last-child{border-bottom:1px solid var(--border)}
+  .svc-grid{max-width:1280px;margin:0 auto;padding:0 32px;display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,1.18fr);gap:28px 72px;align-items:center}
+  .svc-head{max-width:480px}
+  .svc-head .status{margin-bottom:18px;font-size:15px}
+  .svc-h{font-size:32px;line-height:1.2;letter-spacing:-.02em;color:var(--gray-12)}
+  .svc-p{margin-top:18px;font-size:20px;line-height:1.4;letter-spacing:-.02em;font-weight:500;color:var(--gray-40);text-wrap:pretty}
+  .svc-media-wrap{position:relative}
+  .svc-media{position:relative;min-height:480px;border-radius:24px;background:linear-gradient(160deg,#FDFCFC,#F4F2EF);
+    border:1px solid var(--gray-80);box-shadow:var(--shadow-tile);
+    display:flex;align-items:center;justify-content:center;padding:48px 36px;overflow:hidden}
+  .svc-media::after{content:"";position:absolute;inset:10px;border:1px solid var(--gray-94);border-radius:16px;pointer-events:none}
+  .svc-grid.flip .svc-media-wrap{order:-1}
 
-  /* ============ Workflow ============ */
-  .workflow{padding:0 0 144px}
-  .workflow .grid-cards{grid-template-columns:repeat(4,1fr)}
-  .workflow .grid-cards .card+.card{margin-left:-1px}
-  .workflow .card h3{font-size:22px}
-  .workflow .card p{font-size:18px}
+  /* ============ What you get — icon-card grid ============ */
+  .get-sec{padding:144px 0 120px}
+  .get-grid{grid-template-columns:repeat(4,1fr)}
+  .get-grid .card{background:#fff;padding:28px 26px 36px}
+  .get-grid .card:nth-child(n+2){margin-left:-1px}
+  .get-grid .card:nth-child(4n+1){margin-left:0}
+  .get-grid .card:nth-child(n+5){margin-top:-1px}
+  .get-grid h3{margin-top:26px;font-size:19px;line-height:1.3;letter-spacing:-.02em;max-width:220px}
+  .get-grid .tile-sm{margin-bottom:0}
+  .card-ghost{display:flex;align-items:flex-end;justify-content:flex-end;min-height:180px}
+  .ghost-sq{position:relative;z-index:2;width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#FFE5B2,#FFB266);box-shadow:var(--shadow-tile);transform:rotate(10deg)}
 
   /* ============ Compare — feature section w/ framed media panels ============ */
   .compare-sec{position:relative;overflow:hidden;background:var(--section-gray);
@@ -269,21 +315,6 @@
   .frame-trad{color:var(--gray-30)}
   .frame-trad li b{color:var(--red)}
   .compare-cta{margin-top:56px;text-align:center}
-
-  /* ============ Offers ============ */
-  .offers-sec{padding:144px 0}
-  .offers-grid{grid-template-columns:repeat(3,1fr);margin-top:64px}
-  .offers-grid .card{background:#fff;display:flex;flex-direction:column;padding-bottom:32px}
-  .offers-grid .card+.card{margin-left:-1px}
-  .offer-tag{margin-top:8px;font-size:15px;line-height:1.4;letter-spacing:-.02em;color:var(--gray-40)}
-  .offers-grid h3{margin-top:0;font-size:24px}
-  .offers-grid ul{list-style:none;margin:28px 0 32px;flex:1}
-  .offers-grid li{position:relative;padding:9px 0 9px 24px;font-size:15.5px;line-height:1.45;letter-spacing:-.01em;color:var(--gray-30)}
-  .offers-grid li::before{content:"";position:absolute;left:2px;top:15px;width:9px;height:9px;color:var(--gray-60);
-    background:linear-gradient(currentColor,currentColor) center/1px 9px no-repeat,
-               linear-gradient(currentColor,currentColor) center/9px 1px no-repeat}
-  .offers-grid .btn{width:100%}
-  .offer-glow{left:38%;right:38%;top:-40px;height:120px;background:linear-gradient(to bottom,#FFE5B2,transparent);opacity:.6;filter:blur(40px)}
 
   /* ============ FAQ — articles-list treatment with dashed separators ============ */
   .faq-sec{padding:0 0 160px}
@@ -308,7 +339,9 @@
     padding:144px 32px 176px;display:flex;flex-direction:column;align-items:center}
   .final-cta .pill{position:relative;z-index:10;margin-bottom:24px}
   .final-cta h2{position:relative;z-index:10;font-size:64px;line-height:1;letter-spacing:-.02em;text-align:center;text-wrap:balance;max-width:768px}
-  .final-cta .btn{position:relative;z-index:10;margin-top:48px}
+  .final-cta .cta-sub{position:relative;z-index:10;margin-top:22px;max-width:580px;text-align:center;
+    font-size:20px;line-height:1.4;letter-spacing:-.02em;font-weight:500;color:var(--gray-40);text-wrap:pretty}
+  .final-cta .btn{position:relative;z-index:10;margin-top:44px}
   .final-cta .veil{position:absolute;inset:0;z-index:5;pointer-events:none;
     background:radial-gradient(50% 50% at 50% 50%,rgba(245,240,237,.8) 23.56%,rgba(245,240,237,.7) 47.04%,rgba(245,240,237,0) 100%)}
   .cta-blob{filter:blur(64px);transform:translateY(50%)}
@@ -368,48 +401,85 @@
   @keyframes pc-a{0%,18%{transform:translate(0,0)}38%{transform:translate(9px,5px) rotate(-3deg)}44%{transform:translate(7px,4px) rotate(2deg)}58%,78%{transform:translate(15px,9px)}96%,100%{transform:translate(0,0)}}
   @keyframes pc-b{0%,18%{transform:translate(0,0)}38%{transform:translate(-8px,-5px) rotate(3deg)}44%{transform:translate(-6px,-4px) rotate(-2deg)}58%,78%{transform:translate(-15px,-9px)}96%,100%{transform:translate(0,0)}}
 
-  /* ============ Benefit icon tiles (static) ============ */
-  .b-ico{width:36px;height:36px;border-radius:20%;box-shadow:var(--shadow-tile);flex:none;
-    display:flex;align-items:center;justify-content:center}
-  .b-ico svg{width:20px;height:20px;display:block}
+  /* ============ Service band assets ============ */
+  /* 1 — Speed-to-lead race: form → AI call (live counter) → calendar. Base = booked end state. */
+  .sl-scene{position:relative;width:100%;max-width:560px;padding-top:40px}
+  .sl-pill{position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:5;display:inline-flex;align-items:center;gap:8px;
+    border-radius:9999px;background:#E9F3FE;border:1px solid #C9E2FB;padding:9px 18px;color:var(--blue);
+    font-weight:600;font-size:16px;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+  .sl-pill svg{display:block}
+  .sl-pill i{font-style:normal}
+  .sl-pill i::after{--t:52;animation:sl-count 9s linear infinite;counter-reset:slt var(--t);content:"0:" counter(slt,decimal-leading-zero)}
+  @keyframes sl-count{from{--t:0}to{--t:52}}
+  .sl-art{display:block;width:100%;height:auto;overflow:visible}
+  .sl-ring{transform-box:fill-box;transform-origin:center;opacity:0;animation:sl-ring 2.2s cubic-bezier(0,0,.2,1) infinite}
+  @keyframes sl-ring{0%,45%{transform:scale(.88);opacity:0}60%{opacity:.5}100%{transform:scale(1.18);opacity:0}}
+  .sl-d1{opacity:0;animation:sl-d1 9s linear infinite}
+  @keyframes sl-d1{0%{opacity:0;transform:translateX(0)}2%{opacity:1}9%{opacity:1;transform:translateX(64px)}11%,100%{opacity:0;transform:translateX(64px)}}
+  .sl-d2{opacity:0;animation:sl-d2 9s linear infinite}
+  @keyframes sl-d2{0%,55%{opacity:0;transform:translateX(0)}57%{opacity:1}64%{opacity:1;transform:translateX(64px)}66%,100%{opacity:0;transform:translateX(64px)}}
+  .sl-check{transform-box:fill-box;transform-origin:center;animation:sl-check 9s cubic-bezier(.34,1.4,.64,1) infinite}
+  @keyframes sl-check{0%,64%{opacity:0;transform:scale(.5)}70%,96%{opacity:1;transform:scale(1)}99%,100%{opacity:0;transform:scale(1)}}
 
-  /* ============ Workflow mini-diagrams — vocalchat-pattern scenes in the E DA ============ */
-  .wf{position:relative;height:236px;border-radius:16px;box-shadow:var(--shadow-tile);
-    background:linear-gradient(135deg,#FAF9FA,#F0F0EF);display:flex;align-items:center;justify-content:center;
-    overflow:hidden;padding:14px 12px}
-  .wf-num{position:absolute;top:12px;left:16px;z-index:6;font-family:var(--font-title);font-weight:500;font-size:12px;letter-spacing:.06em;color:var(--gray-50)}
-  .wf svg{display:block;overflow:visible}
-  .wf .wf-art{width:100%;max-width:320px;height:auto}
-  .workflow .card h3{margin-top:32px}
-  .wf-pill{position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:5;display:inline-flex;align-items:center;gap:8px;
-    border-radius:9999px;background:#E9F3FE;border:1px solid #C9E2FB;padding:8px 16px;color:var(--blue);
-    font-weight:600;font-size:15px;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
-  .wf-pill svg{display:block}
-  .wf-pill i{font-style:normal}
-  .wf-pill i::after{--t:8;animation:wf-count 9s linear infinite;counter-reset:wt var(--t);content:"0:" counter(wt,decimal-leading-zero)}
-  @keyframes wf-count{from{--t:0}to{--t:9}}
-  .wf1-art{margin-top:48px}
-  .wf1-bar{transform-box:fill-box;transform-origin:center;animation:wf1-bar 1.8s ease-in-out infinite}
-  @keyframes wf1-bar{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
-  .wf1-dot{opacity:0;animation:wf1-dot 1.8s linear infinite}
-  @keyframes wf1-dot{0%{opacity:0;transform:translateX(0)}15%{opacity:1}70%{opacity:1}88%,100%{opacity:0;transform:translateX(54px)}}
-  .wf1-ring{transform-box:fill-box;transform-origin:center;opacity:0;animation:wf1-ring 2.2s cubic-bezier(0,0,.2,1) infinite}
-  @keyframes wf1-ring{0%,45%{transform:scale(.85);opacity:0}60%{opacity:.5}100%{transform:scale(1.22);opacity:0}}
-  .wf2-d{opacity:0}
-  .wf2-d1{animation:wf2-d1 6.6s linear infinite}
-  .wf2-d2{animation:wf2-d2 6.6s linear infinite}
-  .wf2-d3{animation:wf2-d3 6.6s linear infinite}
-  @keyframes wf2-d1{0%{opacity:0;transform:translate(0,0)}3%{opacity:1}8%{transform:translate(0,16px)}20%{transform:translate(-92px,16px)}27%{opacity:1;transform:translate(-92px,54px)}30%,100%{opacity:0;transform:translate(-92px,54px)}}
-  @keyframes wf2-d2{0%,33%{opacity:0;transform:translate(0,0)}36%{opacity:1}58%{opacity:1;transform:translate(0,56px)}61%,100%{opacity:0;transform:translate(0,56px)}}
-  @keyframes wf2-d3{0%,66%{opacity:0;transform:translate(0,0)}69%{opacity:1}74%{transform:translate(0,16px)}86%{transform:translate(92px,16px)}93%{opacity:1;transform:translate(92px,54px)}96%,100%{opacity:0;transform:translate(92px,54px)}}
-  .wf3-f{transform-box:fill-box;transform-origin:center;animation:chip-bob 4.8s ease-in-out infinite}
-  .wf3-eq{transform-box:fill-box;transform-origin:center;animation:wf1-bar 1.6s ease-in-out infinite}
-  .wf4-bar{transform-box:fill-box;transform-origin:bottom;animation:wf4-bar 5s cubic-bezier(.4,0,.2,1) infinite}
-  @keyframes wf4-bar{0%,12%{transform:scaleY(.2)}42%,88%{transform:scaleY(1)}98%,100%{transform:scaleY(.2)}}
-  .wf4-line{animation:wf4-line 5s ease-in-out infinite}
-  @keyframes wf4-line{0%,24%{stroke-dasharray:240;stroke-dashoffset:240}62%,88%{stroke-dasharray:240;stroke-dashoffset:0}98%,100%{stroke-dasharray:240;stroke-dashoffset:240}}
-  .wf4-tip{animation:wf4-tip 5s linear infinite}
-  @keyframes wf4-tip{0%,58%{opacity:0}66%,88%{opacity:1}94%,100%{opacity:0}}
+  /* 2 — CRM reactivation: dead rows wake one by one and flip to booked. Base = all booked. */
+  .crm-card{width:100%;max-width:470px;background:#fff;border:1px solid var(--gray-90);border-radius:20px;
+    box-shadow:var(--shadow-tile);padding:20px 22px 16px;position:relative;z-index:2}
+  .crm-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px}
+  .crm-title{font-family:var(--font-title);font-weight:500;font-size:17px;letter-spacing:-.02em}
+  .crm-count{font-size:13px;color:var(--gray-50);font-weight:500}
+  .crm-row{position:relative;display:flex;align-items:center;gap:12px;padding:13px 8px;
+    animation:crm-wake 13s linear infinite;animation-delay:var(--d);animation-fill-mode:backwards}
+  .crm-row+.crm-row{background:repeating-linear-gradient(90deg,var(--gray-90) 0 4px,transparent 4px 8px) top/100% 1px no-repeat}
+  @keyframes crm-wake{0%,18%{opacity:.4;filter:grayscale(1)}24%,94%{opacity:1;filter:none}100%{opacity:.4;filter:grayscale(1)}}
+  .crm-ico{width:34px;height:34px;flex:none;border-radius:10px;box-shadow:var(--shadow-tile);display:flex;align-items:center;justify-content:center}
+  .crm-ico svg{display:block}
+  .crm-lab{min-width:0;flex:1}
+  .crm-name{font-weight:500;font-size:15px;letter-spacing:-.01em;color:var(--ink);line-height:1.25}
+  .crm-sub{font-size:12.5px;color:var(--gray-50);margin-top:2px}
+  .crm-chips{position:relative;flex:none;display:grid;justify-items:end}
+  .crm-chip{grid-area:1/1;display:inline-flex;align-items:center;gap:6px;border-radius:9999px;padding:5px 11px;font-size:12.5px;font-weight:600;white-space:nowrap}
+  .crm-chip svg{display:block;flex:none}
+  .crm-dead{background:var(--gray-94);border:1px solid var(--gray-90);color:var(--gray-50);opacity:0;
+    animation:crm-dead 13s linear infinite;animation-delay:var(--d);animation-fill-mode:backwards}
+  .crm-live{background:rgba(109,194,119,.13);border:1px solid rgba(109,194,119,.5);color:#33793E;
+    animation:crm-live 13s cubic-bezier(.34,1.3,.64,1) infinite;animation-delay:var(--d);animation-fill-mode:backwards}
+  @keyframes crm-dead{0%,20%{opacity:1}23%,97%{opacity:0}100%{opacity:1}}
+  @keyframes crm-live{0%,21%{opacity:0;transform:scale(.85)}26%,94%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
+  .crm-foot{display:flex;justify-content:flex-end;padding-top:12px}
+
+  /* 4 — Overnight automations: night sky fades to morning while task rows tick themselves done.
+     Base = morning, everything checked. */
+  .wa-card{width:100%;max-width:450px;background:#fff;border:1px solid var(--gray-90);border-radius:20px;
+    box-shadow:var(--shadow-tile);padding:16px 18px 8px;position:relative;z-index:2}
+  .wa-sky{position:relative;height:74px;border-radius:14px;overflow:hidden;margin-bottom:6px}
+  .wa-layer{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 18px}
+  .wa-layer svg{display:block}
+  .wa-day{background:linear-gradient(115deg,#FFEFC9,#CCF6FF)}
+  .wa-night{background:linear-gradient(115deg,#232A47,#3D4A75);opacity:0;animation:wa-night 11s linear infinite}
+  @keyframes wa-night{0%,36%{opacity:1}48%,96%{opacity:0}100%{opacity:1}}
+  .wa-tlab{font-size:12.5px;font-weight:600;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+  .wa-night .wa-tlab{color:#E7ECFF}
+  .wa-day .wa-tlab{color:#4E4C4B}
+  .wa-row{display:flex;align-items:center;gap:12px;padding:13px 8px}
+  .wa-row+.wa-row{background:repeating-linear-gradient(90deg,var(--gray-90) 0 4px,transparent 4px 8px) top/100% 1px no-repeat}
+  .wa-box{width:24px;height:24px;flex:none;border-radius:8px;border:1.5px solid rgba(109,194,119,.8);background:rgba(109,194,119,.12);
+    display:flex;align-items:center;justify-content:center;animation:wa-box 11s linear infinite;animation-delay:var(--d);animation-fill-mode:backwards}
+  .wa-box svg{display:block}
+  @keyframes wa-box{0%,44%{border-color:var(--gray-80);background:#fff}50%,97%{border-color:rgba(109,194,119,.8);background:rgba(109,194,119,.12)}100%{border-color:var(--gray-80);background:#fff}}
+  .wa-tick{transform-box:fill-box;transform-origin:center;animation:wa-tick 11s cubic-bezier(.34,1.4,.64,1) infinite;animation-delay:var(--d);animation-fill-mode:backwards}
+  @keyframes wa-tick{0%,42%{opacity:0;transform:scale(.4)}48%,97%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.4)}}
+  .wa-lab{min-width:0;flex:1}
+  .wa-t{font-weight:500;font-size:15px;letter-spacing:-.01em;color:var(--ink);line-height:1.25}
+  .wa-s{font-size:12.5px;color:var(--gray-50);margin-top:2px}
+  .wa-ico{width:30px;height:30px;flex:none;border-radius:9px;box-shadow:var(--shadow-tile);display:flex;align-items:center;justify-content:center}
+  .wa-ico svg{display:block}
+
+  /* 5 — Tool-logo orbit (reused workflow asset, enlarged; center tile recolored to the ink mark) */
+  .svc-orbit{width:100%;max-width:480px}
+  .svc-orbit svg{display:block;width:100%;height:auto;overflow:visible}
+  .orb-f{transform-box:fill-box;transform-origin:center;animation:chip-bob 4.8s ease-in-out infinite}
+  .orb-eq{transform-box:fill-box;transform-origin:center;animation:eq-bar 1.6s ease-in-out infinite}
+  @keyframes eq-bar{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
 
   /* ============ Compare chips (static) ============ */
   .frame-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
@@ -438,44 +508,49 @@
   /* ============ Responsive ============ */
   @media (max-width:1023px){
     .hero{padding-top:96px}
-    .hero-inner{grid-template-columns:1fr;gap:40px;padding:40px 24px 88px;justify-items:center}
-    .hero-copy{align-items:center;text-align:center}
+    .hero-inner{padding:44px 24px 72px}
     .hero h1{font-size:42px}
     .hero .lead{font-size:18px}
-    .hero-ctas{justify-content:center}
     .hero-art.left,.hero-art.right{display:none}
     .hero-art.md{display:block}
-    .hero-asset{justify-self:center;max-width:520px;padding:24px 12px}
     .persona-card{padding:18px 16px}
     .pc-chip.c1{right:-6px}
     .pc-chip.c2{left:-12px}
     .pc-chip.c3{right:-8px}
     .lc-bubble{max-width:88%}
-    .wf{height:auto;min-height:210px}
     .statement{font-size:32px}
     .final-cta h2{font-size:40px}
     .sec-head{padding:40px 24px}
-    .pain .grid-cards,.workflow .grid-cards,.offers-grid,.compare-grid,.benefit-list{grid-template-columns:1fr}
-    .pain .grid-cards .card+.card,.workflow .grid-cards .card+.card,.offers-grid .card+.card{margin-left:0;margin-top:-1px}
-    .panel{padding:40px 28px}
-    .benefits-sec{padding:96px 0 72px}
-    .workflow{padding-bottom:96px}
+    .pain .grid-cards,.get-grid,.compare-grid{grid-template-columns:1fr}
+    .pain .grid-cards .card+.card{margin-left:0;margin-top:-1px}
+    .get-grid .card{margin-left:0!important}
+    .get-grid .card:nth-child(n+2){margin-top:-1px}
+    .card-ghost{display:none}
+    .services-sec{padding:88px 0 0}
+    .services-sec .sec-head{padding-bottom:40px}
+    .svc-band{padding:60px 0}
+    .svc-grid{grid-template-columns:1fr;gap:32px}
+    .svc-grid.flip .svc-media-wrap{order:0}
+    .svc-head{max-width:640px}
+    .svc-h{font-size:26px}
+    .svc-p{font-size:18px}
+    .svc-media{min-height:400px;padding:40px 20px}
+    .get-sec{padding:96px 0 80px}
     .compare-sec{padding:72px 0 88px}
-    .offers-sec{padding:96px 0}
     .faq-sec{padding-bottom:104px}
     .final-cta{padding:88px 24px 112px}
+    .final-cta .cta-sub{font-size:18px}
     .feature-h2{font-size:26px}
     .feature-sub{font-size:19px}
     .faq-list summary{font-size:18px}
     .container,.container-wide,.container-nav{padding:0 20px}
     .card p{font-size:18px}
-    .benefit{font-size:18px}
   }
   @media (max-width:639px){
     .hero h1{font-size:36px}
     .hero-ctas{width:100%;flex-direction:column}
     .hero-ctas .btn{width:100%}
-    .hero-asset{padding:24px 6px}
+    .svc-emma{padding:12px 4px}
     .pc-head{gap:10px}
     .pc-avatar{width:48px;height:48px}
     .pc-title{white-space:normal;font-size:17px}
@@ -483,19 +558,27 @@
     .pc-chip.c1{width:50px;height:50px;font-size:13px;top:-16px;right:-2px}
     .pc-chip.c2{width:46px;height:46px;left:-6px}
     .pc-chip.c3{width:46px;height:46px;right:-4px;bottom:-14px}
+    .svc-media{min-height:340px;padding:32px 14px}
+    .sl-pill{font-size:14px;padding:7px 13px}
+    .crm-card{padding:16px 14px 12px}
+    .wa-card{padding:14px 14px 6px}
     .final-cta h2{font-size:32px}
+    .final-cta .cta-sub{font-size:16.5px}
     .footer-bottom{flex-direction:column;align-items:flex-start}
     .hero-art.md{right:-48px}
     .footer-pattern{display:none}
     .footer-pattern.mobile{display:block}
   }
   /* All demo assets are authored with their finished state as the static base,
-     so killing the animations leaves a legible end state. */
+     so killing the animations leaves a legible end state. The SMIL flow dots in the
+     node-graph are transient by nature, so they are simply hidden. */
   @media (prefers-reduced-motion:reduce){
     .persona-card *,.persona-card *::before,.persona-card *::after,
     .persona-glow,.pc-chip,.pc-timer i::after,
-    .tile svg *,.wf svg *,.wf-pill i::after,
+    .tile svg *,.gp-svg *,.sl-scene *,.sl-pill i::after,
+    .crm-card *,.wa-card *,.svc-orbit *,
     .cta-wave,.cta-wave *,.cta-wave::after,.pulse{animation:none!important}
+    .gp-dots{display:none}
   }
 </style>
 </head>
@@ -504,7 +587,7 @@
 <!-- ============ HEADER ============ -->
 <header class="site-header">
   <div class="container-nav nav">
-    <!-- New NativeSquare mark: 3×3 grid of rounded squares, #0083F5, opacity cascade
+    <!-- New NativeSquare mark: 3×3 grid of rounded squares, ink (#060504), opacity cascade
          flowing from full (top-left) to faint (bottom-right) along the anti-diagonals:
            1.00  .80  .55
             .80  .55  .32
@@ -519,7 +602,7 @@
             .22  .55  1.0 -->
     <a class="brand" href="#" aria-label="NativeSquare">
       <svg class="ns-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
-        <g fill="#0083F5">
+        <g fill="#060504">
           <rect x="0"  y="0"  width="12" height="12" rx="3.6"/>
           <rect x="18" y="0"  width="12" height="12" rx="3.6" opacity=".8"/>
           <rect x="36" y="0"  width="12" height="12" rx="3.6" opacity=".55"/>
@@ -532,7 +615,7 @@
         </g>
       </svg>
       <span>NativeSquare</span></a>
-    <a class="btn btn-secondary btn-sm" href="#">Book a Call</a>
+    <a class="btn btn-primary btn-sm" href="#">Book a Call</a>
   </div>
 </header>
 
@@ -544,16 +627,521 @@
   <img class="hero-art right" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTY0IiBoZWlnaHQ9IjEwNDAiIHZpZXdCb3g9IjAgMCA5NjQgMTA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CjxtYXNrIGlkPSJtYXNrMF85M185MzY4IiBzdHlsZT0ibWFzay10eXBlOmFscGhhIiBtYXNrVW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4PSI0IiB5PSIwIiB3aWR0aD0iOTYwIiBoZWlnaHQ9IjEwNDAiPgo8cmVjdCBvcGFjaXR5PSIwLjYiIHg9IjQiIHdpZHRoPSI5NjAiIGhlaWdodD0iMTA0MCIgZmlsbD0iI0Q5RDlEOSIvPgo8L21hc2s+CjxnIG1hc2s9InVybCgjbWFzazBfOTNfOTM2OCkiPgo8bWFzayBpZD0ibWFzazFfOTNfOTM2OCIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iLTk2MCIgeT0iLTExIiB3aWR0aD0iMTkyNCIgaGVpZ2h0PSIxMDUxIj4KPHJlY3QgeD0iLTk2MCIgeT0iLTExIiB3aWR0aD0iMTkyNCIgaGVpZ2h0PSIxMDUxIiBmaWxsPSJ1cmwoI3BhdHRlcm4wXzkzXzkzNjgpIi8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMV85M185MzY4KSI+CjxnIG9wYWNpdHk9IjAuNiIgZmlsdGVyPSJ1cmwoI2ZpbHRlcjBfZl85M185MzY4KSI+CjxlbGxpcHNlIGN4PSI2ODQuNSIgY3k9IjIxMy41IiByeD0iMzAyLjUiIHJ5PSIyMTkuNSIgZmlsbD0iI0VFRUZGMSIvPgo8L2c+CjxnIG9wYWNpdHk9IjAuNiIgZmlsdGVyPSJ1cmwoI2ZpbHRlcjFfZl85M185MzY4KSI+CjxlbGxpcHNlIGN4PSI5MDAiIGN5PSI3NjcuNSIgcng9IjE3MCIgcnk9IjIxOS41IiBmaWxsPSIjRUVFRkYxIi8+CjwvZz4KPGcgb3BhY2l0eT0iMC42IiBmaWx0ZXI9InVybCgjZmlsdGVyMl9mXzkzXzkzNjgpIj4KPGVsbGlwc2UgY3g9IjM4NiIgY3k9IjQxMCIgcng9IjE3MCIgcnk9Ijk3IiBmaWxsPSIjRUVFRkYxIi8+CjwvZz4KPC9nPgo8bWFzayBpZD0ibWFzazJfOTNfOTM2OCIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iLTk2MCIgeT0iLTExIiB3aWR0aD0iMTkyNCIgaGVpZ2h0PSIxMDUxIj4KPHJlY3QgeD0iLTk2MCIgeT0iLTExIiB3aWR0aD0iMTkyNCIgaGVpZ2h0PSIxMDUxIiBmaWxsPSJ1cmwoI3BhdHRlcm4xXzkzXzkzNjgpIi8+CjwvbWFzaz4KPGcgbWFzaz0idXJsKCNtYXNrMl85M185MzY4KSI+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXIzX2ZfOTNfOTM2OCkiPgo8ZWxsaXBzZSBjeD0iNDgxLjUiIGN5PSI0MTkuNSIgcng9IjExNC41IiByeT0iNjEuNSIgZmlsbD0iI0Q0RDZERCIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXI0X2ZfOTNfOTM2OCkiPgo8ZWxsaXBzZSBjeD0iOTIxLjUiIGN5PSI3MjkuNSIgcng9IjExNC41IiByeT0iMjIyLjUiIGZpbGw9IiNENEQ2REQiLz4KPC9nPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyNV9mXzkzXzkzNjgpIj4KPGVsbGlwc2UgY3g9IjczNC41IiBjeT0iMTM5LjUiIHJ4PSIzMjkuNSIgcnk9IjE1OC41IiBmaWxsPSIjRDRENkREIi8+CjwvZz4KPC9nPgo8ZyBvcGFjaXR5PSIwLjYiPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyNl9mXzkzXzkzNjgpIj4KPGVsbGlwc2UgY3g9Ijg0NS45OTMiIGN5PSItMTAuODYiIHJ4PSIyMzAuMzAzIiByeT0iMTMxIiB0cmFuc2Zvcm09InJvdGF0ZSg1My42NjA1IDg0NS45OTMgLTEwLjg2KSIgZmlsbD0idXJsKCNwYWludDBfbGluZWFyXzkzXzkzNjgpIi8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjdfZl85M185MzY4KSI+CjxlbGxpcHNlIGN4PSIxMDAzIiBjeT0iMTk4IiByeD0iMTI2IiByeT0iMjI2IiBmaWxsPSJ1cmwoI3BhaW50MV9saW5lYXJfOTNfOTM2OCkiLz4KPC9nPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyOF9mXzkzXzkzNjgpIj4KPGVsbGlwc2UgY3g9IjEwNDQuNSIgY3k9IjI5Ny41IiByeD0iODQuNSIgcnk9IjEyNy41IiBmaWxsPSIjRkZCM0MzIi8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjlfZl85M185MzY4KSI+CjxlbGxpcHNlIGN4PSI5NjQiIGN5PSIxMDE1IiByeD0iNDc4IiByeT0iMjQ3IiBmaWxsPSIjRkZCM0Q3IiBmaWxsLW9wYWNpdHk9IjAuMDQiLz4KPC9nPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyMTBfZl85M185MzY4KSI+CjxlbGxpcHNlIGN4PSI0NDUiIGN5PSIxOS41IiByeD0iNDcuNSIgcnk9IjEyMSIgdHJhbnNmb3JtPSJyb3RhdGUoLTkwIDQ0NSAxOS41KSIgZmlsbD0iI0ZGRjJFNiIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXIxMV9mXzkzXzkzNjgpIj4KPGVsbGlwc2UgY3g9Ijk0Ni41IiBjeT0iLTY2IiByeD0iMTUwLjUiIHJ5PSIxNTMiIGZpbGw9IiNFQjg2QTkiLz4KPC9nPgo8L2c+CjwvZz4KPGRlZnM+CjxwYXR0ZXJuIGlkPSJwYXR0ZXJuMF85M185MzY4IiBwYXR0ZXJuQ29udGVudFVuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgd2lkdGg9IjAuMTAyOTExIiBoZWlnaHQ9IjAuMTg4MzkyIj4KPHVzZSB4bGluazpocmVmPSIjaW1hZ2UwXzkzXzkzNjgiIHRyYW5zZm9ybT0ic2NhbGUoMC4wMDAyNTk4NzUgMC4wMDA0NzU3MzcpIi8+CjwvcGF0dGVybj4KPGZpbHRlciBpZD0iZmlsdGVyMF9mXzkzXzkzNjgiIHg9IjIyMiIgeT0iLTE2NiIgd2lkdGg9IjkyNSIgaGVpZ2h0PSI3NTkiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0ic2hhcGUiLz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iODAiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl85M185MzY4Ii8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXIxX2ZfOTNfOTM2OCIgeD0iNTcwIiB5PSIzODgiIHdpZHRoPSI2NjAiIGhlaWdodD0iNzU5IiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgwIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfOTNfOTM2OCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyMl9mXzkzXzkzNjgiIHg9IjU2IiB5PSIxNTMiIHdpZHRoPSI2NjAiIGhlaWdodD0iNTE0IiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgwIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfOTNfOTM2OCIvPgo8L2ZpbHRlcj4KPHBhdHRlcm4gaWQ9InBhdHRlcm4xXzkzXzkzNjgiIHBhdHRlcm5Db250ZW50VW5pdHM9Im9iamVjdEJvdW5kaW5nQm94IiB3aWR0aD0iMC4xMDI5MTEiIGhlaWdodD0iMC4xODgzOTIiPgo8dXNlIHhsaW5rOmhyZWY9IiNpbWFnZTFfOTNfOTM2OCIgdHJhbnNmb3JtPSJzY2FsZSgwLjAwMDI1OTg3NSAwLjAwMDQ3NTczNykiLz4KPC9wYXR0ZXJuPgo8ZmlsdGVyIGlkPSJmaWx0ZXIzX2ZfOTNfOTM2OCIgeD0iMjEzIiB5PSIyMDQiIHdpZHRoPSI1MzciIGhlaWdodD0iNDMxIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249Ijc3IiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfOTNfOTM2OCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyNF9mXzkzXzkzNjgiIHg9IjY1MyIgeT0iMzUzIiB3aWR0aD0iNTM3IiBoZWlnaHQ9Ijc1MyIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI3NyIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzkzXzkzNjgiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjVfZl85M185MzY4IiB4PSIyNTEiIHk9Ii0xNzMiIHdpZHRoPSI5NjciIGhlaWdodD0iNjI1IiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249Ijc3IiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfOTNfOTM2OCIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyNl9mXzkzXzkzNjgiIHg9IjQwMy40NzYiIHk9Ii00ODIuMDEyIiB3aWR0aD0iODg1LjAzNCIgaGVpZ2h0PSI5NDIuMzA0IiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjEzNSIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzkzXzkzNjgiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjdfZl85M185MzY4IiB4PSI2NzciIHk9Ii0yMjgiIHdpZHRoPSI2NTIiIGhlaWdodD0iODUyIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjEwMCIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzkzXzkzNjgiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjhfZl85M185MzY4IiB4PSI3ODAiIHk9Ii0xMCIgd2lkdGg9IjUyOSIgaGVpZ2h0PSI2MTUiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0ic2hhcGUiLz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iOTAiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl85M185MzY4Ii8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXI5X2ZfOTNfOTM2OCIgeD0iMzA2IiB5PSI1ODgiIHdpZHRoPSIxMzE2IiBoZWlnaHQ9Ijg1NCIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI5MCIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzkzXzkzNjgiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjEwX2ZfOTNfOTM2OCIgeD0iMTc0IiB5PSItMTc4IiB3aWR0aD0iNTQyIiBoZWlnaHQ9IjM5NSIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI3NSIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzkzXzkzNjgiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjExX2ZfOTNfOTM2OCIgeD0iNjM2IiB5PSItMzc5IiB3aWR0aD0iNjIxIiBoZWlnaHQ9IjYyNiIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI4MCIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzkzXzkzNjgiLz4KPC9maWx0ZXI+CjxsaW5lYXJHcmFkaWVudCBpZD0icGFpbnQwX2xpbmVhcl85M185MzY4IiB4MT0iODQ1Ljk5MyIgeTE9Ii0xNDEuODYiIHgyPSI4NDUuOTkzIiB5Mj0iMTIwLjE0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIG9mZnNldD0iMC40OTYyMDciIHN0b3AtY29sb3I9IiNGRkQwODAiLz4KPHN0b3Agb2Zmc2V0PSIwLjgxMzAwNyIgc3RvcC1jb2xvcj0iI0ZGRkZFNSIvPgo8L2xpbmVhckdyYWRpZW50Pgo8bGluZWFyR3JhZGllbnQgaWQ9InBhaW50MV9saW5lYXJfOTNfOTM2OCIgeDE9IjEwMDMiIHkxPSItMjgiIHgyPSIxMDAzIiB5Mj0iNDI0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIG9mZnNldD0iMC40MTY5MzEiIHN0b3AtY29sb3I9IiNGRkM0NjYiLz4KPHN0b3Agb2Zmc2V0PSIwLjc4Nzc1NSIgc3RvcC1jb2xvcj0iI0ZGRTVCMiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8aW1hZ2UgaWQ9ImltYWdlMF85M185MzY4IiB3aWR0aD0iMzk2IiBoZWlnaHQ9IjM5NiIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSIgeGxpbms6aHJlZj0iZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFZd0FBQUdNQ0FZQUFBREpPWlZLQUFBQUNYQklXWE1BQUJZbEFBQVdKUUZKVWlUd0FBQUFBWE5TUjBJQXJzNGM2UUFBQUFSblFVMUJBQUN4and2OFlRVUFBQVhhU1VSQlZIZ0I3ZGZCQ2NSQURBVEIzY3MvWjUxQitPME9vQXFVd0h3YTNYUE9IQUFJQkdNM3NJTWRYblpZZGxoMldQTTdBQkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRM09mbUFNQUhId1lBbVE5ak43Q0RIVjUyV0haWWRsamp3d0FnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUxuUHpRR0FEejRNQURJZnhtNWdCenU4N0xEc3NPeXd4b2NCUUNJWUFDU0NBVUFpR0FBa2dnRkFJaGdBSklJQlFDSVlBQ1NDQVVBaUdBQWtnZ0ZBSWhnQUpJSUJRQ0lZQUNTQ0FVQWlHQUFrZ2dGQUloZ0FKSUlCUUNJWUFDU0NBVUFpR0FBa2dnRkFJaGdBSklJQlFDSVlBQ1NDQVVBaUdBQWtnZ0ZBSWhnQUpJSUJRQ0lZQUNTQ0FVQWlHQUFrZ2dGQUloZ0FKSUlCUUNJWUFDU0NBVUFpR0FBa2dnRkFJaGdBSklJQlFDSVlBQ1NDQVVBaUdBQWtnZ0ZBSWhnQUpJSUJRQ0lZQUNTQ0FVQWlHQUFrZ2dGQUloZ0FKSUlCUUNJWUFDU0NBVUFpR0FBa2dnRkFJaGdBSklJQlFDSVlBQ1NDQVVCeW41c0RBQjk4R0FCa1BvemR3QTUyZU5saDJXSFpZWTBQQTRCRU1BQklCQU9BUkRBQVNBUURnRVF3QUVnRUE0QkVNQUJJQkFPQVJEQUFTQVFEZ0VRd0FFZ0VBNEJFTUFCSUJBT0FSREFBU0FRRGdFUXdBRWdFQTRCRU1BQklCQU9BUkRBQVNBUURnRVF3QUVnRUE0QkVNQUJJQkFPQVJEQUFTQVFEZ0VRd0FFZ0VBNEJFTUFCSUJBT0FSREFBU0FRRGdFUXdBRWdFQTRCRU1BQklCQU9BUkRBQVNBUURnRVF3QUVnRUE0QkVNQUJJQkFPQVJEQUFTQVFEZ0VRd0FFZ0VBNEJFTUFCSUJBT0FSREFBU0FRRGdFUXdBRWdFQTRCRU1BQklCQU9BUkRBQVNBUURnRVF3QUVnRUE0QkVNQUJJQkFPQTVENDNCd0ErK0RBQXlId1l1NEVkN1BDeXc3TERzc01hSHdZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FNbDliZzRBZlBCaEFKRDVNSFlETzlqaFpZZGxoMldITlQ0TUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQ1MrOXdjQVBqd0IraklVYmRBY04zUkFBQUFBRWxGVGtTdVFtQ0MiLz4KPGltYWdlIGlkPSJpbWFnZTFfOTNfOTM2OCIgd2lkdGg9IjM5NiIgaGVpZ2h0PSIzOTYiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIHhsaW5rOmhyZWY9ImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBWXdBQUFHTUNBWUFBQURKT1pWS0FBQUFDWEJJV1hNQUFCWWxBQUFXSlFGSlVpVHdBQUFBQVhOU1IwSUFyczRjNlFBQUFBUm5RVTFCQUFDeGp3djhZUVVBQUFNV1NVUkJWSGdCN2RyQmljUkFEQVJBcmZQUDJZZEJENzFNejJQaEZsWEJKREEwTkVLcUFnQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRGd2N3Y3d1VNZW1PU2hYUVVBQVlVQlFFUmhBQkJSR0FCRVByWFA2ZkpxNHg5dElnOU04dkRDaEFFQUI1ek5NY2tEa3p3MEV3WUFFWVVCUUVSaEFCQlJHQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQXdOZmQvZUFoRDB6eTBLNENnSURDQUNDaU1BQ0lLQXdBSXAvYTUzUjV0ZkdQTnBFSEpubDRZY0lBZ0FQTzVwamtnVWtlbWdrRGdJakNBQ0NpTUFDSUtBd0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBb0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFDKzdlNEhEM2xna29kMkZRQUVGQVlBRVlVQlFFUmhBQkQ1MUQ2bnk2dU5mN1NKUERESnd3c1RCZ0FjY0RiSEpBOU04dEJNR0FCRUZBWUFFWVVCUUVSaEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUE4UFArQU04ckxSYk04RlY0QUFBQUFFbEZUa1N1UW1DQyIvPgo8L2RlZnM+Cjwvc3ZnPgo=" alt="" aria-hidden="true">
   <img class="hero-art md" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAyNCIgaGVpZ2h0PSI4NDYiIHZpZXdCb3g9IjAgMCAxMDI0IDg0NiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CjxtYXNrIGlkPSJtYXNrMF85NzA0XzEzODczIiBzdHlsZT0ibWFzay10eXBlOmFscGhhIiBtYXNrVW5pdHM9InVzZXJTcGFjZU9uVXNlIiB4PSItNCIgeT0iLTExIiB3aWR0aD0iMTAyOCIgaGVpZ2h0PSIxMDUxIj4KPHJlY3QgeD0iLTQiIHk9Ii0xMSIgd2lkdGg9IjEwMjgiIGhlaWdodD0iMTA1MSIgZmlsbD0idXJsKCNwYXR0ZXJuMF85NzA0XzEzODczKSIvPgo8L21hc2s+CjxnIG1hc2s9InVybCgjbWFzazBfOTcwNF8xMzg3MykiPgo8ZyBvcGFjaXR5PSIwLjYiIGZpbHRlcj0idXJsKCNmaWx0ZXIwX2ZfOTcwNF8xMzg3MykiPgo8ZWxsaXBzZSBjeD0iMjcuNSIgY3k9IjI0NS41IiByeD0iMTcwLjUiIHJ5PSIxODAuNSIgZmlsbD0iI0VFRUZGMSIvPgo8L2c+CjxnIG9wYWNpdHk9IjAuNiIgZmlsdGVyPSJ1cmwoI2ZpbHRlcjFfZl85NzA0XzEzODczKSI+CjxlbGxpcHNlIGN4PSI5NjAuNSIgY3k9IjIzMiIgcng9IjI0OS41IiByeT0iMTgxIiBmaWxsPSIjRUVFRkYxIi8+CjwvZz4KPGcgb3BhY2l0eT0iMC42IiBmaWx0ZXI9InVybCgjZmlsdGVyMl9mXzk3MDRfMTM4NzMpIj4KPGVsbGlwc2UgY3g9Ijk2OCIgY3k9IjY5OSIgcng9IjE0MCIgcnk9IjE4MSIgZmlsbD0iI0VFRUZGMSIvPgo8L2c+CjxnIG9wYWNpdHk9IjAuNiIgZmlsdGVyPSJ1cmwoI2ZpbHRlcjNfZl85NzA0XzEzODczKSI+CjxlbGxpcHNlIGN4PSI0MCIgY3k9IjY2OC41IiByeD0iMTQwIiByeT0iMTQ0LjUiIGZpbGw9IiNFRUVGRjEiLz4KPC9nPgo8ZyBvcGFjaXR5PSIwLjYiIGZpbHRlcj0idXJsKCNmaWx0ZXI0X2ZfOTcwNF8xMzg3MykiPgo8ZWxsaXBzZSBjeD0iNzE0LjUiIGN5PSIzOTQiIHJ4PSIxNDAuNSIgcnk9IjgwIiBmaWxsPSIjRUVFRkYxIi8+CjwvZz4KPC9nPgo8bWFzayBpZD0ibWFzazFfOTcwNF8xMzg3MyIgc3R5bGU9Im1hc2stdHlwZTphbHBoYSIgbWFza1VuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeD0iLTQiIHk9Ii0xMSIgd2lkdGg9IjEwMjgiIGhlaWdodD0iMTA1MSI+CjxyZWN0IHg9Ii00IiB5PSItMTEiIHdpZHRoPSIxMDI4IiBoZWlnaHQ9IjEwNTEiIGZpbGw9InVybCgjcGF0dGVybjFfOTcwNF8xMzg3MykiLz4KPC9tYXNrPgo8ZyBtYXNrPSJ1cmwoI21hc2sxXzk3MDRfMTM4NzMpIj4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjVfZl85NzA0XzEzODczKSI+CjxlbGxpcHNlIGN4PSIzMCIgY3k9IjcxNiIgcng9IjE4OCIgcnk9IjE2MCIgZmlsbD0iI0Q0RDZERCIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXI2X2ZfOTcwNF8xMzg3MykiPgo8Y2lyY2xlIGN4PSI4MSIgY3k9IjI1MyIgcj0iMTQ2IiBmaWxsPSIjRDRENkREIi8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjdfZl85NzA0XzEzODczKSI+CjxlbGxpcHNlIGN4PSI3NTcuNSIgY3k9IjQxOS41IiByeD0iMTE0LjUiIHJ5PSI2MS41IiBmaWxsPSIjRDRENkREIi8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjhfZl85NzA0XzEzODczKSI+CjxlbGxpcHNlIGN4PSI5NzcuNSIgY3k9Ijc0OS41IiByeD0iMTE0LjUiIHJ5PSIyMjIuNSIgZmlsbD0iI0Q0RDZERCIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXI5X2ZfOTcwNF8xMzg3MykiPgo8ZWxsaXBzZSBjeD0iMTAxMC41IiBjeT0iMTM5LjUiIHJ4PSIzMjkuNSIgcnk9IjE1OC41IiBmaWxsPSIjRDRENkREIi8+CjwvZz4KPC9nPgo8ZyBvcGFjaXR5PSIwLjYiPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyMTBfZl85NzA0XzEzODczKSI+CjxlbGxpcHNlIGN4PSI5MzEuNDc0IiBjeT0iLTMuODAxNTgiIHJ4PSIxNzIuNzI3IiByeT0iOTguMjUiIHRyYW5zZm9ybT0icm90YXRlKDUyLjE4MDQgOTMxLjQ3NCAtMy44MDE1OCkiIGZpbGw9InVybCgjcGFpbnQwX2xpbmVhcl85NzA0XzEzODczKSIvPgo8L2c+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXIxMV9mXzk3MDRfMTM4NzMpIj4KPGVsbGlwc2UgY3g9IjEwNTMuMjQiIGN5PSIxNDkuNzUiIHJ4PSI5NC41IiByeT0iMTY5LjUiIHRyYW5zZm9ybT0icm90YXRlKC0xLjQ4MDE0IDEwNTMuMjQgMTQ5Ljc1KSIgZmlsbD0idXJsKCNwYWludDFfbGluZWFyXzk3MDRfMTM4NzMpIi8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjEyX2ZfOTcwNF8xMzg3MykiPgo8ZWxsaXBzZSBjeD0iMTA4Ni4yOCIgY3k9IjIyMy41NDYiIHJ4PSI2My4zNzUiIHJ5PSI5NS42MjUiIHRyYW5zZm9ybT0icm90YXRlKC0xLjQ4MDE0IDEwODYuMjggMjIzLjU0NikiIGZpbGw9IiNGRkIzQzMiLz4KPC9nPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyMTNfZl85NzA0XzEzODczKSI+CjxlbGxpcHNlIGN4PSIxMDM5LjgyIiBjeT0iNzYzLjA1MSIgcng9IjM1OC41IiByeT0iMTg1LjI1IiB0cmFuc2Zvcm09InJvdGF0ZSgtMS40ODAxNCAxMDM5LjgyIDc2My4wNTEpIiBmaWxsPSIjRkZCM0Q3IiBmaWxsLW9wYWNpdHk9IjAuMDQiLz4KPC9nPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyMTRfZl85NzA0XzEzODczKSI+CjxlbGxpcHNlIGN4PSI2MzEuNDE3IiBjeT0iMjYuNzI5MSIgcng9IjM1LjYyNSIgcnk9IjkwLjc1IiB0cmFuc2Zvcm09InJvdGF0ZSgtOTEuNDgwMSA2MzEuNDE3IDI2LjcyOTEpIiBmaWxsPSIjRkZGMkU2Ii8+CjwvZz4KPGcgZmlsdGVyPSJ1cmwoI2ZpbHRlcjE1X2ZfOTcwNF8xMzg3MykiPgo8ZWxsaXBzZSBjeD0iMTAwNS43NiIgY3k9Ii00Ny4wODk5IiByeD0iMTEyLjg3NSIgcnk9IjExNC43NSIgdHJhbnNmb3JtPSJyb3RhdGUoLTEuNDgwMTQgMTAwNS43NiAtNDcuMDg5OSkiIGZpbGw9IiNFQjg2QTkiLz4KPC9nPgo8L2c+CjxkZWZzPgo8cGF0dGVybiBpZD0icGF0dGVybjBfOTcwNF8xMzg3MyIgcGF0dGVybkNvbnRlbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giIHdpZHRoPSIwLjE5MjYwNyIgaGVpZ2h0PSIwLjE4ODM5MiI+Cjx1c2UgeGxpbms6aHJlZj0iI2ltYWdlMF85NzA0XzEzODczIiB0cmFuc2Zvcm09InNjYWxlKDAuMDAwNDg2MzgxIDAuMDAwNDc1NzM3KSIvPgo8L3BhdHRlcm4+CjxmaWx0ZXIgaWQ9ImZpbHRlcjBfZl85NzA0XzEzODczIiB4PSItMzAzIiB5PSItOTUiIHdpZHRoPSI2NjEiIGhlaWdodD0iNjgxIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgwIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfOTcwNF8xMzg3MyIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyMV9mXzk3MDRfMTM4NzMiIHg9IjU1MSIgeT0iLTEwOSIgd2lkdGg9IjgxOSIgaGVpZ2h0PSI2ODIiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0ic2hhcGUiLz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iODAiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl85NzA0XzEzODczIi8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXIyX2ZfOTcwNF8xMzg3MyIgeD0iNjY4IiB5PSIzNTgiIHdpZHRoPSI2MDAiIGhlaWdodD0iNjgyIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgwIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfOTcwNF8xMzg3MyIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyM19mXzk3MDRfMTM4NzMiIHg9Ii0yNjAiIHk9IjM2NCIgd2lkdGg9IjYwMCIgaGVpZ2h0PSI2MDkiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0ic2hhcGUiLz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iODAiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl85NzA0XzEzODczIi8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXI0X2ZfOTcwNF8xMzg3MyIgeD0iNDE0IiB5PSIxNTQiIHdpZHRoPSI2MDEiIGhlaWdodD0iNDgwIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjgwIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfOTcwNF8xMzg3MyIvPgo8L2ZpbHRlcj4KPHBhdHRlcm4gaWQ9InBhdHRlcm4xXzk3MDRfMTM4NzMiIHBhdHRlcm5Db250ZW50VW5pdHM9Im9iamVjdEJvdW5kaW5nQm94IiB3aWR0aD0iMC4xOTI2MDciIGhlaWdodD0iMC4xODgzOTIiPgo8dXNlIHhsaW5rOmhyZWY9IiNpbWFnZTFfOTcwNF8xMzg3MyIgdHJhbnNmb3JtPSJzY2FsZSgwLjAwMDQ4NjM4MSAwLjAwMDQ3NTczNykiLz4KPC9wYXR0ZXJuPgo8ZmlsdGVyIGlkPSJmaWx0ZXI1X2ZfOTcwNF8xMzg3MyIgeD0iLTIyMiIgeT0iNDkyIiB3aWR0aD0iNTA0IiBoZWlnaHQ9IjQ0OCIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIzMiIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzk3MDRfMTM4NzMiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjZfZl85NzA0XzEzODczIiB4PSItMjE5IiB5PSItNDciIHdpZHRoPSI2MDAiIGhlaWdodD0iNjAwIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249Ijc3IiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfOTcwNF8xMzg3MyIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyN19mXzk3MDRfMTM4NzMiIHg9IjQ4OSIgeT0iMjA0IiB3aWR0aD0iNTM3IiBoZWlnaHQ9IjQzMSIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI3NyIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzk3MDRfMTM4NzMiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjhfZl85NzA0XzEzODczIiB4PSI3MDkiIHk9IjM3MyIgd2lkdGg9IjUzNyIgaGVpZ2h0PSI3NTMiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0ic2hhcGUiLz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iNzciIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl85NzA0XzEzODczIi8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXI5X2ZfOTcwNF8xMzg3MyIgeD0iNTI3IiB5PSItMTczIiB3aWR0aD0iOTY3IiBoZWlnaHQ9IjYyNSIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI3NyIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzk3MDRfMTM4NzMiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjEwX2ZfOTcwNF8xMzg3MyIgeD0iNTk3LjY2IiB5PSItMzU1LjQ5MiIgd2lkdGg9IjY2Ny42MjgiIGhlaWdodD0iNzAzLjM4MSIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIxMDEuMjUiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl85NzA0XzEzODczIi8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXIxMV9mXzk3MDRfMTM4NzMiIHg9IjgwOC42NjQiIHk9Ii0xNjkuNzEyIiB3aWR0aD0iNDg5LjE0NCIgaGVpZ2h0PSI2MzguOTIzIiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249Ijc1IiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfOTcwNF8xMzg3MyIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyMTJfZl85NzA0XzEzODczIiB4PSI4ODcuODc1IiB5PSItNy4wNjE3NyIgd2lkdGg9IjM5Ni44MDYiIGhlaWdodD0iNDYxLjIxNSIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPgo8ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSI2Ny41IiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfOTcwNF8xMzg3MyIvPgo8L2ZpbHRlcj4KPGZpbHRlciBpZD0iZmlsdGVyMTNfZl85NzA0XzEzODczIiB4PSI1NDYuNDEiIHk9IjQ0Mi42MjciIHdpZHRoPSI5ODYuODI2IiBoZWlnaHQ9IjY0MC44NDgiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0ic2hhcGUiLz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iNjcuNSIgcmVzdWx0PSJlZmZlY3QxX2ZvcmVncm91bmRCbHVyXzk3MDRfMTM4NzMiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjE0X2ZfOTcwNF8xMzg3MyIgeD0iNDI4LjE5MyIgeT0iLTEyMS40NjIiIHdpZHRoPSI0MDYuNDQ5IiBoZWlnaHQ9IjI5Ni4zODMiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0ic2hhcGUiLz4KPGZlR2F1c3NpYW5CbHVyIHN0ZERldmlhdGlvbj0iNTYuMjUiIHJlc3VsdD0iZWZmZWN0MV9mb3JlZ3JvdW5kQmx1cl85NzA0XzEzODczIi8+CjwvZmlsdGVyPgo8ZmlsdGVyIGlkPSJmaWx0ZXIxNV9mXzk3MDRfMTM4NzMiIHg9Ijc3Mi44ODMiIHk9Ii0yODEuODM5IiB3aWR0aD0iNDY1Ljc1NCIgaGVpZ2h0PSI0NjkuNDk5IiBmaWx0ZXJVbml0cz0idXNlclNwYWNlT25Vc2UiIGNvbG9yLWludGVycG9sYXRpb24tZmlsdGVycz0ic1JHQiI+CjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW49IlNvdXJjZUdyYXBoaWMiIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9InNoYXBlIi8+CjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjYwIiByZXN1bHQ9ImVmZmVjdDFfZm9yZWdyb3VuZEJsdXJfOTcwNF8xMzg3MyIvPgo8L2ZpbHRlcj4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDBfbGluZWFyXzk3MDRfMTM4NzMiIHgxPSI5MzEuNDc0IiB5MT0iLTEwMi4wNTIiIHgyPSI5MzEuNDc0IiB5Mj0iOTQuNDQ4NCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPgo8c3RvcCBvZmZzZXQ9IjAuNDk2MjA3IiBzdG9wLWNvbG9yPSIjRkZEMDgwIi8+CjxzdG9wIG9mZnNldD0iMC44MTMwMDciIHN0b3AtY29sb3I9IiNGRkZGRTUiLz4KPC9saW5lYXJHcmFkaWVudD4KPGxpbmVhckdyYWRpZW50IGlkPSJwYWludDFfbGluZWFyXzk3MDRfMTM4NzMiIHgxPSIxMDUzLjI0IiB5MT0iLTE5Ljc1MDUiIHgyPSIxMDUzLjI0IiB5Mj0iMzE5LjI1IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+CjxzdG9wIG9mZnNldD0iMC40MTY5MzEiIHN0b3AtY29sb3I9IiNGRkM0NjYiLz4KPHN0b3Agb2Zmc2V0PSIwLjc4Nzc1NSIgc3RvcC1jb2xvcj0iI0ZGRTVCMiIvPgo8L2xpbmVhckdyYWRpZW50Pgo8aW1hZ2UgaWQ9ImltYWdlMF85NzA0XzEzODczIiB3aWR0aD0iMzk2IiBoZWlnaHQ9IjM5NiIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSIgeGxpbms6aHJlZj0iZGF0YTppbWFnZS9wbmc7YmFzZTY0LGlWQk9SdzBLR2dvQUFBQU5TVWhFVWdBQUFZd0FBQUdNQ0FZQUFBREpPWlZLQUFBQUNYQklXWE1BQUJZbEFBQVdKUUZKVWlUd0FBQUFBWE5TUjBJQXJzNGM2UUFBQUFSblFVMUJBQUN4and2OFlRVUFBQVhhU1VSQlZIZ0I3ZGZCQ2NSQURBVEIzY3MvWjUxQitPME9vQXFVd0h3YTNYUE9IQUFJQkdNM3NJTWRYblpZZGxoMldQTTdBQkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRM09mbUFNQUhId1lBbVE5ak43Q0RIVjUyV0haWWRsamp3d0FnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUxuUHpRR0FEejRNQURJZnhtNWdCenU4N0xEc3NPeXd4b2NCUUNJWUFDU0NBVUFpR0FBa2dnRkFJaGdBSklJQlFDSVlBQ1NDQVVBaUdBQWtnZ0ZBSWhnQUpJSUJRQ0lZQUNTQ0FVQWlHQUFrZ2dGQUloZ0FKSUlCUUNJWUFDU0NBVUFpR0FBa2dnRkFJaGdBSklJQlFDSVlBQ1NDQVVBaUdBQWtnZ0ZBSWhnQUpJSUJRQ0lZQUNTQ0FVQWlHQUFrZ2dGQUloZ0FKSUlCUUNJWUFDU0NBVUFpR0FBa2dnRkFJaGdBSklJQlFDSVlBQ1NDQVVBaUdBQWtnZ0ZBSWhnQUpJSUJRQ0lZQUNTQ0FVQWlHQUFrZ2dGQUloZ0FKSUlCUUNJWUFDU0NBVUFpR0FBa2dnRkFJaGdBSklJQlFDSVlBQ1NDQVVCeW41c0RBQjk4R0FCa1BvemR3QTUyZU5saDJXSFpZWTBQQTRCRU1BQklCQU9BUkRBQVNBUURnRVF3QUVnRUE0QkVNQUJJQkFPQVJEQUFTQVFEZ0VRd0FFZ0VBNEJFTUFCSUJBT0FSREFBU0FRRGdFUXdBRWdFQTRCRU1BQklCQU9BUkRBQVNBUURnRVF3QUVnRUE0QkVNQUJJQkFPQVJEQUFTQVFEZ0VRd0FFZ0VBNEJFTUFCSUJBT0FSREFBU0FRRGdFUXdBRWdFQTRCRU1BQklCQU9BUkRBQVNBUURnRVF3QUVnRUE0QkVNQUJJQkFPQVJEQUFTQVFEZ0VRd0FFZ0VBNEJFTUFCSUJBT0FSREFBU0FRRGdFUXdBRWdFQTRCRU1BQklCQU9BUkRBQVNBUURnRVF3QUVnRUE0QkVNQUJJQkFPQTVENDNCd0ErK0RBQXlId1l1NEVkN1BDeXc3TERzc01hSHdZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FJbGdBSkFJQmdDSllBQ1FDQVlBaVdBQWtBZ0dBSWxnQUpBSUJnQ0pZQUNRQ0FZQWlXQUFrQWdHQUlsZ0FKQUlCZ0NKWUFDUUNBWUFpV0FBa0FnR0FNbDliZzRBZlBCaEFKRDVNSFlETzlqaFpZZGxoMldITlQ0TUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQVN3UUFnRVF3QUVzRUFJQkVNQUJMQkFDQVJEQUFTd1FBZ0VRd0FFc0VBSUJFTUFCTEJBQ0FSREFBU3dRQWdFUXdBRXNFQUlCRU1BQkxCQUNBUkRBQ1MrOXdjQVBqd0IraklVYmRBY04zUkFBQUFBRWxGVGtTdVFtQ0MiLz4KPGltYWdlIGlkPSJpbWFnZTFfOTcwNF8xMzg3MyIgd2lkdGg9IjM5NiIgaGVpZ2h0PSIzOTYiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIHhsaW5rOmhyZWY9ImRhdGE6aW1hZ2UvcG5nO2Jhc2U2NCxpVkJPUncwS0dnb0FBQUFOU1VoRVVnQUFBWXdBQUFHTUNBWUFBQURKT1pWS0FBQUFDWEJJV1hNQUFCWWxBQUFXSlFGSlVpVHdBQUFBQVhOU1IwSUFyczRjNlFBQUFBUm5RVTFCQUFDeGp3djhZUVVBQUFNV1NVUkJWSGdCN2RyQmljUkFEQVJBcmZQUDJZZEJENzFNejJQaEZsWEJKREEwTkVLcUFnQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBRGd2N3Y3d1VNZW1PU2hYUVVBQVlVQlFFUmhBQkJSR0FCRVByWFA2ZkpxNHg5dElnOU04dkRDaEFFQUI1ek5NY2tEa3p3MEV3WUFFWVVCUUVSaEFCQlJHQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQXdOZmQvZUFoRDB6eTBLNENnSURDQUNDaU1BQ0lLQXdBSXAvYTUzUjV0ZkdQTnBFSEpubDRZY0lBZ0FQTzVwamtnVWtlbWdrRGdJakNBQ0NpTUFDSUtBd0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBb0FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFDKzdlNEhEM2xna29kMkZRQUVGQVlBRVlVQlFFUmhBQkQ1MUQ2bnk2dU5mN1NKUERESnd3c1RCZ0FjY0RiSEpBOU04dEJNR0FCRUZBWUFFWVVCUUVSaEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUE4UFArQU04ckxSYk04RlY0QUFBQUFFbEZUa1N1UW1DQyIvPgo8L2RlZnM+Cjwvc3ZnPgo=" alt="" aria-hidden="true">
   <div class="hero-inner">
-    <div class="hero-copy">
-      <h1>Innovative AI Solutions for Forward-Thinking Businesses</h1>
-      <p class="lead">Focus on running your business while our AI receptionists and sales agents handle every inbound and outbound call.</p>
-      <div class="hero-ctas">
-        <a class="btn btn-primary" href="#">Book a Call</a>
-        <a class="btn btn-secondary" href="#pain">Learn More</a>
+    <div class="pill">AI systems for service businesses</div>
+    <h1>We use the latest AI to make your business more money.</h1>
+    <p class="lead">Speed-to-lead calling, automatic follow-ups, an office that runs itself, custom tools nobody else will build you. Everything plugs into what you already use, and everything points at the same number.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#">Book a Call</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 1b. NODE-GRAPH PANEL (reference "how-it-works" anatomy) ============ -->
+<section class="graph-sec">
+  <div class="container-wide">
+    <div class="panel-wrap">
+      <div class="graph-panel corners">
+        <i class="x bl dark"></i><i class="x br dark"></i>
+        <span class="gp-blob" aria-hidden="true"></span>
+        <span class="gp-blob b2" aria-hidden="true"></span>
+        <h2 class="gp-head">Every system we build feeds the same number.</h2>
+
+        <!-- Desktop graph -->
+        <svg class="gp-svg gp-desktop" viewBox="0 0 1160 560" fill="none" aria-label="Diagram: speed-to-lead, lead nurturing, automations, custom AI, ads and content and the AI receptionist all connect to your business, and flow into more booked jobs." role="img">
+          <defs>
+            <linearGradient id="gpg-cy" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E5FFFF"/><stop offset="1" stop-color="#BCEEFE"/></linearGradient>
+            <linearGradient id="gpg-am" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE5B2"/><stop offset="1" stop-color="#FFB266"/></linearGradient>
+            <linearGradient id="gpg-sk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#CCF6FF"/><stop offset="1" stop-color="#92DCF5"/></linearGradient>
+            <linearGradient id="gpg-pe" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D6DFFF"/><stop offset="1" stop-color="#B2C2FF"/></linearGradient>
+            <linearGradient id="gpg-pk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB2D7"/><stop offset="1" stop-color="#FF99BD"/></linearGradient>
+            <linearGradient id="gpg-cr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE5B2"/><stop offset="1" stop-color="#FFD499"/></linearGradient>
+            <filter id="gp-sh" x="-30%" y="-60%" width="160%" height="220%"><feDropShadow dx="1.5" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".07"/></filter>
+          </defs>
+
+          <!-- pastel accent shapes -->
+          <polygon points="365,117 378,124.5 378,139.5 365,147 352,139.5 352,124.5" fill="#F7BE3A" transform="rotate(8 365 132)"/>
+          <circle cx="772" cy="470" r="7" fill="#FFB266"/>
+          <circle cx="150" cy="395" r="9" stroke="#FF99BD" stroke-width="3.5"/>
+          <rect x="88" y="112" width="14" height="14" rx="4" fill="#BCEEFE" transform="rotate(12 95 119)"/>
+          <path d="M1062 124v16M1054 132h16" stroke="#9B9897" stroke-width="1.5" stroke-linecap="round"/>
+
+          <!-- connector lines (mix of solid and dashed) -->
+          <path d="M216 252 Q400 248 565 285" stroke="#B4B2B1" stroke-width="1.4" stroke-dasharray="5 5"/>
+          <path d="M293 450 Q420 380 565 285" stroke="#CDCCCB" stroke-width="1.5"/>
+          <path d="M607 88 Q580 190 565 285" stroke="#CDCCCB" stroke-width="1.5"/>
+          <path d="M860 138 Q700 200 565 285" stroke="#B4B2B1" stroke-width="1.4" stroke-dasharray="5 5"/>
+          <path d="M695 486 Q620 390 565 285" stroke="#CDCCCB" stroke-width="1.5"/>
+          <path d="M899 390 Q720 350 565 285" stroke="#B4B2B1" stroke-width="1.4" stroke-dasharray="5 5"/>
+
+          <!-- dots traveling the lines toward the center (hidden under reduced motion) -->
+          <g class="gp-dots">
+            <circle r="3.5" fill="#0083F5"><animateMotion dur="3s" begin="0s" repeatCount="indefinite" path="M216 252 Q400 248 565 285"/></circle>
+            <circle r="3.5" fill="#0083F5"><animateMotion dur="3s" begin="-0.5s" repeatCount="indefinite" path="M293 450 Q420 380 565 285"/></circle>
+            <circle r="3.5" fill="#0083F5"><animateMotion dur="3s" begin="-1s" repeatCount="indefinite" path="M607 88 Q580 190 565 285"/></circle>
+            <circle r="3.5" fill="#0083F5"><animateMotion dur="3s" begin="-1.5s" repeatCount="indefinite" path="M860 138 Q700 200 565 285"/></circle>
+            <circle r="3.5" fill="#0083F5"><animateMotion dur="3s" begin="-2s" repeatCount="indefinite" path="M695 486 Q620 390 565 285"/></circle>
+            <circle r="3.5" fill="#0083F5"><animateMotion dur="3s" begin="-2.5s" repeatCount="indefinite" path="M899 390 Q720 350 565 285"/></circle>
+          </g>
+
+          <!-- labeled chips -->
+          <g transform="translate(140,232)" filter="url(#gp-sh)">
+            <rect width="152" height="40" rx="20" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="26" height="26" rx="8" fill="url(#gpg-cy)"/>
+            <g transform="translate(10,10) scale(0.833)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </g>
+            <text x="42" y="25.5" font-size="15" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">Speed-to-lead</text>
+          </g>
+          <g transform="translate(214,430)" filter="url(#gp-sh)">
+            <rect width="158" height="40" rx="20" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="26" height="26" rx="8" fill="url(#gpg-am)"/>
+            <g transform="translate(10,10) scale(0.833)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 2.5l3.5 3.5L17 9.5M3.5 11V9.5a4 4 0 0 1 4-4h13M7 21.5L3.5 18 7 14.5M20.5 13v1.5a4 4 0 0 1-4 4h-13"/>
+            </g>
+            <text x="42" y="25.5" font-size="15" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">Lead nurturing</text>
+          </g>
+          <g transform="translate(538,68)" filter="url(#gp-sh)">
+            <rect width="138" height="40" rx="20" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="26" height="26" rx="8" fill="url(#gpg-sk)"/>
+            <g transform="translate(10,10) scale(0.833)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3.2"/>
+              <path d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3M5.4 5.4l2.1 2.1M16.5 16.5l2.1 2.1M18.6 5.4l-2.1 2.1M7.5 16.5l-2.1 2.1"/>
+            </g>
+            <text x="42" y="25.5" font-size="15" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">Automations</text>
+          </g>
+          <g transform="translate(798,118)" filter="url(#gp-sh)">
+            <rect width="124" height="40" rx="20" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="26" height="26" rx="8" fill="url(#gpg-pe)"/>
+            <g transform="translate(10,10) scale(0.833)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2.8l1.7 5.4 5.5 1.8-5.5 1.8L12 17.2l-1.7-5.4-5.5-1.8 5.5-1.8L12 2.8z"/>
+              <path d="M19 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z" stroke-width="1.4"/>
+            </g>
+            <text x="42" y="25.5" font-size="15" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">Custom AI</text>
+          </g>
+          <g transform="translate(620,466)" filter="url(#gp-sh)">
+            <rect width="150" height="40" rx="20" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="26" height="26" rx="8" fill="url(#gpg-pk)"/>
+            <g transform="translate(10,10) scale(0.833)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.5 4.5L8.2 8.4H5.6A1.6 1.6 0 0 0 4 10v4a1.6 1.6 0 0 0 1.6 1.6h2.6l6.3 3.9V4.5z"/>
+              <path d="M17.8 9.2a4.6 4.6 0 0 1 0 5.6"/>
+            </g>
+            <text x="42" y="25.5" font-size="15" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">Ads &amp; content</text>
+          </g>
+          <g transform="translate(818,370)" filter="url(#gp-sh)">
+            <rect width="162" height="40" rx="20" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="26" height="26" rx="8" fill="url(#gpg-cr)"/>
+            <g transform="translate(10,10) scale(0.833)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4.5 13.5v-2a7.5 7.5 0 0 1 15 0v2"/>
+              <rect x="3" y="13" width="4.4" height="7" rx="2.2"/>
+              <rect x="16.6" y="13" width="4.4" height="7" rx="2.2"/>
+              <path d="M19.5 20v.4a2.1 2.1 0 0 1-2.1 2.1H14"/>
+            </g>
+            <text x="42" y="25.5" font-size="15" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">AI receptionist</text>
+          </g>
+
+          <!-- center node with dashed frame corners -->
+          <rect x="454" y="223" width="222" height="124" rx="18" stroke="#B4B2B1" stroke-width="1.2" stroke-dasharray="5 5"/>
+          <g fill="#fff" stroke="#9B9897" stroke-width="1.2">
+            <rect x="450" y="219" width="8" height="8" rx="2"/>
+            <rect x="672" y="219" width="8" height="8" rx="2"/>
+            <rect x="450" y="343" width="8" height="8" rx="2"/>
+            <rect x="672" y="343" width="8" height="8" rx="2"/>
+          </g>
+          <g filter="url(#gp-sh)">
+            <rect x="470" y="239" width="190" height="92" rx="16" fill="#fff" stroke="#353231" stroke-width="1.5"/>
+          </g>
+          <g fill="#060504">
+            <rect x="548" y="250" width="9" height="9" rx="2.8"/>
+            <rect x="560.5" y="250" width="9" height="9" rx="2.8" opacity=".8"/>
+            <rect x="573" y="250" width="9" height="9" rx="2.8" opacity=".55"/>
+            <rect x="548" y="262.5" width="9" height="9" rx="2.8" opacity=".8"/>
+            <rect x="560.5" y="262.5" width="9" height="9" rx="2.8" opacity=".55"/>
+            <rect x="573" y="262.5" width="9" height="9" rx="2.8" opacity=".32"/>
+            <rect x="548" y="275" width="9" height="9" rx="2.8" opacity=".55"/>
+            <rect x="560.5" y="275" width="9" height="9" rx="2.8" opacity=".32"/>
+            <rect x="573" y="275" width="9" height="9" rx="2.8" opacity=".16"/>
+          </g>
+          <text x="565" y="312" text-anchor="middle" font-size="13.5" font-weight="500" fill="#060504" style="font-family:var(--font-title);letter-spacing:.09em">YOUR BUSINESS</text>
+
+          <!-- the money line -->
+          <path d="M672 285 C760 285 800 266 884 266" stroke="#060504" stroke-width="1.8"/>
+          <path d="M876 259l9 7-9 7" stroke="#060504" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <g class="gp-dots">
+            <circle r="4" fill="#6DC277"><animateMotion dur="2.1s" begin="0s" repeatCount="indefinite" path="M672 285 C760 285 800 266 884 266"/></circle>
+            <circle r="4" fill="#6DC277"><animateMotion dur="2.1s" begin="-1.05s" repeatCount="indefinite" path="M672 285 C760 285 800 266 884 266"/></circle>
+          </g>
+          <g transform="translate(892,242)" filter="url(#gp-sh)">
+            <rect width="204" height="48" rx="24" fill="#EFF9F0" stroke="#6DC277" stroke-opacity=".55" stroke-width="1.5"/>
+            <circle cx="26" cy="24" r="12.5" fill="#6DC277"/>
+            <text x="26" y="28.5" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" style="font-family:var(--font-sans)">$</text>
+            <text x="46" y="29" font-size="15.5" font-weight="600" fill="#33793E" style="font-family:var(--font-sans);letter-spacing:-.01em">More booked jobs</text>
+          </g>
+        </svg>
+
+        <!-- Mobile graph (same anatomy, stacked) -->
+        <svg class="gp-svg gp-mobile" viewBox="0 0 420 640" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="gpm-cy" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E5FFFF"/><stop offset="1" stop-color="#BCEEFE"/></linearGradient>
+            <linearGradient id="gpm-am" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE5B2"/><stop offset="1" stop-color="#FFB266"/></linearGradient>
+            <linearGradient id="gpm-sk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#CCF6FF"/><stop offset="1" stop-color="#92DCF5"/></linearGradient>
+            <linearGradient id="gpm-pe" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D6DFFF"/><stop offset="1" stop-color="#B2C2FF"/></linearGradient>
+            <linearGradient id="gpm-pk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFB2D7"/><stop offset="1" stop-color="#FF99BD"/></linearGradient>
+            <linearGradient id="gpm-cr" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE5B2"/><stop offset="1" stop-color="#FFD499"/></linearGradient>
+            <filter id="gpm-sh" x="-30%" y="-60%" width="160%" height="220%"><feDropShadow dx="1" dy="2.5" stdDeviation="2.5" flood-color="#000" flood-opacity=".07"/></filter>
+          </defs>
+
+          <polygon points="210,108 221,114.5 221,127.5 210,134 199,127.5 199,114.5" fill="#F7BE3A" transform="rotate(8 210 121)"/>
+          <circle cx="52" cy="300" r="6" fill="#FFB266"/>
+          <circle cx="366" cy="300" r="8" stroke="#FF99BD" stroke-width="3"/>
+          <path d="M310 468v14M303 475h14" stroke="#9B9897" stroke-width="1.4" stroke-linecap="round"/>
+
+          <path d="M92 55 Q120 220 210 352" stroke="#B4B2B1" stroke-width="1.3" stroke-dasharray="5 5"/>
+          <path d="M332 55 Q300 220 210 352" stroke="#CDCCCB" stroke-width="1.4"/>
+          <path d="M86 143 Q130 260 210 352" stroke="#CDCCCB" stroke-width="1.4"/>
+          <path d="M345 143 Q290 260 210 352" stroke="#B4B2B1" stroke-width="1.3" stroke-dasharray="5 5"/>
+          <path d="M90 231 Q140 300 210 352" stroke="#CDCCCB" stroke-width="1.4"/>
+          <path d="M331 231 Q280 300 210 352" stroke="#B4B2B1" stroke-width="1.3" stroke-dasharray="5 5"/>
+
+          <g class="gp-dots">
+            <circle r="3.2" fill="#0083F5"><animateMotion dur="2.8s" begin="0s" repeatCount="indefinite" path="M92 55 Q120 220 210 352"/></circle>
+            <circle r="3.2" fill="#0083F5"><animateMotion dur="2.8s" begin="-0.9s" repeatCount="indefinite" path="M332 55 Q300 220 210 352"/></circle>
+            <circle r="3.2" fill="#0083F5"><animateMotion dur="2.8s" begin="-1.8s" repeatCount="indefinite" path="M86 143 Q130 260 210 352"/></circle>
+            <circle r="3.2" fill="#0083F5"><animateMotion dur="2.8s" begin="-0.45s" repeatCount="indefinite" path="M345 143 Q290 260 210 352"/></circle>
+            <circle r="3.2" fill="#0083F5"><animateMotion dur="2.8s" begin="-1.35s" repeatCount="indefinite" path="M90 231 Q140 300 210 352"/></circle>
+            <circle r="3.2" fill="#0083F5"><animateMotion dur="2.8s" begin="-2.25s" repeatCount="indefinite" path="M331 231 Q280 300 210 352"/></circle>
+          </g>
+
+          <g transform="translate(22,36)" filter="url(#gpm-sh)">
+            <rect width="140" height="38" rx="19" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="24" height="24" rx="7" fill="url(#gpm-cy)"/>
+            <g transform="translate(9.5,9.5) scale(0.79)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </g>
+            <text x="38" y="24" font-size="14" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">Speed-to-lead</text>
+          </g>
+          <g transform="translate(268,36)" filter="url(#gpm-sh)">
+            <rect width="128" height="38" rx="19" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="24" height="24" rx="7" fill="url(#gpm-sk)"/>
+            <g transform="translate(9.5,9.5) scale(0.79)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3.2"/>
+              <path d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3M5.4 5.4l2.1 2.1M16.5 16.5l2.1 2.1M18.6 5.4l-2.1 2.1M7.5 16.5l-2.1 2.1"/>
+            </g>
+            <text x="38" y="24" font-size="14" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">Automations</text>
+          </g>
+          <g transform="translate(12,124)" filter="url(#gpm-sh)">
+            <rect width="148" height="38" rx="19" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="24" height="24" rx="7" fill="url(#gpm-am)"/>
+            <g transform="translate(9.5,9.5) scale(0.79)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 2.5l3.5 3.5L17 9.5M3.5 11V9.5a4 4 0 0 1 4-4h13M7 21.5L3.5 18 7 14.5M20.5 13v1.5a4 4 0 0 1-4 4h-13"/>
+            </g>
+            <text x="38" y="24" font-size="14" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">Lead nurturing</text>
+          </g>
+          <g transform="translate(288,124)" filter="url(#gpm-sh)">
+            <rect width="114" height="38" rx="19" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="24" height="24" rx="7" fill="url(#gpm-pe)"/>
+            <g transform="translate(9.5,9.5) scale(0.79)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2.8l1.7 5.4 5.5 1.8-5.5 1.8L12 17.2l-1.7-5.4-5.5-1.8 5.5-1.8L12 2.8z"/>
+              <path d="M19 15.5l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8.8-2.2z" stroke-width="1.4"/>
+            </g>
+            <text x="38" y="24" font-size="14" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">Custom AI</text>
+          </g>
+          <g transform="translate(20,212)" filter="url(#gpm-sh)">
+            <rect width="140" height="38" rx="19" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="24" height="24" rx="7" fill="url(#gpm-pk)"/>
+            <g transform="translate(9.5,9.5) scale(0.79)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.5 4.5L8.2 8.4H5.6A1.6 1.6 0 0 0 4 10v4a1.6 1.6 0 0 0 1.6 1.6h2.6l6.3 3.9V4.5z"/>
+              <path d="M17.8 9.2a4.6 4.6 0 0 1 0 5.6"/>
+            </g>
+            <text x="38" y="24" font-size="14" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">Ads &amp; content</text>
+          </g>
+          <g transform="translate(254,212)" filter="url(#gpm-sh)">
+            <rect width="152" height="38" rx="19" fill="#fff" stroke="#E6E5E5"/>
+            <rect x="7" y="7" width="24" height="24" rx="7" fill="url(#gpm-cr)"/>
+            <g transform="translate(9.5,9.5) scale(0.79)" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4.5 13.5v-2a7.5 7.5 0 0 1 15 0v2"/>
+              <rect x="3" y="13" width="4.4" height="7" rx="2.2"/>
+              <rect x="16.6" y="13" width="4.4" height="7" rx="2.2"/>
+              <path d="M19.5 20v.4a2.1 2.1 0 0 1-2.1 2.1H14"/>
+            </g>
+            <text x="38" y="24" font-size="14" font-weight="500" fill="#060504" style="font-family:var(--font-sans);letter-spacing:-.01em">AI receptionist</text>
+          </g>
+
+          <rect x="106" y="296" width="208" height="112" rx="16" stroke="#B4B2B1" stroke-width="1.1" stroke-dasharray="5 5"/>
+          <g fill="#fff" stroke="#9B9897" stroke-width="1.1">
+            <rect x="102" y="292" width="8" height="8" rx="2"/>
+            <rect x="310" y="292" width="8" height="8" rx="2"/>
+            <rect x="102" y="404" width="8" height="8" rx="2"/>
+            <rect x="310" y="404" width="8" height="8" rx="2"/>
+          </g>
+          <g filter="url(#gpm-sh)">
+            <rect x="120" y="310" width="180" height="84" rx="15" fill="#fff" stroke="#353231" stroke-width="1.4"/>
+          </g>
+          <g fill="#060504">
+            <rect x="194" y="320" width="8.5" height="8.5" rx="2.6"/>
+            <rect x="205.8" y="320" width="8.5" height="8.5" rx="2.6" opacity=".8"/>
+            <rect x="217.6" y="320" width="8.5" height="8.5" rx="2.6" opacity=".55"/>
+            <rect x="194" y="331.8" width="8.5" height="8.5" rx="2.6" opacity=".8"/>
+            <rect x="205.8" y="331.8" width="8.5" height="8.5" rx="2.6" opacity=".55"/>
+            <rect x="217.6" y="331.8" width="8.5" height="8.5" rx="2.6" opacity=".32"/>
+            <rect x="194" y="343.6" width="8.5" height="8.5" rx="2.6" opacity=".55"/>
+            <rect x="205.8" y="343.6" width="8.5" height="8.5" rx="2.6" opacity=".32"/>
+            <rect x="217.6" y="343.6" width="8.5" height="8.5" rx="2.6" opacity=".16"/>
+          </g>
+          <text x="210" y="376" text-anchor="middle" font-size="12.5" font-weight="500" fill="#060504" style="font-family:var(--font-title);letter-spacing:.09em">YOUR BUSINESS</text>
+
+          <path d="M210 408v144" stroke="#060504" stroke-width="1.7"/>
+          <path d="M203 544l7 8 7-8" stroke="#060504" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          <g class="gp-dots">
+            <circle r="3.6" fill="#6DC277"><animateMotion dur="2s" begin="0s" repeatCount="indefinite" path="M210 408 L210 552"/></circle>
+            <circle r="3.6" fill="#6DC277"><animateMotion dur="2s" begin="-1s" repeatCount="indefinite" path="M210 408 L210 552"/></circle>
+          </g>
+          <g transform="translate(110,560)" filter="url(#gpm-sh)">
+            <rect width="200" height="46" rx="23" fill="#EFF9F0" stroke="#6DC277" stroke-opacity=".55" stroke-width="1.4"/>
+            <circle cx="25" cy="23" r="12" fill="#6DC277"/>
+            <text x="25" y="27.5" text-anchor="middle" font-size="13.5" font-weight="700" fill="#fff" style="font-family:var(--font-sans)">$</text>
+            <text x="44" y="28" font-size="15" font-weight="600" fill="#33793E" style="font-family:var(--font-sans);letter-spacing:-.01em">More booked jobs</text>
+          </g>
+        </svg>
+
+        <div class="gp-caps">
+          <span class="gp-cap">Works 24/7</span>
+          <span class="gp-cap">Plugs into your tools</span>
+        </div>
+      </div>
+      <span class="blob glow-orange" aria-hidden="true"></span>
+      <span class="blob glow-blue" aria-hidden="true"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. PAIN ============ -->
+<section class="pain" id="pain">
+  <div class="container-wide">
+    <div class="sec-head">
+      <span class="v-line" style="left:0" aria-hidden="true"></span>
+      <span class="v-line" style="right:0" aria-hidden="true"></span>
+      <div class="pill">The problem</div>
+      <h2 class="statement">Where you're leaking money.</h2>
+    </div>
+    <div class="grid-cards">
+      <div class="card corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="tile" style="background:linear-gradient(135deg,#E5FFFF,#BCEEFE)">
+          <svg width="54" height="54" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+            <path d="M15 11h26a8 8 0 0 1 8 8v11a8 8 0 0 1-8 8H27l-8 7v-7h-4a8 8 0 0 1-8-8V19a8 8 0 0 1 8-8z" fill="#fff" stroke="#353231" stroke-width="1.8" stroke-linejoin="round"/>
+            <text class="pq-q" x="28" y="30.5" text-anchor="middle" font-size="16" font-weight="500" fill="#060504" style="font-family:var(--font-title)">?</text>
+            <g class="pq-wait" fill="#9B9897">
+              <circle cx="21.5" cy="25" r="1.8"/><circle cx="28" cy="25" r="1.8"/><circle cx="34.5" cy="25" r="1.8"/>
+            </g>
+          </svg>
+        </div>
+        <h3>Leads that wait, walk.</h3>
+        <p>An hour-old lead is a cold lead. If nobody calls back in minutes, the job goes to whoever does.</p>
+      </div>
+      <div class="card corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="tile tile-lg" style="background:linear-gradient(135deg,#FFE5B2,#FFD499)">
+          <!-- The dollar coin falls, hits the ground and shatters — looped -->
+          <svg width="76" height="76" viewBox="0 0 76 76" fill="none" aria-hidden="true">
+            <defs>
+              <clipPath id="pdL"><path d="M38 33A15 15 0 0 0 38 63L40 57 34.5 51.5 39.5 45 35 39Z"/></clipPath>
+              <clipPath id="pdR"><path d="M38 33A15 15 0 0 1 38 63L40 57 34.5 51.5 39.5 45 35 39Z"/></clipPath>
+            </defs>
+            <path d="M8 64h60" stroke="#353231" stroke-opacity=".3" stroke-width="1.5" stroke-dasharray="3 4" stroke-linecap="round"/>
+            <path class="pd-sp" d="M27 26v7" stroke="#353231" stroke-opacity=".35" stroke-width="1.5" stroke-linecap="round"/>
+            <path class="pd-sp" style="animation-delay:.15s" d="M49 21v8" stroke="#353231" stroke-opacity=".35" stroke-width="1.5" stroke-linecap="round"/>
+            <g class="pd-whole">
+              <circle cx="38" cy="48" r="15" fill="#fff" stroke="#353231" stroke-width="1.8"/>
+              <circle cx="38" cy="48" r="11.3" stroke="#353231" stroke-opacity=".25" stroke-width="1" stroke-dasharray="2.5 3"/>
+              <text x="38" y="53.5" text-anchor="middle" font-size="16" font-weight="600" fill="#33793E" style="font-family:var(--font-sans)">$</text>
+            </g>
+            <g class="pd-imp" stroke="#F7BE3A" stroke-width="2" stroke-linecap="round">
+              <path d="M20 56l-4-3M56 56l4-3M24 47l-5-1M52 47l5-1"/>
+            </g>
+            <g class="pd-hl">
+              <path d="M38 33A15 15 0 0 0 38 63L40 57 34.5 51.5 39.5 45 35 39Z" fill="#fff" stroke="#353231" stroke-width="1.8" stroke-linejoin="round"/>
+              <text clip-path="url(#pdL)" x="38" y="53.5" text-anchor="middle" font-size="16" font-weight="600" fill="#33793E" style="font-family:var(--font-sans)">$</text>
+            </g>
+            <g class="pd-hr">
+              <path d="M38 33A15 15 0 0 1 38 63L40 57 34.5 51.5 39.5 45 35 39Z" fill="#fff" stroke="#353231" stroke-width="1.8" stroke-linejoin="round"/>
+              <text clip-path="url(#pdR)" x="38" y="53.5" text-anchor="middle" font-size="16" font-weight="600" fill="#33793E" style="font-family:var(--font-sans)">$</text>
+            </g>
+            <path class="pd-f" style="--fx:15px;--fy:-10px" d="M17 60l5-3 1.8 4.6-5.6 1z" fill="#fff" stroke="#353231" stroke-width="1.4" stroke-linejoin="round"/>
+            <path class="pd-f" style="--fx:-14px;--fy:-9px;animation-delay:.06s" d="M56 59l4.6-2 1.4 4-5 .8z" fill="#fff" stroke="#353231" stroke-width="1.4" stroke-linejoin="round"/>
+            <path class="pd-f" style="--fx:9px;--fy:-16px;animation-delay:.1s" d="M24 50l3.4-1.6 1.2 3.2-3.8.8z" fill="#F7BE3A" stroke="#353231" stroke-width="1.2" stroke-linejoin="round"/>
+            <path class="pd-f" style="--fx:-8px;--fy:-15px;animation-delay:.14s" d="M50 49l3-1.4 1 2.8-3.4.7z" fill="#F7BE3A" stroke="#353231" stroke-width="1.2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3>Missed calls are paid-for losses.</h3>
+        <p>You paid ads, reviews and years of reputation to make that phone ring. Every ring that dies in voicemail is money you already spent.</p>
+      </div>
+      <div class="card corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="tile" style="background:linear-gradient(135deg,#FFB2D7,#FF99BD)">
+          <svg width="54" height="54" viewBox="0 0 56 56" fill="none" aria-hidden="true">
+            <rect x="9" y="12" width="38" height="34" rx="6" fill="#fff" stroke="#353231" stroke-width="1.8"/>
+            <path d="M9 21h38" stroke="#353231" stroke-width="1.8"/>
+            <path d="M19 8v7M37 8v7" stroke="#353231" stroke-width="1.8" stroke-linecap="round"/>
+            <rect class="pc-a" x="14" y="26" width="13" height="7" rx="2.5" fill="#92DCF5"/>
+            <rect class="pc-b" x="29" y="35" width="13" height="7" rx="2.5" fill="#FFB266"/>
+          </svg>
+        </div>
+        <h3>Nights lost to admin.</h3>
+        <p>Invoices, reminders, review requests, scheduling. Hours of clicking that a machine should be doing while you sleep.</p>
       </div>
     </div>
-    <!-- Persona call card: UI microcopy only, ~11s CSS loop, persistent header -->
-    <div class="hero-asset">
+  </div>
+</section>
+
+<!-- ============ 3. SERVICES — five big alternating bands ============ -->
+<section class="services-sec">
+  <div class="container-wide">
+    <div class="sec-head">
+      <span class="v-line" style="left:0" aria-hidden="true"></span>
+      <span class="v-line" style="right:0" aria-hidden="true"></span>
+      <div class="pill">The systems</div>
+      <h2 class="statement">What we build</h2>
+      <p class="feature-sub">Built on your stack, measured in booked jobs.</p>
+    </div>
+  </div>
+
+  <!-- 3.1 Speed-to-lead -->
+  <div class="svc-band">
+    <div class="svc-grid">
+      <header class="svc-head">
+        <div class="status"><span class="bez"><span class="dot pulse" style="background:var(--green)"></span></span><span>Speed-to-lead</span></div>
+        <h3 class="svc-h">First to call wins.</h3>
+        <p class="svc-p">A form comes in and our system calls the lead back in under a minute, qualifies them and books them into your calendar while your competitor is still checking email. If you need more lead flow, we run the ads too.</p>
+      </header>
+      <div class="svc-media-wrap corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="svc-media">
+          <div class="sl-scene">
+            <span class="sl-pill" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <i></i>
+            </span>
+            <svg class="sl-art" viewBox="0 0 520 240" fill="none" aria-hidden="true">
+              <defs>
+                <filter id="sl-sh" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="1.5" dy="3" stdDeviation="3" flood-color="#000" flood-opacity=".07"/></filter>
+              </defs>
+              <!-- form tile -->
+              <g filter="url(#sl-sh)"><rect x="24" y="50" width="116" height="140" rx="16" fill="#fff" stroke="#E6E5E5"/></g>
+              <rect x="36" y="64" width="52" height="8" rx="4" fill="#F0F0EF"/>
+              <rect x="36" y="82" width="92" height="10" rx="5" fill="#F0F0EF"/>
+              <rect x="36" y="98" width="92" height="10" rx="5" fill="#F0F0EF"/>
+              <rect x="36" y="114" width="70" height="10" rx="5" fill="#F0F0EF"/>
+              <rect x="36" y="138" width="92" height="24" rx="12" fill="#0083F5"/>
+              <text x="82" y="154" text-anchor="middle" font-size="12" font-weight="600" fill="#fff" style="font-family:var(--font-sans)">Submit</text>
+              <!-- connector 1 -->
+              <path d="M148 120h64" stroke="#B4B2B1" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <circle class="sl-d1" cx="150" cy="120" r="4" fill="#0083F5"/>
+              <!-- phone tile + rings -->
+              <rect class="sl-ring" x="218" y="68" width="104" height="104" rx="24" stroke="#0083F5" stroke-width="1.5"/>
+              <rect class="sl-ring" style="animation-delay:.7s" x="218" y="68" width="104" height="104" rx="24" stroke="#0083F5" stroke-width="1.5"/>
+              <g filter="url(#sl-sh)"><rect x="218" y="68" width="104" height="104" rx="24" fill="#fff" stroke="#E6E5E5"/></g>
+              <g transform="translate(246,96) scale(2)" stroke="#353231" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </g>
+              <!-- connector 2 -->
+              <path d="M330 120h64" stroke="#B4B2B1" stroke-width="1.5" stroke-dasharray="4 4"/>
+              <circle class="sl-d2" cx="332" cy="120" r="4" fill="#0083F5"/>
+              <!-- calendar tile -->
+              <g filter="url(#sl-sh)"><rect x="400" y="50" width="116" height="140" rx="16" fill="#fff" stroke="#E6E5E5"/></g>
+              <rect x="428" y="78" width="60" height="52" rx="8" stroke="#353231" stroke-width="1.8"/>
+              <path d="M428 92h60" stroke="#353231" stroke-width="1.8"/>
+              <path d="M444 70v8M472 70v8" stroke="#353231" stroke-width="1.8" stroke-linecap="round"/>
+              <path class="sl-check" d="M448 108l7 7 14-14" stroke="#6DC277" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <g class="sl-check">
+                <rect x="428" y="146" width="60" height="24" rx="12" fill="#EFF9F0" stroke="#6DC277" stroke-opacity=".5"/>
+                <text x="458" y="162" text-anchor="middle" font-size="12" font-weight="600" fill="#33793E" style="font-family:var(--font-sans)">Booked</text>
+              </g>
+              <!-- labels -->
+              <text x="82" y="224" text-anchor="middle" font-size="13" font-weight="500" fill="#827F7D" style="font-family:var(--font-sans)">Web form</text>
+              <text x="270" y="224" text-anchor="middle" font-size="13" font-weight="500" fill="#827F7D" style="font-family:var(--font-sans)">AI calls back</text>
+              <text x="458" y="224" text-anchor="middle" font-size="13" font-weight="500" fill="#827F7D" style="font-family:var(--font-sans)">Your calendar</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.2 Lead nurturing & reactivation -->
+  <div class="svc-band">
+    <div class="svc-grid flip">
+      <header class="svc-head">
+        <div class="status"><span class="bez"><span class="dot pulse" style="background:var(--green)"></span></span><span>Lead nurturing &amp; reactivation</span></div>
+        <h3 class="svc-h">Your CRM is full of money.</h3>
+        <p class="svc-p">Follow-ups go out on schedule until a lead answers, and the hundreds of old contacts sitting dead in your CRM get called with a reason to come back. You already paid for every one of them.</p>
+      </header>
+      <div class="svc-media-wrap corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="svc-media">
+          <div class="crm-card">
+            <div class="crm-head"><span class="crm-title">Your CRM · old leads</span><span class="crm-count">438 contacts</span></div>
+            <div class="crm-row" style="--d:.4s">
+              <span class="crm-ico" style="background:linear-gradient(135deg,#E5FFFF,#BCEEFE)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5s5.5 6 5.5 10a5.5 5.5 0 0 1-11 0c0-4 5.5-10 5.5-10z"/></svg>
+              </span>
+              <div class="crm-lab"><div class="crm-name">Water heater replacement</div><div class="crm-sub">Went quiet · Jan 2025</div></div>
+              <span class="crm-chips">
+                <span class="crm-chip crm-dead">Gone cold</span>
+                <span class="crm-chip crm-live"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5L20 7"/></svg>Booked</span>
+              </span>
+            </div>
+            <div class="crm-row" style="--d:2.1s">
+              <span class="crm-ico" style="background:linear-gradient(135deg,#FFE5B2,#FFD499)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v8.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19.5V11z"/></svg>
+              </span>
+              <div class="crm-lab"><div class="crm-name">Roof inspection</div><div class="crm-sub">No answer · Feb 2025</div></div>
+              <span class="crm-chips">
+                <span class="crm-chip crm-dead">Gone cold</span>
+                <span class="crm-chip crm-live"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5L20 7"/></svg>Booked</span>
+              </span>
+            </div>
+            <div class="crm-row" style="--d:3.8s">
+              <span class="crm-ico" style="background:linear-gradient(135deg,#D6DFFF,#B2C2FF)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5L4.5 13.5H11l-1 8 8.5-11H12l1-8z"/></svg>
+              </span>
+              <div class="crm-lab"><div class="crm-name">Panel upgrade quote</div><div class="crm-sub">Ghosted · Mar 2025</div></div>
+              <span class="crm-chips">
+                <span class="crm-chip crm-dead">Gone cold</span>
+                <span class="crm-chip crm-live"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5L20 7"/></svg>Booked</span>
+              </span>
+            </div>
+            <div class="crm-row" style="--d:5.5s">
+              <span class="crm-ico" style="background:linear-gradient(135deg,#FFB2D7,#FF99BD)">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 6.8a5 5 0 0 1-6.6 6.6L7 20.3a2 2 0 0 1-2.8-2.8l6.9-6.9a5 5 0 0 1 6.6-6.6l-3.2 3.2 2.6 2.6 3.4-3z"/></svg>
+              </span>
+              <div class="crm-lab"><div class="crm-name">Bathroom remodel</div><div class="crm-sub">Closed lost · May 2025</div></div>
+              <span class="crm-chips">
+                <span class="crm-chip crm-dead">Gone cold</span>
+                <span class="crm-chip crm-live"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5L20 7"/></svg>Booked</span>
+              </span>
+            </div>
+            <div class="crm-foot">
+              <span class="lc-chip booked"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v3.5M16 3v3.5M9 14.5l2.2 2.2 4-4"/></svg>3 booked this week</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.3 AI receptionist — the Emma persona card, moved from the hero -->
+  <div class="svc-band">
+    <div class="svc-grid">
+      <header class="svc-head">
+        <div class="status"><span class="bez"><span class="dot pulse" style="background:var(--green)"></span></span><span>AI receptionist</span></div>
+        <h3 class="svc-h">Every call answered. Even at 2am.</h3>
+        <p class="svc-p">Emma picks up in under a second, speaks like your best front-desk person, answers questions, books the job and syncs it everywhere. She takes ten calls at once and never calls in sick.</p>
+      </header>
+      <div class="svc-media-wrap corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="svc-media">
+          <div class="svc-emma">
       <div class="persona-wrap">
         <span class="persona-glow" aria-hidden="true"></span>
         <div class="persona-card">
@@ -670,200 +1258,79 @@
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v3.5M16 3v3.5M9 14.5l2.2 2.2 4-4"/></svg>
         </span>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 2. PAIN ============ -->
-<section class="pain" id="pain">
-  <div class="container-wide">
-    <div class="sec-head">
-      <span class="v-line" style="left:0" aria-hidden="true"></span>
-      <span class="v-line" style="right:0" aria-hidden="true"></span>
-      <div class="pill">The problem</div>
-      <h2 class="statement">Stop losing money every day</h2>
-    </div>
-    <div class="grid-cards">
-      <div class="card corners">
-        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="tile" style="background:linear-gradient(135deg,#E5FFFF,#BCEEFE)">
-          <svg width="54" height="54" viewBox="0 0 56 56" fill="none" aria-hidden="true">
-            <path d="M15 11h26a8 8 0 0 1 8 8v11a8 8 0 0 1-8 8H27l-8 7v-7h-4a8 8 0 0 1-8-8V19a8 8 0 0 1 8-8z" fill="#fff" stroke="#353231" stroke-width="1.8" stroke-linejoin="round"/>
-            <text class="pq-q" x="28" y="30.5" text-anchor="middle" font-size="16" font-weight="500" fill="#060504" style="font-family:var(--font-title)">?</text>
-            <g class="pq-wait" fill="#9B9897">
-              <circle cx="21.5" cy="25" r="1.8"/><circle cx="28" cy="25" r="1.8"/><circle cx="34.5" cy="25" r="1.8"/>
-            </g>
-          </svg>
+          </div>
         </div>
-        <h3>Questions left hanging</h3>
-        <p>Your customers want an immediate answer, not a voicemail box.</p>
-      </div>
-      <div class="card corners">
-        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="tile tile-lg" style="background:linear-gradient(135deg,#FFE5B2,#FFD499)">
-          <!-- The dollar coin falls, hits the ground and shatters — looped -->
-          <svg width="76" height="76" viewBox="0 0 76 76" fill="none" aria-hidden="true">
-            <defs>
-              <clipPath id="pdL"><path d="M38 33A15 15 0 0 0 38 63L40 57 34.5 51.5 39.5 45 35 39Z"/></clipPath>
-              <clipPath id="pdR"><path d="M38 33A15 15 0 0 1 38 63L40 57 34.5 51.5 39.5 45 35 39Z"/></clipPath>
-            </defs>
-            <path d="M8 64h60" stroke="#353231" stroke-opacity=".3" stroke-width="1.5" stroke-dasharray="3 4" stroke-linecap="round"/>
-            <path class="pd-sp" d="M27 26v7" stroke="#353231" stroke-opacity=".35" stroke-width="1.5" stroke-linecap="round"/>
-            <path class="pd-sp" style="animation-delay:.15s" d="M49 21v8" stroke="#353231" stroke-opacity=".35" stroke-width="1.5" stroke-linecap="round"/>
-            <g class="pd-whole">
-              <circle cx="38" cy="48" r="15" fill="#fff" stroke="#353231" stroke-width="1.8"/>
-              <circle cx="38" cy="48" r="11.3" stroke="#353231" stroke-opacity=".25" stroke-width="1" stroke-dasharray="2.5 3"/>
-              <text x="38" y="53.5" text-anchor="middle" font-size="16" font-weight="600" fill="#33793E" style="font-family:var(--font-sans)">$</text>
-            </g>
-            <g class="pd-imp" stroke="#F7BE3A" stroke-width="2" stroke-linecap="round">
-              <path d="M20 56l-4-3M56 56l4-3M24 47l-5-1M52 47l5-1"/>
-            </g>
-            <g class="pd-hl">
-              <path d="M38 33A15 15 0 0 0 38 63L40 57 34.5 51.5 39.5 45 35 39Z" fill="#fff" stroke="#353231" stroke-width="1.8" stroke-linejoin="round"/>
-              <text clip-path="url(#pdL)" x="38" y="53.5" text-anchor="middle" font-size="16" font-weight="600" fill="#33793E" style="font-family:var(--font-sans)">$</text>
-            </g>
-            <g class="pd-hr">
-              <path d="M38 33A15 15 0 0 1 38 63L40 57 34.5 51.5 39.5 45 35 39Z" fill="#fff" stroke="#353231" stroke-width="1.8" stroke-linejoin="round"/>
-              <text clip-path="url(#pdR)" x="38" y="53.5" text-anchor="middle" font-size="16" font-weight="600" fill="#33793E" style="font-family:var(--font-sans)">$</text>
-            </g>
-            <path class="pd-f" style="--fx:15px;--fy:-10px" d="M17 60l5-3 1.8 4.6-5.6 1z" fill="#fff" stroke="#353231" stroke-width="1.4" stroke-linejoin="round"/>
-            <path class="pd-f" style="--fx:-14px;--fy:-9px;animation-delay:.06s" d="M56 59l4.6-2 1.4 4-5 .8z" fill="#fff" stroke="#353231" stroke-width="1.4" stroke-linejoin="round"/>
-            <path class="pd-f" style="--fx:9px;--fy:-16px;animation-delay:.1s" d="M24 50l3.4-1.6 1.2 3.2-3.8.8z" fill="#F7BE3A" stroke="#353231" stroke-width="1.2" stroke-linejoin="round"/>
-            <path class="pd-f" style="--fx:-8px;--fy:-15px;animation-delay:.14s" d="M50 49l3-1.4 1 2.8-3.4.7z" fill="#F7BE3A" stroke="#353231" stroke-width="1.2" stroke-linejoin="round"/>
-          </svg>
-        </div>
-        <h3>Missed calls = missed revenue</h3>
-        <p>Every unanswered call is a job walking straight to your competitor.</p>
-      </div>
-      <div class="card corners">
-        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="tile" style="background:linear-gradient(135deg,#FFB2D7,#FF99BD)">
-          <svg width="54" height="54" viewBox="0 0 56 56" fill="none" aria-hidden="true">
-            <rect x="9" y="12" width="38" height="34" rx="6" fill="#fff" stroke="#353231" stroke-width="1.8"/>
-            <path d="M9 21h38" stroke="#353231" stroke-width="1.8"/>
-            <path d="M19 8v7M37 8v7" stroke="#353231" stroke-width="1.8" stroke-linecap="round"/>
-            <rect class="pc-a" x="14" y="26" width="13" height="7" rx="2.5" fill="#92DCF5"/>
-            <rect class="pc-b" x="29" y="35" width="13" height="7" rx="2.5" fill="#FFB266"/>
-          </svg>
-        </div>
-        <h3>Scheduling headaches</h3>
-        <p>Manual appointment booking is slow, error-prone and eats your day.</p>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ============ 3. BENEFITS ============ -->
-<section class="benefits-sec">
-  <div class="container-wide">
-    <div class="panel-wrap">
-      <div class="panel corners">
-        <i class="x bl dark"></i><i class="x br dark"></i>
-        <div class="pill" style="margin-bottom:24px">What you get</div>
-        <h2 class="statement">The perfect workflow for your business</h2>
-        <div class="benefit-list">
-          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#E5FFFF,#BCEEFE)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.2 1.9"/></svg></span> 24/7 availability</div>
-          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#FFE5B2,#FFD499)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v3.5M16 3v3.5M9 14.5l2.2 2.2 4-4"/></svg></span> Seamless appointment booking</div>
-          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#FFB2D7,#FF99BD)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10.5V5a2 2 0 0 0-2-2h-5.5a2 2 0 0 0-1.42.59l-7.5 7.5a2 2 0 0 0 0 2.82l5.01 5.01a2 2 0 0 0 2.82 0l7.5-7.5A2 2 0 0 0 20 10.5z"/><circle cx="15" cy="8" r="1.3"/></svg></span> Automated pricing estimates</div>
-          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#CCF6FF,#92DCF5)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 16.5l-8-8-5 5-6-6"/><path d="M15.5 16.5h6v-6"/></svg></span> Lower costs, higher efficiency</div>
-          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#D6DFFF,#B2C2FF)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 13.5v-2a7.5 7.5 0 0 1 15 0v2"/><rect x="3" y="13" width="4.4" height="7" rx="2.2"/><rect x="16.6" y="13" width="4.4" height="7" rx="2.2"/></svg></span> Instant customer assistance</div>
-          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#FFE5B2,#FFB266)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2.5l3.5 3.5L17 9.5M3.5 11V9.5a4 4 0 0 1 4-4h13M7 21.5L3.5 18 7 14.5M20.5 13v1.5a4 4 0 0 1-4 4h-13"/></svg></span> Lead nurturing &amp; follow-ups</div>
-          <div class="benefit"><span class="b-ico" style="background:linear-gradient(135deg,#FFD499,#FF99BD)"><svg viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.7 5.4 6 .9-4.3 4.2 1 5.9-5.4-2.8-5.4 2.8 1-5.9L3.4 9.8l6-.9L12 3.5z"/></svg></span> Consistent service quality</div>
+  <!-- 3.4 Workflow automations -->
+  <div class="svc-band">
+    <div class="svc-grid flip">
+      <header class="svc-head">
+        <div class="status"><span class="bez"><span class="dot pulse" style="background:var(--green)"></span></span><span>Workflow automations</span></div>
+        <h3 class="svc-h">Monday morning, the work is done.</h3>
+        <p class="svc-p">Invoices sent when a job closes, review requests one click after, reminders, dispatch, reporting. The admin layer of your business, running by itself.</p>
+      </header>
+      <div class="svc-media-wrap corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="svc-media">
+          <div class="wa-card">
+            <div class="wa-sky">
+              <div class="wa-layer wa-day">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F7BE3A" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.6" fill="#F7BE3A" stroke="none"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.2 5.2l1.8 1.8M17 17l1.8 1.8M18.8 5.2L17 7M7 17l-1.8 1.8"/></svg>
+                <span class="wa-tlab">Mon · 7:00 AM</span>
+              </div>
+              <div class="wa-layer wa-night">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M17.5 13A7 7 0 0 1 9.8 4.5 7 7 0 1 0 17.5 13z" fill="#FFE9A8"/><circle cx="18.5" cy="6" r="1" fill="#fff" opacity=".9"/><circle cx="15" cy="9.5" r=".7" fill="#fff" opacity=".7"/><circle cx="20.5" cy="10.5" r=".7" fill="#fff" opacity=".6"/></svg>
+                <span class="wa-tlab">Fri · 11:58 PM</span>
+              </div>
+            </div>
+            <div class="wa-row" style="--d:.6s">
+              <span class="wa-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#33793E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="wa-tick" d="M4.5 12.5l5 5L20 7"/></svg></span>
+              <div class="wa-lab"><div class="wa-t">Invoice #2214 sent</div><div class="wa-s">Job closed · sent automatically</div></div>
+              <span class="wa-ico" style="background:linear-gradient(135deg,#FFE5B2,#FFD499)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h8l4.5 4.5v14a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 21V4A1.5 1.5 0 0 1 6 2.5z"/><path d="M14 2.5V7h4.5M8.5 13h7M8.5 17h5"/></svg>
+              </span>
+            </div>
+            <div class="wa-row" style="--d:1.8s">
+              <span class="wa-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#33793E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="wa-tick" d="M4.5 12.5l5 5L20 7"/></svg></span>
+              <div class="wa-lab"><div class="wa-t">Review request out</div><div class="wa-s">One click after the invoice</div></div>
+              <span class="wa-ico" style="background:linear-gradient(135deg,#FFB2D7,#FF99BD)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.7 5.4 6 .9-4.3 4.2 1 5.9-5.4-2.8-5.4 2.8 1-5.9L3.4 9.8l6-.9L12 3.5z"/></svg>
+              </span>
+            </div>
+            <div class="wa-row" style="--d:3s">
+              <span class="wa-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#33793E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path class="wa-tick" d="M4.5 12.5l5 5L20 7"/></svg></span>
+              <div class="wa-lab"><div class="wa-t">Crew reminders queued</div><div class="wa-s">Monday dispatch · 7:30 AM</div></div>
+              <span class="wa-ico" style="background:linear-gradient(135deg,#CCF6FF,#92DCF5)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 9.5a6 6 0 1 0-12 0c0 6-2.5 7-2.5 7h17s-2.5-1-2.5-7"/><path d="M10 20a2.2 2.2 0 0 0 4 0"/></svg>
+              </span>
+            </div>
+          </div>
         </div>
       </div>
-      <span class="blob glow-orange" aria-hidden="true"></span>
-      <span class="blob glow-blue" aria-hidden="true"></span>
     </div>
   </div>
-</section>
 
-<!-- ============ 4. WORKFLOW ============ -->
-<section class="workflow">
-  <div class="container-wide">
-    <div class="sec-head">
-      <span class="v-line" style="left:0" aria-hidden="true"></span>
-      <span class="v-line" style="right:0" aria-hidden="true"></span>
-      <div class="status" style="margin-bottom:20px">
-        <span class="bez"><span class="dot pulse" style="background:var(--yellow)"></span></span>
-        <span>How it works</span>
-      </div>
-      <h2 class="statement">A fully automated workflow</h2>
-    </div>
-    <div class="grid-cards">
-      <div class="card corners">
+  <!-- 3.5 Custom AI — reused tool-logo orbit, ink center tile -->
+  <div class="svc-band">
+    <div class="svc-grid">
+      <header class="svc-head">
+        <div class="status"><span class="bez"><span class="dot pulse" style="background:var(--green)"></span></span><span>Custom AI</span></div>
+        <h3 class="svc-h">For the problem no software fixes.</h3>
+        <p class="svc-p">The quote that takes you two evenings, the 200-page bid you dread reading, the questions your team asks you fifty times a day. If it's specific to your business, we build the tool for it.</p>
+      </header>
+      <div class="svc-media-wrap corners">
         <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="wf">
-          <span class="wf-num">01</span>
-          <span class="wf-pill" aria-hidden="true">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            <i></i>
-          </span>
-          <svg class="wf-art wf1-art" viewBox="0 0 300 132" fill="none" aria-hidden="true">
-            <rect class="wf1-ring" x="44" y="34" width="64" height="64" rx="18" stroke="#0083F5" stroke-width="1.5"/>
-            <rect class="wf1-ring" style="animation-delay:.7s" x="44" y="34" width="64" height="64" rx="18" stroke="#0083F5" stroke-width="1.5"/>
-            <rect x="44" y="34" width="64" height="64" rx="18" fill="#fff" stroke="#E6E5E5"/>
-            <g transform="translate(58,48) scale(1.55)" stroke="#353231" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-            </g>
-            <path d="M120 66h60" stroke="#B4B2B1" stroke-width="1.2" stroke-dasharray="4 4"/>
-            <circle class="wf1-dot" cx="122" cy="66" r="3" fill="#0083F5"/>
-            <rect class="wf1-bar" x="188" y="60" width="4" height="12" rx="2" fill="#0083F5"/>
-            <rect class="wf1-bar" style="animation-delay:.1s" x="196" y="56" width="4" height="20" rx="2" fill="#0083F5"/>
-            <rect class="wf1-bar" style="animation-delay:.2s" x="204" y="52" width="4" height="28" rx="2" fill="#0083F5"/>
-            <rect class="wf1-bar" style="animation-delay:.3s" x="212" y="57" width="4" height="18" rx="2" fill="#0083F5"/>
-            <rect class="wf1-bar" style="animation-delay:.4s" x="220" y="53" width="4" height="26" rx="2" fill="#0083F5"/>
-            <rect class="wf1-bar" style="animation-delay:.5s" x="228" y="50" width="4" height="32" rx="2" fill="#0083F5"/>
-            <rect class="wf1-bar" style="animation-delay:.6s" x="236" y="55" width="4" height="22" rx="2" fill="#0083F5"/>
-            <rect class="wf1-bar" style="animation-delay:.7s" x="244" y="58" width="4" height="16" rx="2" fill="#0083F5"/>
-            <rect class="wf1-bar" style="animation-delay:.8s" x="252" y="61" width="4" height="10" rx="2" fill="#0083F5"/>
-          </svg>
-        </div>
-        <h3>Customer calls</h3>
-        <p>The AI receptionist answers instantly and understands what the customer needs through natural conversation.</p>
-      </div>
-      <div class="card corners">
-        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="wf">
-          <span class="wf-num">02</span>
-          <svg class="wf-art" viewBox="0 0 300 200" fill="none" aria-hidden="true">
-            <path d="M150 42v62" stroke="#CDCCCB" stroke-width="1.5"/>
-            <path d="M58 104V72q0-8 8-8h84M242 104V72q0-8-8-8h-84" stroke="#CDCCCB" stroke-width="1.5"/>
-            <rect x="106" y="8" width="88" height="34" rx="17" fill="#E9F3FE" stroke="#C9E2FB"/>
-            <g transform="translate(120,17) scale(0.68)" stroke="#0083F5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-            </g>
-            <text x="142" y="30.5" font-size="15" font-weight="600" fill="#0083F5" style="font-family:var(--font-sans);font-variant-numeric:tabular-nums">0:08</text>
-            <rect x="22" y="104" width="72" height="74" rx="14" fill="#fff" stroke="#E6E5E5"/>
-            <rect x="50" y="120" width="16" height="13.5" rx="3" stroke="#353231" stroke-width="1.5"/>
-            <path d="M50 124.8h16M54.2 117.6v3.4M61.8 117.6v3.4" stroke="#353231" stroke-width="1.5" stroke-linecap="round"/>
-            <text x="58" y="162" text-anchor="middle" font-size="12.5" font-weight="500" fill="#4E4C4B" style="font-family:var(--font-sans)">Booking</text>
-            <rect x="114" y="104" width="72" height="74" rx="14" fill="#fff" stroke="#E6E5E5"/>
-            <circle cx="150" cy="126" r="9" stroke="#353231" stroke-width="1.5"/>
-            <text x="150" y="130.5" text-anchor="middle" font-size="12.5" font-weight="500" fill="#353231" style="font-family:var(--font-title)">?</text>
-            <text x="150" y="162" text-anchor="middle" font-size="12.5" font-weight="500" fill="#4E4C4B" style="font-family:var(--font-sans)">FAQ</text>
-            <rect x="206" y="104" width="72" height="74" rx="14" fill="#fff" stroke="#E6E5E5"/>
-            <g transform="translate(233,117) scale(0.75)" stroke="#353231" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 10.5V5a2 2 0 0 0-2-2h-5.5a2 2 0 0 0-1.42.59l-7.5 7.5a2 2 0 0 0 0 2.82l5.01 5.01a2 2 0 0 0 2.82 0l7.5-7.5A2 2 0 0 0 20 10.5z"/><circle cx="15" cy="8" r="1.3"/>
-            </g>
-            <text x="242" y="162" text-anchor="middle" font-size="12.5" font-weight="500" fill="#4E4C4B" style="font-family:var(--font-sans)">Lead</text>
-            <circle class="wf2-d wf2-d1" cx="150" cy="46" r="3" fill="#0083F5"/>
-            <circle class="wf2-d wf2-d2" cx="150" cy="46" r="3" fill="#0083F5"/>
-            <circle class="wf2-d wf2-d3" cx="150" cy="46" r="3" fill="#0083F5"/>
-          </svg>
-        </div>
-        <h3>Intelligent routing</h3>
-        <p>Appointments get scheduled, questions get answered, sales leads get qualified — automatically.</p>
-      </div>
-      <div class="card corners">
-        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="wf">
-          <span class="wf-num">03</span>
-          <svg class="wf-art" viewBox="0 0 300 200" fill="none" aria-hidden="true">
+        <div class="svc-media">
+          <div class="svc-orbit">
+<svg viewBox="0 0 300 200" fill="none" aria-hidden="true">
             <defs>
               <clipPath id="gcal"><rect x="137" y="17" width="26" height="26" rx="3"/></clipPath>
             </defs>
             <!-- central NativeSquare tile (3×3 mark) -->
-            <rect x="122" y="72" width="56" height="56" rx="16" fill="#0083F5"/>
+            <rect x="122" y="72" width="56" height="56" rx="16" fill="#060504"/>
             <g fill="#fff">
               <rect x="135" y="85"  width="8" height="8" rx="2.4"/>
               <rect x="146" y="85"  width="8" height="8" rx="2.4" opacity=".8"/>
@@ -876,7 +1343,7 @@
               <rect x="157" y="107" width="8" height="8" rx="2.4" opacity=".25"/>
             </g>
             <!-- Gmail -->
-            <g class="wf3-f">
+            <g class="orb-f">
               <rect x="34" y="28" width="44" height="44" rx="12" fill="#fff" stroke="#E6E5E5"/>
               <g transform="translate(43,40.25) scale(0.2955) translate(-52,-42)">
                 <path fill="#4285F4" d="M58 108h14V74L52 59v43c0 3.32 2.69 6 6 6z"/>
@@ -887,7 +1354,7 @@
               </g>
             </g>
             <!-- Google Calendar -->
-            <g class="wf3-f" style="animation-delay:.8s">
+            <g class="orb-f" style="animation-delay:.8s">
               <rect x="128" y="8" width="44" height="44" rx="12" fill="#fff" stroke="#E6E5E5"/>
               <g clip-path="url(#gcal)">
                 <rect x="137" y="17" width="26" height="26" fill="#4285F4"/>
@@ -899,7 +1366,7 @@
               </g>
             </g>
             <!-- Slack -->
-            <g class="wf3-f" style="animation-delay:1.6s">
+            <g class="orb-f" style="animation-delay:1.6s">
               <rect x="222" y="28" width="44" height="44" rx="12" fill="#fff" stroke="#E6E5E5"/>
               <g transform="translate(231,37) scale(0.2117)">
                 <path d="M25.8 77.6c0 7.1-5.8 12.9-12.9 12.9S0 84.7 0 77.6s5.8-12.9 12.9-12.9h12.9v12.9z" fill="#E01E5A"/>
@@ -913,7 +1380,7 @@
               </g>
             </g>
             <!-- WhatsApp -->
-            <g class="wf3-f" style="animation-delay:2.4s">
+            <g class="orb-f" style="animation-delay:2.4s">
               <rect x="10" y="110" width="44" height="44" rx="12" fill="#fff" stroke="#E6E5E5"/>
               <circle cx="32" cy="132" r="13" fill="#25D366"/>
               <path d="M32 122.4a9.8 9.8 0 0 0-8.5 14.7l-1.4 5.2 5.3-1.4a9.8 9.8 0 1 0 4.6-18.5z" fill="#fff"/>
@@ -922,7 +1389,7 @@
               </g>
             </g>
             <!-- HubSpot -->
-            <g class="wf3-f" style="animation-delay:3.2s">
+            <g class="orb-f" style="animation-delay:3.2s">
               <rect x="246" y="110" width="44" height="44" rx="12" fill="#fff" stroke="#E6E5E5"/>
               <circle cx="268" cy="135" r="6.3" stroke="#FF7A59" stroke-width="4"/>
               <path d="M268 122.4v6.2" stroke="#FF7A59" stroke-width="3.6" stroke-linecap="round"/>
@@ -930,44 +1397,86 @@
               <path d="M263.6 140.2l-4.8 4.6" stroke="#FF7A59" stroke-width="3.2" stroke-linecap="round"/>
             </g>
             <!-- small waveforms bridging the tiles -->
-            <rect class="wf3-eq" x="64" y="114" width="4" height="8" rx="2" fill="#CDCCCB"/>
-            <rect class="wf3-eq" style="animation-delay:.15s" x="72" y="111" width="4" height="14" rx="2" fill="#CDCCCB"/>
-            <rect class="wf3-eq" style="animation-delay:.3s" x="80" y="113" width="4" height="10" rx="2" fill="#CDCCCB"/>
-            <rect class="wf3-eq" style="animation-delay:.45s" x="88" y="110" width="4" height="16" rx="2" fill="#CDCCCB"/>
-            <rect class="wf3-eq" style="animation-delay:.6s" x="96" y="113.5" width="4" height="9" rx="2" fill="#CDCCCB"/>
-            <rect class="wf3-eq" style="animation-delay:.2s" x="196" y="113.5" width="4" height="9" rx="2" fill="#CDCCCB"/>
-            <rect class="wf3-eq" style="animation-delay:.35s" x="204" y="110.5" width="4" height="15" rx="2" fill="#CDCCCB"/>
-            <rect class="wf3-eq" style="animation-delay:.5s" x="212" y="113" width="4" height="10" rx="2" fill="#CDCCCB"/>
-            <rect class="wf3-eq" style="animation-delay:.65s" x="220" y="110" width="4" height="16" rx="2" fill="#CDCCCB"/>
-            <rect class="wf3-eq" style="animation-delay:.8s" x="228" y="114" width="4" height="8" rx="2" fill="#CDCCCB"/>
+            <rect class="orb-eq" x="64" y="114" width="4" height="8" rx="2" fill="#CDCCCB"/>
+            <rect class="orb-eq" style="animation-delay:.15s" x="72" y="111" width="4" height="14" rx="2" fill="#CDCCCB"/>
+            <rect class="orb-eq" style="animation-delay:.3s" x="80" y="113" width="4" height="10" rx="2" fill="#CDCCCB"/>
+            <rect class="orb-eq" style="animation-delay:.45s" x="88" y="110" width="4" height="16" rx="2" fill="#CDCCCB"/>
+            <rect class="orb-eq" style="animation-delay:.6s" x="96" y="113.5" width="4" height="9" rx="2" fill="#CDCCCB"/>
+            <rect class="orb-eq" style="animation-delay:.2s" x="196" y="113.5" width="4" height="9" rx="2" fill="#CDCCCB"/>
+            <rect class="orb-eq" style="animation-delay:.35s" x="204" y="110.5" width="4" height="15" rx="2" fill="#CDCCCB"/>
+            <rect class="orb-eq" style="animation-delay:.5s" x="212" y="113" width="4" height="10" rx="2" fill="#CDCCCB"/>
+            <rect class="orb-eq" style="animation-delay:.65s" x="220" y="110" width="4" height="16" rx="2" fill="#CDCCCB"/>
+            <rect class="orb-eq" style="animation-delay:.8s" x="228" y="114" width="4" height="8" rx="2" fill="#CDCCCB"/>
           </svg>
+          </div>
         </div>
-        <h3>Seamless integration</h3>
-        <p>Every interaction syncs with your CRM, updates your calendar and surfaces the insights that matter.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. WHAT YOU GET — icon-card grid ============ -->
+<section class="get-sec">
+  <div class="container-wide">
+    <div class="sec-head">
+      <span class="v-line" style="left:0" aria-hidden="true"></span>
+      <span class="v-line" style="right:0" aria-hidden="true"></span>
+      <div class="pill">What you get</div>
+      <h2 class="statement">What lands in your business</h2>
+    </div>
+    <div class="grid-cards get-grid">
+      <div class="card corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="tile-sm" style="background:linear-gradient(135deg,#E5FFFF,#BCEEFE)">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3.2 1.9"/></svg>
+        </div>
+        <h3>Always on. 2pm or 2am.</h3>
       </div>
       <div class="card corners">
         <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-        <div class="wf">
-          <span class="wf-num">04</span>
-          <svg class="wf-art" viewBox="0 0 300 200" fill="none" aria-hidden="true">
-            <path d="M28 172h244" stroke="#CDCCCB" stroke-width="1"/>
-            <rect class="wf4-bar" x="44" y="146" width="22" height="26" rx="5" fill="#BCEEFE"/>
-            <rect class="wf4-bar" style="animation-delay:.1s" x="76" y="132" width="22" height="40" rx="5" fill="#BCEEFE"/>
-            <rect class="wf4-bar" style="animation-delay:.2s" x="108" y="118" width="22" height="54" rx="5" fill="#BCEEFE"/>
-            <rect class="wf4-bar" style="animation-delay:.3s" x="140" y="100" width="22" height="72" rx="5" fill="#92DCF5"/>
-            <rect class="wf4-bar" style="animation-delay:.4s" x="172" y="80" width="22" height="92" rx="5" fill="#92DCF5"/>
-            <rect class="wf4-bar" style="animation-delay:.5s" x="204" y="58" width="22" height="114" rx="5" fill="#4CACFF"/>
-            <rect class="wf4-bar" style="animation-delay:.6s" x="236" y="34" width="22" height="138" rx="5" fill="#0083F5"/>
-            <path class="wf4-line" d="M55 140l32-12 32-16 32-17 32-21 32-22 32-20" stroke="#060504" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            <g class="wf4-tip">
-              <path d="M240 25h10v10" stroke="#060504" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              <rect x="38" y="12" width="66" height="26" rx="13" fill="rgba(109,194,119,.13)" stroke="rgba(109,194,119,.5)"/>
-              <text x="71" y="29.5" text-anchor="middle" font-size="13" font-weight="600" fill="#33793E" style="font-family:var(--font-sans)">+38%</text>
-            </g>
-          </svg>
+        <div class="tile-sm" style="background:linear-gradient(135deg,#FFE5B2,#FFD499)">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v3.5M16 3v3.5M9 14.5l2.2 2.2 4-4"/></svg>
         </div>
-        <h3>Continuous improvement</h3>
-        <p>Your agents get sharper over time with ongoing training, feedback and monthly optimizations.</p>
+        <h3>Jobs booked straight into your calendar</h3>
+      </div>
+      <div class="card corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="tile-sm" style="background:linear-gradient(135deg,#D6DFFF,#B2C2FF)">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 13.5v-2a7.5 7.5 0 0 1 15 0v2"/><rect x="3" y="13" width="4.4" height="7" rx="2.2"/><rect x="16.6" y="13" width="4.4" height="7" rx="2.2"/></svg>
+        </div>
+        <h3>Customers get answers in seconds</h3>
+      </div>
+      <div class="card corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="tile-sm" style="background:linear-gradient(135deg,#FFB2D7,#FF99BD)">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10.5V5a2 2 0 0 0-2-2h-5.5a2 2 0 0 0-1.42.59l-7.5 7.5a2 2 0 0 0 0 2.82l5.01 5.01a2 2 0 0 0 2.82 0l7.5-7.5A2 2 0 0 0 20 10.5z"/><circle cx="15" cy="8" r="1.3"/></svg>
+        </div>
+        <h3>Quotes out in minutes, not evenings</h3>
+      </div>
+      <div class="card corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="tile-sm" style="background:linear-gradient(135deg,#CCF6FF,#92DCF5)">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.5 16.5l-8-8-5 5-6-6"/><path d="M15.5 16.5h6v-6"/></svg>
+        </div>
+        <h3>A fraction of the cost of hiring</h3>
+      </div>
+      <div class="card corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="tile-sm" style="background:linear-gradient(135deg,#FFE5B2,#FFB266)">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 2.5l3.5 3.5L17 9.5M3.5 11V9.5a4 4 0 0 1 4-4h13M7 21.5L3.5 18 7 14.5M20.5 13v1.5a4 4 0 0 1-4 4h-13"/></svg>
+        </div>
+        <h3>Every lead chased until it answers</h3>
+      </div>
+      <div class="card corners">
+        <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+        <div class="tile-sm" style="background:linear-gradient(135deg,#FFD499,#FF99BD)">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5l2.7 5.4 6 .9-4.3 4.2 1 5.9-5.4-2.8-5.4 2.8 1-5.9L3.4 9.8l6-.9L12 3.5z"/></svg>
+        </div>
+        <h3>The same service on every single call</h3>
+      </div>
+      <div class="card card-ghost" aria-hidden="true">
+        <span class="dots" style="top:14%;left:14%;right:14%;bottom:14%"></span>
+        <span class="ghost-sq"></span>
       </div>
     </div>
   </div>
@@ -977,21 +1486,21 @@
 <section class="compare-sec">
   <div class="container">
     <header>
-      <h2 class="feature-h2"><span class="eyebrow-ghost">The math</span>NativeSquare AI vs. traditional hiring</h2>
+      <h2 class="feature-h2"><span class="eyebrow-ghost">The math</span>against hiring.</h2>
     </header>
     <div class="compare-grid">
       <div class="media-frame frame-ai corners">
         <span class="inset" aria-hidden="true"></span>
         <div class="frame-head">
-          <h3>With NativeSquare AI</h3>
+          <h3>With NativeSquare</h3>
           <span class="cmp-chip chip-ai"><svg width="15" height="12" viewBox="0 0 15 12" fill="currentColor" aria-hidden="true"><rect x="0" y="4" width="2" height="4" rx="1"/><rect x="3.25" y="2" width="2" height="8" rx="1"/><rect x="6.5" y="0" width="2" height="12" rx="1"/><rect x="9.75" y="2.5" width="2" height="7" rx="1"/><rect x="13" y="4.5" width="2" height="3" rx="1"/></svg>0.8s</span>
         </div>
         <ul>
-          <li><b>✓</b> 24/7, never off duty</li>
-          <li><b>✓</b> Instant replies, zero hold time</li>
-          <li><b>✓</b> No salaries, no training costs</li>
-          <li><b>✓</b> Unlimited simultaneous calls</li>
-          <li><b>✓</b> Same quality on every single call</li>
+          <li><b>✓</b> On duty 24/7</li>
+          <li><b>✓</b> Picks up in under a second</li>
+          <li><b>✓</b> One flat monthly cost</li>
+          <li><b>✓</b> Ten calls at the same time</li>
+          <li><b>✓</b> Same quality on call 1 and call 1,000</li>
         </ul>
       </div>
       <div class="media-frame frame-trad">
@@ -1001,11 +1510,11 @@
           <span class="cmp-chip chip-trad"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 6.5V12l3.5 2"/></svg>9–5</span>
         </div>
         <ul>
-          <li><b>✕</b> Limited to business hours</li>
-          <li><b>✕</b> Customers wait on hold</li>
-          <li><b>✕</b> Salaries, overhead, turnover</li>
+          <li><b>✕</b> Business hours only</li>
+          <li><b>✕</b> Callers wait on hold</li>
+          <li><b>✕</b> Salary, overhead, turnover</li>
           <li><b>✕</b> One call at a time</li>
-          <li><b>✕</b> Quality varies by employee</li>
+          <li><b>✕</b> Depends who answers</li>
         </ul>
       </div>
       <span class="dots" style="top:-100px;right:-140px;width:360px;aspect-ratio:1.3" aria-hidden="true"></span>
@@ -1017,81 +1526,7 @@
   </div>
 </section>
 
-<!-- ============ 6. OFFERS ============ -->
-<section class="offers-sec">
-  <div class="container-wide">
-    <div class="sec-head" style="padding-bottom:0">
-      <span class="v-line" style="left:0" aria-hidden="true"></span>
-      <span class="v-line" style="right:0" aria-hidden="true"></span>
-      <div class="pill">The systems</div>
-      <h2 class="statement">Custom AI solutions, tailored to your business</h2>
-    </div>
-    <div class="panel-wrap">
-      <span class="blob offer-glow" aria-hidden="true"></span>
-      <div class="grid-cards offers-grid">
-        <div class="card corners">
-          <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-          <div class="tile-sm" style="background:linear-gradient(135deg,#E5FFFF,#BCEEFE)">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-              <path d="M16 2v6h6M23 1l-7 7"/>
-            </svg>
-          </div>
-          <h3>Inbound voice agents</h3>
-          <div class="offer-tag">Handle customer inquiries and bookings automatically.</div>
-          <ul>
-            <li>24/7 AI receptionist answering every call</li>
-            <li>Intelligent call routing &amp; FAQ handling</li>
-            <li>Custom call flows &amp; escalation logic</li>
-            <li>CRM &amp; scheduling system integration</li>
-            <li>Sentiment analysis &amp; customer insights</li>
-          </ul>
-          <a class="btn btn-primary" href="#">Book a Call</a>
-        </div>
-        <div class="card corners">
-          <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-          <div class="tile-sm" style="background:linear-gradient(135deg,#FFE5B2,#FFD499)">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-              <path d="M22 8V2h-6M15 9l7-7"/>
-            </svg>
-          </div>
-          <h3>Outbound voice agents</h3>
-          <div class="offer-tag">Automate calls for engagement, follow-ups and sales.</div>
-          <ul>
-            <li>Automated call campaigns for leads &amp; follow-ups</li>
-            <li>Custom scripting &amp; personalization</li>
-            <li>CRM integration &amp; workflow automation</li>
-            <li>Real-time analytics &amp; performance tracking</li>
-            <li>AI-driven responses in dynamic conversations</li>
-          </ul>
-          <a class="btn btn-primary" href="#">Book a Call</a>
-        </div>
-        <div class="card corners">
-          <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
-          <div class="tile-sm" style="background:linear-gradient(135deg,#D6DFFF,#B2C2FF)">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#1F1E1E" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="5" cy="6" r="2.6"/><circle cx="19" cy="6" r="2.6"/><circle cx="12" cy="18.5" r="2.6"/>
-              <path d="M7.6 6h8.8M6.2 8.3l4.6 8M17.8 8.3l-4.6 8"/>
-            </svg>
-          </div>
-          <h3>Custom workflows</h3>
-          <div class="offer-tag">For businesses that want tailored AI to streamline their operations.</div>
-          <ul>
-            <li>In-depth review of your business pain points</li>
-            <li>Analysis of automation opportunities</li>
-            <li>Custom roadmap for AI implementation</li>
-            <li>Tool &amp; integration recommendations</li>
-            <li>Follow-up strategy session for execution</li>
-          </ul>
-          <a class="btn btn-secondary" href="#">Contact Sales</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 7. FAQ ============ -->
+<!-- ============ 6. FAQ ============ -->
 <section class="faq-sec">
   <div class="container">
     <div class="faq-head">
@@ -1099,23 +1534,23 @@
       <h2 class="statement">Questions you may have</h2>
     </div>
     <div class="faq-list">
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>What exactly does NativeSquare do?<span class="x"></span></summary><p>We build and run AI voice agents that answer your calls, book your appointments and follow up with your leads — plugged into your existing phone number, calendar and CRM.</p></details>
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>How do you make sure the AI doesn't mess up a conversation?<span class="x"></span></summary><p>Every agent is trained on your services, prices and policies, tested against real scenarios before launch, and hands off to a human the moment a call goes beyond its scope.</p></details>
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>Do I need to change my phone system or CRM?<span class="x"></span></summary><p>No. We plug into what you already use — your number stays the same, your CRM stays the same.</p></details>
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>How much does this cost?<span class="x"></span></summary><p>A one-time setup fee plus a monthly retainer, sized to your call volume. We price it on a call, after we understand what missed calls currently cost you.</p></details>
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>What ROI should I expect, and how fast?<span class="x"></span></summary><p>Most clients see the effect within the first weeks: calls that used to go to voicemail become booked appointments. We track everything so you can read the numbers yourself.</p></details>
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>Do you offer support and training?<span class="x"></span></summary><p>Yes. Setup, team training and ongoing support are part of every engagement, with a monthly optimization pass.</p></details>
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>Can I customize how the AI sounds and speaks?<span class="x"></span></summary><p>Voice, tone, greeting, vocabulary — all of it is tailored to your business. Your customers hear your company, not a robot.</p></details>
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>What if I want to go back to human-only calls?<span class="x"></span></summary><p>You can, anytime. Nothing about your phone system is locked in.</p></details>
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>How does this handle the specific challenges of my business?<span class="x"></span></summary><p>Every deployment starts with a discovery call where we map your actual call flows and pain points. The agent is built around them, not from a template.</p></details>
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>What measurable improvements can I expect?<span class="x"></span></summary><p>Answer rate, time-to-answer, booked appointments, after-hours captures, follow-up completion — all measured, all reported.</p></details>
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>How does it integrate with our current systems?<span class="x"></span></summary><p>Through native integrations with the main CRMs, calendars and phone systems — and custom connections when needed.</p></details>
-      <details><span class="hr-dash" aria-hidden="true"></span><summary>Will it scale as we grow?<span class="x"></span></summary><p>The same agent handles ten calls a day or ten at the same time. Adding locations, lines or languages is configuration, not a rebuild.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>What exactly do you build?<span class="x"></span></summary><p>Systems that make you money with the newest AI available: speed-to-lead calling, follow-up sequences, a phone receptionist, back-office automations and custom tools. Each one is picked for your specific leaks, then wired into your business.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>Do I have to change my phone system, CRM or calendar?<span class="x"></span></summary><p>No. We build on top of what you already run. Your number, your CRM and your calendar stay.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>How fast do I see results?<span class="x"></span></summary><p>Reactivation and speed-to-lead show up in the first weeks, because they work on leads you already have. Everything is tracked, so you read the numbers yourself.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>What does it cost?<span class="x"></span></summary><p>A setup fee plus a monthly retainer, sized on your call and lead volume. We quote it on the call, once we know what the leaks are costing you.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>What if the AI gets something wrong?<span class="x"></span></summary><p>Every system is trained on your services, prices and rules, tested before launch, and hands off to a human the moment something goes beyond its scope.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>Can it sound like my company?<span class="x"></span></summary><p>Voice, greeting, vocabulary and tone are built from how your team actually talks. Your customers hear your company.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>What happens after launch?<span class="x"></span></summary><p>We monitor it, report on it and tune it monthly. You are not left alone with a robot.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>Can I turn it off?<span class="x"></span></summary><p>Anytime. Nothing about your phone system or your data is locked in.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>My business is unusual. Will this fit?<span class="x"></span></summary><p>The first call is a diagnosis, not a pitch. We map how leads and jobs actually move through your business and build around that.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>What do you measure?<span class="x"></span></summary><p>Answer rate, time to first call, booked jobs, revived leads, hours of admin removed. You get the numbers, not a feeling.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>Will it keep up as I grow?<span class="x"></span></summary><p>The same system takes ten calls a day or ten at once. New locations and new lines are configuration, not a rebuild.</p></details>
+      <details><span class="hr-dash" aria-hidden="true"></span><summary>Why not just hire someone instead?<span class="x"></span></summary><p>Hire for judgment. For picking up in under a second at 2am and chasing every lead forever, a human was never the right tool.</p></details>
     </div>
   </div>
 </section>
 
-<!-- ============ 8. FINAL CTA ============ -->
+<!-- ============ 7. FINAL CTA ============ -->
 <section class="final-cta">
   <span class="blob cta-blob b-cyan" aria-hidden="true"></span>
   <span class="blob cta-blob b-sky" aria-hidden="true"></span>
@@ -1132,7 +1567,8 @@
     <span class="wbar" style="height:9px;animation-delay:.48s"></span>
   </div>
   <div class="pill">Let's talk</div>
-  <h2>Book a free consultation</h2>
+  <h2>Find out what the leaks cost you.</h2>
+  <p class="cta-sub">A 30-minute call. We look at how leads reach you today and tell you what we would build first.</p>
   <a class="btn btn-primary" href="#">Book a Call</a>
 </section>
 
@@ -1150,7 +1586,7 @@
     <div class="footer-top">
       <a class="footer-brand" href="#" aria-label="NativeSquare">
         <svg class="ns-mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
-          <g fill="#0083F5">
+          <g fill="#060504">
             <rect x="0"  y="0"  width="12" height="12" rx="3.6"/>
             <rect x="18" y="0"  width="12" height="12" rx="3.6" opacity=".8"/>
             <rect x="36" y="0"  width="12" height="12" rx="3.6" opacity=".55"/>
