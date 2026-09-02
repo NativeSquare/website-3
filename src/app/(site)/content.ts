@@ -12,7 +12,7 @@ const en = {
   },
   hero: {
     kicker: "AI systems for service businesses",
-    h1: "We use the latest AI to make your business more money.",
+    h1: "Stop leaking money. Start growing your business.",
     lead: "Speed-to-lead calling, automatic follow-ups, an office that runs itself, custom tools nobody else will build you. Everything plugs into what you already use, and everything points at the same number.",
   },
   graph: {
@@ -225,7 +225,7 @@ const fr: Dict = {
   },
   hero: {
     kicker: "Systèmes IA pour entreprises de services",
-    h1: "On utilise les dernières IA pour faire gagner plus d'argent à votre entreprise.",
+    h1: "Arrêtez de perdre de l'argent. Faites grandir votre entreprise.",
     lead: "Rappel des leads en moins d'une minute, relances automatiques, un bureau qui tourne tout seul, des outils sur mesure que personne d'autre ne vous construira. Tout se branche sur ce que vous utilisez déjà, et tout vise le même chiffre.",
   },
   graph: {
