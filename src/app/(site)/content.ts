@@ -225,7 +225,7 @@ const fr: Dict = {
   },
   hero: {
     kicker: "Systèmes IA pour entreprises de services",
-    h1: "Arrêtez de perdre de l'argent. Faites grandir votre entreprise.",
+    h1: "Moins de pertes, plus d'efficacité, plus de croissance.",
     lead: "Rappel des leads en moins d'une minute, relances automatiques, un bureau qui tourne tout seul, des outils sur mesure que personne d'autre ne vous construira. Tout se branche sur ce que vous utilisez déjà, et tout vise le même chiffre.",
   },
   graph: {
