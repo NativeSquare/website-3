@@ -89,6 +89,9 @@ export default async function BeforeOurCallPage({
   const { niche } = await params;
   if (!(niche in PAGES)) notFound();
   const page = PAGES[niche as Niche];
+  /* Tant que la video d'une niche n'est pas sur Wistia, sa page tient sans :
+     pas de cadre vide, les case studies et les consignes restent. */
+  const aVideo = page.wistiaId !== "";
 
   /* Le cas de sa niche passe en premier. */
   const cas = [...CAS].sort((a, b) => Number(b.id === niche) - Number(a.id === niche));
@@ -102,15 +105,27 @@ export default async function BeforeOurCallPage({
         <span className="blob bc-blob-sky" aria-hidden="true" />
         <div className="bc-inner">
           <div className="pill">Before our call</div>
-          <h1>Your call is booked. Watch this first.</h1>
-          <p className="lead">
-            Five minutes on who I am and what we build for {page.trade} companies.
-            It will make our call a lot more useful.
-          </p>
-          <div className="bc-video corners">
-            <Croisillons />
-            <PrecallVideo mediaId={page.wistiaId} niche={niche} />
-          </div>
+          {aVideo ? (
+            <>
+              <h1>Your call is booked. Watch this first.</h1>
+              <p className="lead">
+                Five minutes on who I am and what we build for {page.trade} companies.
+                It will make our call a lot more useful.
+              </p>
+              <div className="bc-video corners">
+                <Croisillons />
+                <PrecallVideo mediaId={page.wistiaId} niche={niche} />
+              </div>
+            </>
+          ) : (
+            <>
+              <h1>Your call is booked.</h1>
+              <p className="lead">
+                Here&apos;s what we&apos;ve done for owners like you, and what to have
+                ready for our call.
+              </p>
+            </>
+          )}
         </div>
       </section>
 
