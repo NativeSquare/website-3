@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { Shield, Scale, Lock, Building } from "lucide-react";
 
-const Legal: React.FC = () => {
-  const [activeSection, setActiveSection] = useState("mentions");
+/* initialSection vient de ?section= (lu par la page, côté serveur) : un lien
+   direct vers la politique de confidentialité s'ouvre sur le bon onglet, texte
+   compris dans le HTML. L'enregistrement opérateur des SMS demande ce lien. */
+const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentions" }) => {
+  const [activeSection, setActiveSection] = useState(initialSection);
 
   const sections = [
     { id: "mentions", label: "Legal Mentions", icon: Building },
@@ -38,7 +41,10 @@ const Legal: React.FC = () => {
                 {sections.map((section) => (
                   <button
                     key={section.id}
-                    onClick={() => setActiveSection(section.id)}
+                    onClick={() => {
+                      setActiveSection(section.id);
+                      window.history.replaceState(null, "", `?section=${section.id}`);
+                    }}
                     className={`flex items-center gap-3 px-4 py-3 rounded-xl text-[14px] font-medium tracking-tight transition-all ${
                       activeSection === section.id
                         ? "bg-gray-94 text-gray-5"
@@ -158,7 +164,7 @@ const Legal: React.FC = () => {
                   <h2 className="font-title fs-32 font-medium leading-tight tracking-tight mb-8 pb-4" style={{ borderBottom: "1px solid var(--gray-90)" }}>
                     Privacy Policy (GDPR)
                   </h2>
-                  <p className="text-[13px] tracking-tight text-gray-40 italic mb-8 uppercase">Last Updated: December 2025</p>
+                  <p className="text-[13px] tracking-tight text-gray-40 italic mb-8 uppercase">Last Updated: September 2026</p>
 
                   <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">1. Data Controller</h3>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30">
@@ -172,6 +178,7 @@ const Legal: React.FC = () => {
                     <li>Scheduling strategy calls and managing appointments.</li>
                     <li>Improving website performance and user experience through analytics.</li>
                     <li>Sending newsletters or updates (only with explicit consent).</li>
+                    <li>Sending text messages about a call you have scheduled with us, only if you agreed to receive them (see section 4).</li>
                   </ul>
 
                   <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">3. Your Rights</h3>
@@ -186,7 +193,20 @@ const Legal: React.FC = () => {
                     To exercise these rights, please contact us at <strong className="text-gray-5">office@nativesquare.fr</strong>.
                   </p>
 
-                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">4. Data Retention</h3>
+                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">4. Text Messages (SMS)</h3>
+                  <p className="fs-15 leading-relaxed tracking-tight text-gray-30 mb-3">
+                    We only send text messages to people who have agreed to receive them, for example by saying yes during a phone call with us, before any message is sent. We use them for confirmations, reminders and follow-up about a call you have scheduled with us.
+                  </p>
+                  <ul className="list-disc pl-6 space-y-2 fs-15 leading-relaxed tracking-tight text-gray-30">
+                    <li>Message frequency varies. Message and data rates may apply.</li>
+                    <li>Reply <strong className="text-gray-5">STOP</strong> at any time to stop receiving text messages from us.</li>
+                    <li>For help, contact us at <strong className="text-gray-5">office@nativesquare.fr</strong>.</li>
+                  </ul>
+                  <p className="fs-15 leading-relaxed tracking-tight text-gray-30 mt-4">
+                    <strong className="text-gray-5">No mobile information will be shared with third parties or affiliates for marketing or promotional purposes.</strong> Text messaging opt-in data and consent are never shared with or sold to any third party. Your phone number is only passed to the provider that delivers our messages, and only to send the messages you agreed to receive.
+                  </p>
+
+                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">5. Data Retention</h3>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30">
                     We retain personal data only for as long as necessary to fulfill the purposes it was collected for, including for the purposes of satisfying any legal, accounting, or reporting requirements.
                   </p>
