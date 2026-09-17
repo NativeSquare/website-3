@@ -8,6 +8,13 @@ import type { NextConfig } from "next";
 const RELAIS = "/nsr";
 
 const nextConfig: NextConfig = {
+  /* Les pages par niche ont ete fusionnees le 17/09 : la video ne nomme plus de
+     metier. Les liens deja envoyes continuent de marcher. */
+  async redirects() {
+    return [
+      { source: "/before-our-call/:niche", destination: "/before-our-call", permanent: true },
+    ];
+  },
   async rewrites() {
     return [
       {

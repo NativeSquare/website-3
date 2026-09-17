@@ -21,13 +21,7 @@ declare module "react" {
 
    On mesure deux choses dans PostHog : le prospect a lance la video, et il
    l'a regardee jusqu'au bout. C'est ce qui dit s'il arrive a l'appel rechauffe. */
-export default function PrecallVideo({
-  mediaId,
-  niche,
-}: {
-  mediaId: string;
-  niche: string;
-}) {
+export default function PrecallVideo({ mediaId }: { mediaId: string }) {
   const playerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -53,9 +47,9 @@ export default function PrecallVideo({
     const onPlay = () => {
       if (lancee) return;
       lancee = true;
-      posthog.capture("precall_video_lecture", { niche });
+      posthog.capture("precall_video_lecture");
     };
-    const onEnded = () => posthog.capture("precall_video_fin", { niche });
+    const onEnded = () => posthog.capture("precall_video_fin");
 
     player.addEventListener("play", onPlay);
     player.addEventListener("ended", onEnded);
@@ -63,7 +57,7 @@ export default function PrecallVideo({
       player.removeEventListener("play", onPlay);
       player.removeEventListener("ended", onEnded);
     };
-  }, [mediaId, niche]);
+  }, [mediaId]);
 
   if (!mediaId) {
     return (

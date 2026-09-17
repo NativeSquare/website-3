@@ -7,13 +7,11 @@ import posthog from "posthog-js";
    passer par le dossier Telechargements. Chaque ouverture est comptee. */
 export default function LienOnePager({
   href,
-  niche,
   cas,
   className,
   children,
 }: {
   href: string;
-  niche: string;
   cas: string;
   className?: string;
   children: ReactNode;
@@ -24,7 +22,7 @@ export default function LienOnePager({
       target="_blank"
       rel="noopener"
       className={className}
-      onClick={() => posthog.capture("precall_onepager_ouverture", { niche, cas })}
+      onClick={() => posthog.capture("precall_onepager_ouverture", { cas })}
     >
       {children}
     </a>

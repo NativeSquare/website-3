@@ -1,30 +1,21 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import PrecallVideo from "../../components/PrecallVideo";
-import SansParametres from "../../components/SansParametres";
-import LienOnePager from "../../components/LienOnePager";
+import PrecallVideo from "../components/PrecallVideo";
+import SansParametres from "../components/SansParametres";
+import LienOnePager from "../components/LienOnePager";
 
 /* La page que le prospect voit juste apres avoir reserve son appel : la video
-   pre-call et les deux one-pagers. Une page par niche, parce que le passage
-   « where the money leaks » de la video change entre roofing et septic.
+   pre-call et les deux one-pagers.
 
-   Non indexee et absente du menu : on n'y arrive que par la redirection
-   Cal.com ou par le lien du message post-booking.
+   Une seule page depuis le 17/09 : sur les conseils d'Angelo, la video ne nomme
+   plus aucun metier, elle sert donc pour toutes les niches. Les anciennes
+   adresses /before-our-call/roofing et /septic redirigent ici (next.config.ts).
+
+   Non indexee et absente du menu : on n'y arrive que par le lien du message
+   post-booking ou par la redirection Cal.com.
    Doctrine : atlas/agence/mentorat-angelo/assets-precall/ */
 
-const PAGES = {
-  roofing: {
-    trade: "roofing",
-    /* Identifiant Wistia de la video (media-id du code d'embed). */
-    wistiaId: "shduhh0tx2",
-  },
-  septic: {
-    trade: "septic",
-    wistiaId: "",
-  },
-} as const;
-
-type Niche = keyof typeof PAGES;
+/* Identifiant Wistia de la video (media-id du code d'embed). */
+const WISTIA_ID = "1c0hslv1e7";
 
 /* Memes chiffres que la slide 7 de la video et que les one-pagers. */
 const CAS = [
@@ -59,12 +50,6 @@ const A_PREPARER = [
   },
 ];
 
-export const dynamicParams = false;
-
-export function generateStaticParams() {
-  return Object.keys(PAGES).map((niche) => ({ niche }));
-}
-
 export const metadata: Metadata = {
   title: "Before our call · NativeSquare",
   robots: { index: false, follow: false },
@@ -81,21 +66,7 @@ function Croisillons() {
   );
 }
 
-export default async function BeforeOurCallPage({
-  params,
-}: {
-  params: Promise<{ niche: string }>;
-}) {
-  const { niche } = await params;
-  if (!(niche in PAGES)) notFound();
-  const page = PAGES[niche as Niche];
-  /* Tant que la video d'une niche n'est pas sur Wistia, sa page tient sans :
-     pas de cadre vide, les case studies et les consignes restent. */
-  const aVideo = page.wistiaId !== "";
-
-  /* Le cas de sa niche passe en premier. */
-  const cas = [...CAS].sort((a, b) => Number(b.id === niche) - Number(a.id === niche));
-
+export default function BeforeOurCallPage() {
   return (
     <>
       <SansParametres />
@@ -105,27 +76,15 @@ export default async function BeforeOurCallPage({
         <span className="blob bc-blob-sky" aria-hidden="true" />
         <div className="bc-inner">
           <div className="pill">Before our call</div>
-          {aVideo ? (
-            <>
-              <h1>Your call is booked. Watch this first.</h1>
-              <p className="lead">
-                Five minutes on who I am and what we build for {page.trade} companies.
-                It will make our call a lot more useful.
-              </p>
-              <div className="bc-video corners">
-                <Croisillons />
-                <PrecallVideo mediaId={page.wistiaId} niche={niche} />
-              </div>
-            </>
-          ) : (
-            <>
-              <h1>Your call is booked.</h1>
-              <p className="lead">
-                Here&apos;s what we&apos;ve done for owners like you, and what to have
-                ready for our call.
-              </p>
-            </>
-          )}
+          <h1>Your call is booked. Watch this first.</h1>
+          <p className="lead">
+            Five minutes on who I am and what we build for companies like yours.
+            It will make our call a lot more useful.
+          </p>
+          <div className="bc-video corners">
+            <Croisillons />
+            <PrecallVideo mediaId={WISTIA_ID} />
+          </div>
         </div>
       </section>
 
@@ -136,13 +95,13 @@ export default async function BeforeOurCallPage({
             <h2>What it looks like for owners we&apos;ve worked with</h2>
           </div>
           <div className="bc-cases">
-            {cas.map((c) => (
+            {CAS.map((c) => (
               <article key={c.id} className="bc-case corners">
                 <Croisillons />
                 <p className="bc-tag">{c.tag}</p>
                 <p className="bc-big">{c.big}</p>
                 <p className="bc-lbl">{c.lbl}</p>
-                <LienOnePager href={c.pdf} niche={niche} cas={c.id} className="bc-link">
+                <LienOnePager href={c.pdf} cas={c.id} className="bc-link">
                   Read the one-pager (PDF)
                 </LienOnePager>
               </article>
