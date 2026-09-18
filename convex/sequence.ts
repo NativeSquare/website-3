@@ -8,6 +8,7 @@ import {
 } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
+import { enveloppe } from "../src/lib/sequence-email";
 import {
   EMAIL_1,
   EMAIL_2,
@@ -106,7 +107,9 @@ export const demarrer = mutation({
     /* Chaque etape a son moment. Une etape deja depassee est simplement
        sautee : un rendez-vous cale dans l'heure ne recoit que l'immediat. */
     const plan: Array<{ etape: Etape; quand: number }> = [
-      { etape: "email1", quand: maintenant },
+      /* Dix minutes apres, pour ne pas arriver dans la meme seconde que la
+         confirmation de Cal.com. */
+      { etape: "email1", quand: maintenant + 10 * 60 * 1000 },
       { etape: "sms1", quand: maintenant },
       { etape: "email2", quand: milieu },
       { etape: "sms2", quand: milieu },
@@ -219,7 +222,18 @@ export const envoyer = internalAction({
 
     try {
       if (canal === "email") {
-        await envoyerEmail(destinataire, message.objet ?? "", message.texte);
+        await envoyerEmail(
+          destinataire,
+          message.objet ?? "",
+          message.texte,
+          message.paragraphes
+            ? enveloppe({
+                paragraphes: message.paragraphes,
+                bouton: message.bouton,
+                signature: message.signature,
+              })
+            : undefined,
+        );
       } else {
         await envoyerSms(destinataire, message.texte);
       }
@@ -237,7 +251,7 @@ export const envoyer = internalAction({
 });
 
 /* Resend : https://resend.com/docs/api-reference/emails/send-email */
-async function envoyerEmail(a: string, objet: string, texte: string) {
+async function envoyerEmail(a: string, objet: string, texte: string, html?: string) {
   const cle = process.env.RESEND_API_KEY;
   const expediteur = process.env.EXPEDITEUR_EMAIL;
   if (!cle || !expediteur) throw new Error("RESEND_API_KEY ou EXPEDITEUR_EMAIL absent");
@@ -250,6 +264,7 @@ async function envoyerEmail(a: string, objet: string, texte: string) {
       to: [a],
       subject: objet,
       text: texte,
+      ...(html ? { html } : {}),
       reply_to: process.env.REPONSE_EMAIL ?? expediteur,
     }),
   });
