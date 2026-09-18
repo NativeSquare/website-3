@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { enveloppe } from "../../../../lib/sequence-email";
 import {
   EMAIL_1,
   EMAIL_2,
   EMAIL_3,
-  RAPPEL_APPEL,
   SMS_1,
   SMS_2,
   SMS_3,
@@ -13,6 +13,7 @@ import {
   heureParis,
   heureParisCourte,
   type Contact,
+  type Message,
 } from "../../../../lib/sequence-messages";
 
 /* Les fuseaux ou on appelle. Le libelle est celui qu'un patron americain
@@ -27,12 +28,51 @@ const FUSEAUX = [
 
 type Creneaux = Record<string, Array<{ start: string }>>;
 
+/* Une carte de l'apercu : les emails portent leur rendu, les textos non. */
+type Carte = {
+  titre: string;
+  objet?: string;
+  texte: string;
+  html?: string;
+  indice?: string;
+};
+
 function numeroPropre(saisi: string): string {
   const chiffres = saisi.replace(/[^\d+]/g, "");
   if (chiffres.startsWith("+")) return chiffres;
   if (chiffres.length === 10) return `+1${chiffres}`;
   if (chiffres.length === 11 && chiffres.startsWith("1")) return `+${chiffres}`;
   return chiffres;
+}
+
+function carteEmail(titre: string, m: Message, indice?: string): Carte {
+  return {
+    titre,
+    objet: m.objet,
+    texte: m.texte,
+    indice,
+    html: m.paragraphes
+      ? enveloppe({ paragraphes: m.paragraphes, bouton: m.bouton, signature: m.signature })
+      : undefined,
+  };
+}
+
+/* L'email tel qu'il arrivera, dans son propre document : les styles en ligne
+   de l'envoi ne croisent pas ceux du site. */
+function RenduEmail({ html }: { html: string }) {
+  const [hauteur, setHauteur] = useState(360);
+  return (
+    <iframe
+      className="bk-mail"
+      title="Rendu de l'email"
+      srcDoc={html}
+      style={{ height: hauteur }}
+      onLoad={(e) => {
+        const doc = e.currentTarget.contentDocument;
+        if (doc) setHauteur(doc.documentElement.scrollHeight + 4);
+      }}
+    />
+  );
 }
 
 export default function Booker() {
@@ -82,27 +122,28 @@ export default function Booker() {
     };
   }, [creneau, prenom, entreprise, note, fuseau]);
 
-  const apercu = useMemo(() => {
+  const apercu = useMemo<Carte[]>(() => {
     if (!contact) return [];
     return [
-      { titre: "Email 1 · tout de suite", ...EMAIL_1(contact) },
       { titre: "Texto 1 · tout de suite", ...SMS_1(contact) },
-      { titre: "Email 2 · à mi-chemin", ...EMAIL_2(contact) },
+      carteEmail(
+        "Email 1 · dix minutes après",
+        EMAIL_1(contact),
+        "Dix minutes de décalage pour ne pas tomber dans la même minute que la confirmation Cal.com.",
+      ),
+      carteEmail("Email 2 · à mi-chemin", EMAIL_2(contact)),
       { titre: "Texto 2 · à mi-chemin", ...SMS_2(contact) },
-      {
-        titre: "Texto pour toi · 2 h avant",
-        ...RAPPEL_APPEL({
-          ...contact,
-          telephone: telephone ? numeroPropre(telephone) : undefined,
-          nomComplet: [prenom, nom].filter(Boolean).join(" "),
-        }),
-      },
-      { titre: "Email 3 · 30 min avant", ...EMAIL_3(contact) },
+      carteEmail(
+        "Email 3 · 30 min avant",
+        EMAIL_3(contact),
+        "Dans l'envoi réel, la première phrase porte le lien de visio Cal.com.",
+      ),
       { titre: "Texto 3 · 30 min avant", ...SMS_3(contact) },
     ];
-  }, [contact, telephone, prenom, nom]);
+  }, [contact]);
 
   const pret = Boolean(prenom && email && creneau);
+  const nomComplet = [prenom, nom].filter(Boolean).join(" ");
 
   async function reserver() {
     setEnvoi(true);
@@ -146,12 +187,16 @@ export default function Booker() {
         </p>
         <ul className="bk-recap">
           <li>
-            Cal.com a envoyé la confirmation à <b>{email}</b>.
+            Cal.com vient d&apos;envoyer sa confirmation à <b>{email}</b> : la date, le lien de
+            visio et le fichier agenda.
           </li>
           <li>
-            {apercu.length ? `${fait.etapes.length} envois programmés` : "Séquence programmée"} :
-            email et texto tout de suite, à mi-chemin, 30 minutes avant, plus ton rappel d&apos;appel
-            2 h avant.
+            {fait.etapes.length} envois programmés : le texto tout de suite, ton email dix minutes
+            après, puis email et texto à mi-chemin et 30 minutes avant.
+          </li>
+          <li>
+            L&apos;appel est déjà dans <b>Prospect Calls</b> (« Free audit with{" "}
+            {nomComplet || prenom} »), avec les notifications la veille et une heure avant.
           </li>
           <li>
             Rendez-vous chez toi le <b>{creneau ? heureParis(creneau) : ""}</b>.
@@ -254,11 +299,39 @@ export default function Booker() {
         {!contact && (
           <p className="bk-vide">Renseigne au moins le prénom et choisis un créneau.</p>
         )}
+
+        {contact && (
+          <article className="bk-agenda">
+            <h4>Ton agenda · dès la réservation</h4>
+            <p className="bk-objet">Free audit with {nomComplet || prenom}</p>
+            <pre>
+              {[
+                `${heureParis(contact.debut)} chez toi, ${heure(contact.debut, fuseau)} chez lui.`,
+                "Calendrier Prospect Calls, notifications la veille et une heure avant.",
+                telephone
+                  ? `Une heure avant, tu l'appelles au ${numeroPropre(telephone)}.`
+                  : "Sans portable saisi, tu n'auras pas son numéro sous les yeux.",
+              ].join("\n")}
+            </pre>
+          </article>
+        )}
+
         {apercu.map((m) => (
-          <article key={m.titre}>
+          <article key={m.titre} className={m.html ? "bk-courriel" : undefined}>
             <h4>{m.titre}</h4>
             {m.objet && <p className="bk-objet">{m.objet}</p>}
-            <pre>{m.texte}</pre>
+            {m.html ? (
+              <>
+                <RenduEmail html={m.html} />
+                <details className="bk-texte">
+                  <summary>Version texte</summary>
+                  <pre>{m.texte}</pre>
+                </details>
+              </>
+            ) : (
+              <pre>{m.texte}</pre>
+            )}
+            {m.indice && <p className="bk-indice">{m.indice}</p>}
           </article>
         ))}
 

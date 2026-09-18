@@ -144,23 +144,3 @@ export const EMAIL_3 = (c: Contact): Message => {
 export const SMS_3 = (c: Contact): Message => ({
   texte: `Hey ${c.prenom}, we're on in 30. Call link is in your email. If you haven't had a chance to watch the video yet, no worries. If you can watch it now, it'll make our conversation a lot more productive: ${PAGE_PRECALL}`,
 });
-
-/* Le rappel qui part sur le telephone d'Alexandre, deux heures avant. */
-export const RAPPEL_APPEL = (
-  c: Contact & { telephone?: string; nomComplet?: string },
-): Message => ({
-  texte: `Appel dans 2 h : ${c.nomComplet || c.prenom}${c.entreprise ? ` (${c.entreprise})` : ""} à ${heureParis(c.debut)}, soit ${heure(c.debut, c.fuseau)} chez lui.${c.telephone ? ` Appelle-le au ${c.telephone} maintenant.` : ""} « Still good for ${heure(c.debut, c.fuseau)}? Did you get a chance to watch that video? »`,
-});
-
-/* L'ordre d'envoi, utilise par l'apercu comme par le planificateur. */
-export const ETAPES = [
-  { id: "email1", canal: "email", quand: "tout de suite", faire: EMAIL_1 },
-  { id: "sms1", canal: "sms", quand: "tout de suite", faire: SMS_1 },
-  { id: "email2", canal: "email", quand: "à mi-chemin", faire: EMAIL_2 },
-  { id: "sms2", canal: "sms", quand: "à mi-chemin", faire: SMS_2 },
-  { id: "rappel", canal: "sms", quand: "2 h avant, pour toi", faire: RAPPEL_APPEL },
-  { id: "email3", canal: "email", quand: "30 min avant", faire: EMAIL_3 },
-  { id: "sms3", canal: "sms", quand: "30 min avant", faire: SMS_3 },
-] as const;
-
-export type EtapeId = (typeof ETAPES)[number]["id"];
