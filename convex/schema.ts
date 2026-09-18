@@ -101,7 +101,7 @@ export default defineSchema({
   envois: defineTable({
     calUid: v.string(),
     etape: v.string(),
-    canal: v.union(v.literal("email"), v.literal("sms")),
+    canal: v.union(v.literal("email"), v.literal("sms"), v.literal("agenda")),
     destinataire: v.string(),
     etat: v.union(v.literal("envoye"), v.literal("echec"), v.literal("ignore")),
     erreur: v.optional(v.string()),

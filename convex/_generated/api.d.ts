@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as agenda from "../agenda.js";
 import type * as http from "../http.js";
 import type * as rendezvous from "../rendezvous.js";
 import type * as sequence from "../sequence.js";
@@ -20,6 +21,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  agenda: typeof agenda;
   http: typeof http;
   rendezvous: typeof rendezvous;
   sequence: typeof sequence;
