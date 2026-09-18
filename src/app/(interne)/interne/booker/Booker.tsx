@@ -45,6 +45,21 @@ function numeroPropre(saisi: string): string {
   return chiffres;
 }
 
+/* L'heure chez Alexandre. Un creneau de fin de journee americaine tombe le
+   lendemain a Paris : dans ce cas on nomme le jour, pour ne pas lire 03:30
+   comme s'il s'agissait du matin meme. */
+function chezToi(iso: string, fuseau: string): string {
+  const jourLaBas = new Intl.DateTimeFormat("fr-FR", { weekday: "short", timeZone: fuseau }).format(
+    new Date(iso),
+  );
+  const jourIci = new Intl.DateTimeFormat("fr-FR", {
+    weekday: "short",
+    timeZone: "Europe/Paris",
+  }).format(new Date(iso));
+  const h = heureParisCourte(iso);
+  return jourLaBas === jourIci ? h + " chez toi" : jourIci + " " + h + " chez toi";
+}
+
 function carteEmail(titre: string, m: Message, indice?: string): Carte {
   return {
     titre,
@@ -285,7 +300,7 @@ export default function Booker() {
                     onClick={() => setCreneau(s.start)}
                   >
                     <b>{heure(s.start, fuseau)}</b>
-                    <span>{heureParisCourte(s.start)} chez toi</span>
+                    <span>{chezToi(s.start, fuseau)}</span>
                   </button>
                 ))}
               </div>
