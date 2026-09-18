@@ -740,3 +740,54 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
   .bc-todo li{padding:14px 16px;gap:14px}
   .bc-sign a{margin-left:0;width:100%;text-align:center}
 }
+
+/* ============ Outil interne : booker ============ */
+.bk-main{margin-top:-56px;padding-top:56px;background:var(--bg);min-height:100vh}
+.bk-wrap{max-width:1400px;margin:0 auto;padding:40px 32px 80px;display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:start}
+.bk-col{display:flex;flex-direction:column;gap:18px}
+.bk-col h1{font-size:34px;line-height:1.1;letter-spacing:-.025em}
+
+.bk-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bk-form label{display:flex;flex-direction:column;gap:6px;font-size:13.5px;font-weight:500;letter-spacing:-.01em;color:var(--gray-30)}
+.bk-form label span{font-weight:400;color:var(--gray-50)}
+.bk-form .bk-large{grid-column:1 / -1}
+.bk-form input{height:42px;border:1px solid var(--gray-90);border-radius:10px;padding:0 12px;font:inherit;font-size:15px;background:#fff;color:var(--ink)}
+.bk-form input:focus{outline:2px solid var(--blue);outline-offset:-1px}
+
+.bk-fuseaux{display:flex;gap:8px;flex-wrap:wrap}
+.bk-fuseaux button{height:34px;padding:0 14px;border-radius:9999px;border:1px solid var(--gray-90);background:#fff;font:inherit;font-size:14px;cursor:pointer;color:var(--gray-30)}
+.bk-fuseaux button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+
+.bk-creneaux{display:flex;flex-direction:column;gap:16px;max-height:52vh;overflow:auto;padding-right:6px}
+.bk-jour h3{font-size:14px;font-weight:500;letter-spacing:-.01em;color:var(--gray-40);margin:0 0 8px}
+.bk-heures{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px}
+.bk-heures button{display:flex;flex-direction:column;gap:2px;align-items:flex-start;padding:9px 12px;border-radius:10px;border:1px solid var(--gray-90);background:#fff;font:inherit;cursor:pointer;box-shadow:var(--shadow-tile)}
+.bk-heures button b{font-size:15px;font-weight:500;color:var(--ink)}
+.bk-heures button span{font-size:12.5px;color:var(--gray-50)}
+.bk-heures button.on{border-color:var(--blue);outline:1px solid var(--blue)}
+
+.bk-apercu article{background:#fff;border:1px solid var(--gray-90);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow-tile)}
+.bk-apercu h4{margin:0 0 8px;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-50);font-weight:500}
+.bk-objet{margin:0 0 6px;font-weight:500;font-size:14.5px;letter-spacing:-.015em}
+.bk-apercu pre{margin:0;white-space:pre-wrap;font:inherit;font-size:14px;line-height:1.45;color:var(--gray-20)}
+.bk-valider{width:100%;margin-top:4px}
+.bk-vide{font-size:14px;color:var(--gray-50);margin:0}
+.bk-avert{font-size:13px;color:#8F4D12;margin:0}
+.bk-erreur{font-size:13.5px;color:var(--red);margin:0}
+
+.bk-fini{grid-template-columns:1fr;max-width:760px;gap:14px}
+.bk-lock{font-family:var(--font-title);font-size:22px;line-height:1.3;letter-spacing:-.02em;margin:0}
+.bk-lock.dim{font-size:17px;color:var(--gray-40)}
+.bk-recap{margin:8px 0 0;padding-left:18px;display:grid;gap:6px;font-size:15px;color:var(--gray-30)}
+.bk-fini .btn{width:fit-content;margin-top:10px}
+
+.bk-entrer{min-height:70vh;display:grid;place-items:center;padding:40px 24px}
+.bk-entrer form{display:flex;flex-direction:column;gap:12px;width:min(340px,100%);background:#fff;border:1px solid var(--gray-90);border-radius:16px;padding:26px;box-shadow:var(--shadow-tile)}
+.bk-entrer h1{font-size:24px;letter-spacing:-.02em;margin:0}
+.bk-entrer p{margin:0;font-size:14px;color:var(--gray-40)}
+.bk-entrer input{height:42px;border:1px solid var(--gray-90);border-radius:10px;padding:0 12px;font:inherit;font-size:15px}
+
+@media (max-width:1100px){
+  .bk-wrap{grid-template-columns:1fr;padding:28px 20px 64px}
+  .bk-creneaux{max-height:none}
+}

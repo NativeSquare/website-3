@@ -103,6 +103,12 @@ http.route({
       statut: p.status ?? evenement.triggerEvent,
     });
 
+    /* Un rendez-vous annule ou deplace ne doit plus rien envoyer. Le nouveau
+       creneau repart avec sa propre sequence, posee par la page interne. */
+    if (evenement.triggerEvent !== "BOOKING_CREATED") {
+      await ctx.runMutation(internal.sequence.annuler, { calUid: p.uid });
+    }
+
     return new Response("ok", { status: 200 });
   }),
 });

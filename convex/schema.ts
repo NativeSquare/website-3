@@ -75,4 +75,35 @@ export default defineSchema({
   })
     .index("by_calUid", ["calUid"])
     .index("by_visiteId", ["visiteId"]),
+
+  /**
+   * Une ligne par sequence post-booking en cours. Contient ce que Cal.com ne
+   * sait pas : le portable, le fuseau du prospect et la phrase notee pendant
+   * l'appel. Le champ taches garde les identifiants planifies, pour pouvoir
+   * tout annuler si le rendez-vous saute.
+   */
+  sequences: defineTable({
+    calUid: v.string(),
+    prenom: v.string(),
+    nom: v.optional(v.string()),
+    email: v.string(),
+    telephone: v.optional(v.string()),
+    entreprise: v.optional(v.string()),
+    note: v.optional(v.string()),
+    fuseau: v.string(),
+    debut: v.string(),
+    lienVisio: v.optional(v.string()),
+    taches: v.array(v.id("_scheduled_functions")),
+    annulee: v.optional(v.boolean()),
+  }).index("by_calUid", ["calUid"]),
+
+  /** Ce qui est parti, ce qui a echoue. Un envoi par ligne. */
+  envois: defineTable({
+    calUid: v.string(),
+    etape: v.string(),
+    canal: v.union(v.literal("email"), v.literal("sms")),
+    destinataire: v.string(),
+    etat: v.union(v.literal("envoye"), v.literal("echec"), v.literal("ignore")),
+    erreur: v.optional(v.string()),
+  }).index("by_calUid", ["calUid"]),
 });
