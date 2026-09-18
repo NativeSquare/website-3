@@ -12,7 +12,6 @@ import {
   EMAIL_1,
   EMAIL_2,
   EMAIL_3,
-  RAPPEL_APPEL,
   SMS_1,
   SMS_2,
   SMS_3,
@@ -29,12 +28,11 @@ import {
  * Source des textes : atlas/agence/mentorat-angelo/assets-precall/sequence-post-booking.md
  */
 
-const DEUX_HEURES = 2 * 60 * 60 * 1000;
 const TRENTE_MIN = 30 * 60 * 1000;
 /* En dessous, une etape tomberait trop pres de la precedente : on la saute. */
 const MARGE = 5 * 60 * 1000;
 
-type Etape = "email1" | "sms1" | "email2" | "sms2" | "agenda" | "email3" | "sms3";
+type Etape = "email1" | "sms1" | "email2" | "sms2" | "email3" | "sms3";
 
 /* ---------------------------------------------------------------- lecture */
 
@@ -112,7 +110,6 @@ export const demarrer = mutation({
       { etape: "sms1", quand: maintenant },
       { etape: "email2", quand: milieu },
       { etape: "sms2", quand: milieu },
-      { etape: "agenda", quand: maintenant },
       { etape: "email3", quand: debut - TRENTE_MIN },
       { etape: "sms3", quand: debut - TRENTE_MIN },
     ];
@@ -200,38 +197,7 @@ export const envoyer = internalAction({
       lienVisio: sequence.lienVisio,
     };
 
-    const canal: "email" | "sms" | "agenda" =
-      etape === "agenda" ? "agenda" : etape.startsWith("email") ? "email" : "sms";
-
-    /* L'agenda : un evenement de quinze minutes deux heures avant le rendez-vous,
-       avec deux rappels, la veille et une heure avant. */
-    if (canal === "agenda") {
-      const debutRdv = new Date(sequence.debut).getTime();
-      const nomComplet = [sequence.prenom, sequence.nom].filter(Boolean).join(" ");
-      try {
-        await ctx.runAction(internal.agenda.poserAppel, {
-          titre: `Appeler ${nomComplet}${sequence.entreprise ? ` (${sequence.entreprise})` : ""}`,
-          description: RAPPEL_APPEL({
-            ...contact,
-            telephone: sequence.telephone,
-            nomComplet,
-          }).texte,
-          debutAppel: new Date(debutRdv - DEUX_HEURES).toISOString(),
-          finAppel: new Date(debutRdv - DEUX_HEURES + 15 * 60 * 1000).toISOString(),
-        });
-        await ctx.runMutation(internal.sequence.journaliser, {
-          calUid, etape, canal, destinataire: process.env.GOOGLE_CALENDAR_ID ?? "(agenda)",
-          etat: "envoye",
-        });
-      } catch (erreur) {
-        await ctx.runMutation(internal.sequence.journaliser, {
-          calUid, etape, canal, destinataire: process.env.GOOGLE_CALENDAR_ID ?? "(agenda)",
-          etat: "echec",
-          erreur: erreur instanceof Error ? erreur.message : String(erreur),
-        });
-      }
-      return null;
-    }
+    const canal: "email" | "sms" = etape.startsWith("email") ? "email" : "sms";
 
     const message =
       etape === "email1" ? EMAIL_1(contact)
