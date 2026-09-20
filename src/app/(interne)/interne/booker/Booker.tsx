@@ -105,6 +105,21 @@ export default function Booker() {
   const [erreur, setErreur] = useState("");
   const [envoi, setEnvoi] = useState(false);
   const [fait, setFait] = useState<{ uid: string; etapes: string[] } | null>(null);
+  const [quoId, setQuoId] = useState("");
+
+  /* Ouvert depuis la campagne : la fiche arrive preremplie dans l'adresse, et
+     l'identifiant Quo permet de marquer le contact « Booké » a la fin. */
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    const lire = (cle: string) => p.get(cle) ?? "";
+    if (lire("prenom")) setPrenom(lire("prenom"));
+    if (lire("nom")) setNom(lire("nom"));
+    if (lire("entreprise")) setEntreprise(lire("entreprise"));
+    if (lire("telephone")) setTelephone(lire("telephone"));
+    if (lire("note")) setNote(lire("note"));
+    if (lire("fuseau") && FUSEAUX.some((f) => f.valeur === lire("fuseau"))) setFuseau(lire("fuseau"));
+    if (lire("quo")) setQuoId(lire("quo"));
+  }, []);
 
   const charger = useCallback(async () => {
     setChargement(true);
@@ -181,6 +196,14 @@ export default function Booker() {
       const donnees = await reponse.json();
       if (!reponse.ok) throw new Error(donnees.detail || donnees.erreur || "erreur");
       setFait({ uid: donnees.uid, etapes: donnees.etapes ?? [] });
+      /* Le contact Quo passe en « Booké » : la campagne le sort de la liste. */
+      if (quoId) {
+        void fetch("/api/interne/campagne/statut", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: quoId, statut: "Booké", note: `booké ${heure(creneau, fuseau)}` }),
+        });
+      }
     } catch (e) {
       setErreur(e instanceof Error ? e.message : "erreur");
     }

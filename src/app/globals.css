@@ -777,6 +777,55 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .bk-texte pre{margin-top:8px;font-size:13px;color:var(--gray-40)}
 .bk-indice{margin:8px 0 0;font-size:12.5px;line-height:1.45;color:var(--gray-50)}
 .bk-agenda{border-style:dashed}
+
+/* La campagne : les fiches Quo, une par contact. */
+.cp-wrap{max-width:1400px;margin:0 auto;padding:40px 32px 80px}
+.cp-tete{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:22px}
+.cp-tete h1{font-size:34px;line-height:1.1;letter-spacing:-.025em;margin:6px 0 4px}
+.cp-sous{margin:0;color:var(--gray-40);font-size:14.5px}
+.cp-sous b{color:var(--ink)}
+.cp-filtres{display:flex;gap:8px;flex-wrap:wrap}
+.cp-filtres button{height:34px;padding:0 14px;border-radius:9999px;border:1px solid var(--gray-90);background:#fff;font:inherit;font-size:13.5px;cursor:pointer;color:var(--gray-30)}
+.cp-filtres button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.cp-filtres button:disabled{opacity:.6;cursor:default}
+.cp-avert{margin:0 0 16px;padding:10px 14px;border-radius:10px;background:#FFF7E6;border:1px solid #F3D9A4;color:#7A5200;font-size:14px}
+.cp-liste{display:flex;flex-direction:column;gap:12px}
+.cp-carte{background:#fff;border:1px solid var(--gray-90);border-radius:14px;box-shadow:var(--shadow-tile);overflow:hidden}
+.cp-carte.cp-sortie{opacity:.55}
+.cp-entete{display:grid;grid-template-columns:32px 1fr auto auto;gap:14px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--gray-95,#EEF0F3)}
+.cp-num{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--gray-95,#F1F3F6);color:var(--gray-50);font-size:12.5px;font-weight:600}
+.cp-ident h3{margin:0;font-size:16px;letter-spacing:-.015em}
+.cp-ident p{margin:2px 0 0;font-size:12.5px;color:var(--gray-50)}
+.cp-tel{text-align:right;display:grid;gap:2px;justify-items:end}
+.cp-tel a{font-size:17px;font-weight:600;color:var(--ink);text-decoration:none;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.cp-tel a:hover{color:var(--blue)}
+.cp-tel span{font-size:12px;color:var(--gray-50)}
+.cp-copier{border:1px solid var(--gray-90);background:#fff;border-radius:9999px;padding:2px 10px;font:inherit;font-size:11.5px;color:var(--gray-40);cursor:pointer}
+.cp-etat{display:grid;gap:4px;justify-items:end;min-width:180px;text-align:right}
+.cp-statut{display:inline-block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:9999px;background:var(--gray-95,#F1F3F6);color:var(--gray-30);font-weight:600}
+.cp-s-refus{background:#FDECEC;color:#9F1D1D}
+.cp-s-book{background:#E6F6EA;color:#0E6B2B}
+.cp-s-rappeler{background:#FFF3D6;color:#7A5200}
+.cp-s-rpondeur,.cp-s-paslepatron{background:#EAF2FF;color:#1D4F9F}
+.cp-appels{font-size:12px;color:var(--gray-50)}
+.cp-corps{display:grid;grid-template-columns:1.15fr 1fr}
+.cp-porte{padding:14px 16px 16px;border-right:1px solid var(--gray-95,#EEF0F3)}
+.cp-porte > b{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:9999px;margin-bottom:10px}
+.cp-porte.cp-p-tel > b{background:#EAF2FF;color:#1D4F9F}
+.cp-porte.cp-p-dev > b{background:#FFF3D6;color:#7A5200}
+.cp-porte.cp-p-ads > b{background:#FDECEC;color:#9F1D1D}
+.cp-dit{margin:0;font-family:Georgia,"Iowan Old Style","Times New Roman",serif;font-size:17px;line-height:1.45;color:var(--ink);padding-left:12px;border-left:3px solid var(--blue)}
+.cp-alerte{margin:0 0 10px;padding:7px 10px;border-radius:8px;background:#FDECEC;border:1px solid #F5C2C2;color:#9F1D1D;font-size:13px;font-weight:600}
+.cp-cote{padding:14px 16px 16px}
+.cp-chips{display:flex;flex-wrap:wrap;gap:6px}
+.cp-chips span{font-size:12px;color:var(--gray-40);background:var(--gray-95,#F1F3F6);border-radius:9999px;padding:4px 10px}
+.cp-notes{margin:10px 0 0;font-size:12.5px;line-height:1.45;color:var(--gray-40)}
+.cp-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 16px;border-top:1px solid var(--gray-95,#EEF0F3);background:#FAFBFC}
+.cp-actions button{height:34px;padding:0 14px;border-radius:9999px;border:1px solid var(--gray-90);background:#fff;font:inherit;font-size:13.5px;cursor:pointer;color:var(--gray-30)}
+.cp-actions button:hover{border-color:var(--ink);color:var(--ink)}
+.cp-actions button:disabled{opacity:.5;cursor:default}
+.cp-booker{margin-left:auto}
+@media (max-width:980px){.cp-corps{grid-template-columns:1fr}.cp-porte{border-right:0;border-bottom:1px solid var(--gray-95,#EEF0F3)}.cp-entete{grid-template-columns:32px 1fr;row-gap:8px}.cp-tel,.cp-etat{justify-items:start;text-align:left}}
 .bk-valider{width:100%;margin-top:4px}
 .bk-vide{font-size:14px;color:var(--gray-50);margin:0}
 .bk-avert{font-size:13px;color:#8F4D12;margin:0}
