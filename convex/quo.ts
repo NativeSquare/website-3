@@ -145,6 +145,65 @@ export const appels = action({
   },
 });
 
+/* Creer des contacts de campagne. C'est par ici que les prochaines listes
+   entrent dans Quo, sans passer par l'importeur CSV. Les proprietes sont
+   nommees par leur nom Quo ; celles qui n'existent pas sont ignorees. */
+export const creer = action({
+  args: {
+    secret: v.string(),
+    contacts: v.array(
+      v.object({
+        prenom: v.string(),
+        entreprise: v.string(),
+        telephone: v.string(),
+        role: v.optional(v.string()),
+        externalId: v.optional(v.string()),
+        proprietes: v.record(v.string(), v.union(v.string(), v.number(), v.array(v.string()))),
+      }),
+    ),
+  },
+  handler: async (_ctx, args) => {
+    verifier(args.secret);
+    const parNom = await proprietes();
+    const crees: string[] = [];
+    const echecs: string[] = [];
+    for (const c of args.contacts) {
+      const custom: Array<{ key: string; value: unknown }> = [];
+      for (const [nom, valeur] of Object.entries(c.proprietes)) {
+        const champ = parNom[nom.trim().toLowerCase()];
+        if (!champ) continue;
+        const v2 = champ.type === "multi-select" ? (Array.isArray(valeur) ? valeur : [String(valeur)])
+          : champ.type === "number" ? Number(valeur)
+          : Array.isArray(valeur) ? valeur.join(", ") : String(valeur);
+        custom.push({ key: champ.key, value: v2 });
+      }
+      try {
+        const r = await quo("/contacts", {
+          method: "POST",
+          body: JSON.stringify({
+            defaultFields: {
+              firstName: c.prenom || c.entreprise,
+              lastName: null,
+              company: c.entreprise,
+              role: c.role ?? null,
+              emails: [],
+              phoneNumbers: [{ name: "primary", value: c.telephone }],
+            },
+            customFields: custom,
+            ...(c.externalId ? { externalId: c.externalId } : {}),
+            source: "atlas-campagne",
+          }),
+        });
+        crees.push(String(r.data?.id ?? "?"));
+      } catch (e) {
+        echecs.push(`${c.entreprise} : ${String(e).slice(0, 160)}`);
+      }
+      await new Promise((r) => setTimeout(r, 150));
+    }
+    return { crees, echecs };
+  },
+});
+
 /* Poser un statut sur un contact, et au passage un prenom ou une note.
    PATCH remplace le contact entier : on relit, on modifie, on renvoie tout. */
 export const statut = action({
