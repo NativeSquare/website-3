@@ -72,11 +72,22 @@ function lireContact(c: any) {
     notes: texteDe(perso("notes")),
     avis: texteDe(perso("reviews")),
     note: texteDe(perso("rating")),
-    statut: texteDe(perso("statut")),
+    statut: texteDe(perso("statut") ?? perso("status")),
   };
 }
 
 export type ContactCampagne = ReturnType<typeof lireContact>;
+
+/* Les proprietes personnalisees telles que l'API les voit : pour verifier
+   qu'un champ cree dans l'interface est bien la, et sous quel nom. */
+export const champs = action({
+  args: { secret: v.string() },
+  handler: async (_ctx, args) => {
+    verifier(args.secret);
+    const parNom = await proprietes();
+    return Object.values(parNom).map((c) => ({ name: c.name, type: c.type, key: c.key }));
+  },
+});
 
 /* Tous les contacts de la campagne : ceux qui portent une phrase d'ouverture. */
 export const liste = action({
@@ -96,7 +107,7 @@ export const liste = action({
       page = r.nextPageToken || undefined;
       if (!page) break;
     }
-    return { contacts, statutDisponible: Boolean(parNom["statut"]) };
+    return { contacts, statutDisponible: Boolean(parNom["statut"] ?? parNom["status"]) };
   },
 });
 
@@ -217,9 +228,10 @@ export const statut = action({
   handler: async (_ctx, args) => {
     verifier(args.secret);
     const parNom = await proprietes();
-    const champStatut = parNom["statut"];
+    /* « Statut » ou « Status » : le nom qu'Alexandre lui a donne dans Quo. */
+    const champStatut = parNom["statut"] ?? parNom["status"];
     if (!champStatut) {
-      throw new Error("Propriete « Statut » absente dans Quo : cree-la dans Settings > Contacts (multi-select).");
+      throw new Error("Propriete « Statut » absente dans Quo : cree-la dans Settings > Contacts, type Tags.");
     }
 
     const actuel = (await quo("/contacts/" + encodeURIComponent(args.id))).data;
