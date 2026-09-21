@@ -215,6 +215,72 @@ export const creer = action({
   },
 });
 
+/* PATCH remplace le contact entier : le corps repart toujours du contact lu. */
+function corpsDe(actuel: any, custom: Array<{ key: string; value: unknown }>, prenom?: string) {
+  const d = actuel.defaultFields ?? {};
+  return {
+    defaultFields: {
+      firstName: prenom || d.firstName || "",
+      lastName: d.lastName ?? null,
+      company: d.company ?? null,
+      role: d.role ?? null,
+      emails: (d.emails ?? []).map((e: any) => ({ name: e.name ?? "primary", value: e.value ?? null })),
+      phoneNumbers: (d.phoneNumbers ?? []).map((p: any) => ({ name: p.name ?? "primary", value: p.value ?? null })),
+    },
+    customFields: custom,
+  };
+}
+
+/* Modifier des proprietes personnalisees, nommees par leur nom Quo, sur une
+   serie de contacts. C'est par la que les phrases d'ouverture se reecrivent
+   sans repasser par l'importeur. Les noms inconnus sont ignores et signales. */
+export const modifier = action({
+  args: {
+    secret: v.string(),
+    modifications: v.array(
+      v.object({
+        id: v.string(),
+        proprietes: v.record(v.string(), v.union(v.string(), v.number(), v.array(v.string()))),
+      }),
+    ),
+  },
+  handler: async (_ctx, args) => {
+    verifier(args.secret);
+    const parNom = await proprietes();
+    const faits: string[] = [];
+    const echecs: string[] = [];
+    const ignores = new Set<string>();
+    for (const m of args.modifications) {
+      try {
+        const actuel = (await quo("/contacts/" + encodeURIComponent(m.id))).data;
+        const custom: Array<{ key: string; value: unknown }> = (actuel.customFields ?? []).map((c: any) => ({
+          key: c.key,
+          value: c.value ?? null,
+        }));
+        for (const [nom, valeur] of Object.entries(m.proprietes)) {
+          const champ = parNom[nom.trim().toLowerCase()];
+          if (!champ) {
+            ignores.add(nom);
+            continue;
+          }
+          const v2 = champ.type === "multi-select" ? (Array.isArray(valeur) ? valeur : [String(valeur)])
+            : champ.type === "number" ? Number(valeur)
+            : Array.isArray(valeur) ? valeur.join(", ") : String(valeur);
+          const i = custom.findIndex((c) => c.key === champ.key);
+          if (i >= 0) custom[i] = { key: champ.key, value: v2 };
+          else custom.push({ key: champ.key, value: v2 });
+        }
+        await quo("/contacts/" + encodeURIComponent(m.id), { method: "PATCH", body: JSON.stringify(corpsDe(actuel, custom)) });
+        faits.push(m.id);
+      } catch (e) {
+        echecs.push(m.id + " : " + String(e).slice(0, 160));
+      }
+      await new Promise((r) => setTimeout(r, 150));
+    }
+    return { faits, echecs, ignores: [...ignores] };
+  },
+});
+
 /* Poser un statut sur un contact, et au passage un prenom ou une note.
    PATCH remplace le contact entier : on relit, on modifie, on renvoie tout. */
 export const statut = action({
@@ -235,7 +301,6 @@ export const statut = action({
     }
 
     const actuel = (await quo("/contacts/" + encodeURIComponent(args.id))).data;
-    const d = actuel.defaultFields ?? {};
     const existants: Array<{ key: string; value: unknown }> = (actuel.customFields ?? [])
       .filter((c: any) => c.key !== champStatut.key)
       .map((c: any) => ({ key: c.key, value: c.value ?? null }));
@@ -254,17 +319,7 @@ export const statut = action({
       }
     }
 
-    const corps = {
-      defaultFields: {
-        firstName: args.prenom || d.firstName || "",
-        lastName: d.lastName ?? null,
-        company: d.company ?? null,
-        role: d.role ?? null,
-        emails: (d.emails ?? []).map((e: any) => ({ name: e.name ?? "primary", value: e.value ?? null })),
-        phoneNumbers: (d.phoneNumbers ?? []).map((p: any) => ({ name: p.name ?? "primary", value: p.value ?? null })),
-      },
-      customFields: custom,
-    };
+    const corps = corpsDe(actuel, custom, args.prenom);
     const r = await quo("/contacts/" + encodeURIComponent(args.id), { method: "PATCH", body: JSON.stringify(corps) });
     return lireContact(r.data);
   },

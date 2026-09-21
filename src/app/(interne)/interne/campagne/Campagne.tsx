@@ -28,11 +28,47 @@ type Appel = { n: number; dernier: { quand: string; statut: string; duree: numbe
 /* Les statuts qui sortent une fiche de la liste du jour. */
 const SORTIS = new Set(["Refus", "Booké"]);
 
-const QUESTION: Record<string, string> = {
-  Téléphone: "Is there someone dedicated to answering phones and booking estimates, or does that fall on you?",
-  Estimates: "After you send a quote, what does your follow-up process look like?",
-  "Leads payés": "Do you guys run any ads, Facebook or Google? Are you working with an agency for that?",
+/* La phrase du script que l'accroche rejoint, porte par porte : ce sont les
+   mots de l'arbre, pour qu'Alexandre enchaine sans chercher. La preuve du
+   telephone ne s'affiche que si l'accroche ne la remplace pas. */
+const SCRIPT: Record<string, { preuve?: string; question: string }> = {
+  Téléphone: {
+    preuve: "I actually tried your main line yesterday and got the voicemail.",
+    question: "Is there someone dedicated to answering phones and booking estimates, or does that fall on you?",
+  },
+  Estimates: {
+    preuve: "I was reading your reviews and a couple of them mention waiting on an estimate.",
+    question: "After you send a quote, what does your follow-up process look like?",
+  },
+  "Leads payés": { question: "Do you guys run any ads, Facebook or Google? Are you working with an agency for that?" },
+  Temps: {
+    question: "If you mapped out your week, how much time are you spending on admin, scheduling, and follow-up versus actually running your business?",
+  },
+  Reviews: { question: "How are you currently getting customers to leave you guys reviews on Google?" },
 };
+
+type Ouverture = { porte: string; accroche: string };
+
+/* Opening dans Quo : « Téléphone » accroche || Estimates » accroche ». Une
+   accroche qui finit par « so » rejoint la preuve du script ; une accroche
+   qui porte sa propre preuve (une phrase complete) la remplace. */
+function lireOuvertures(texte: string): Ouverture[] | null {
+  if (!texte.includes("»")) return null;
+  return texte
+    .split("||")
+    .map((m) => m.trim())
+    .filter(Boolean)
+    .map((m) => {
+      const [porte, ...reste] = m.split("»");
+      return { porte: porte.trim(), accroche: reste.join("»").trim() };
+    });
+}
+
+function ligneScript(o: Ouverture): string {
+  const s = SCRIPT[o.porte] ?? { question: "" };
+  const preuveRemplacee = o.accroche && !/,?s*so$/i.test(o.accroche);
+  return [preuveRemplacee ? "" : s.preuve, s.question].filter(Boolean).join(" ");
+}
 
 function classePorte(porte: string): string {
   if (/lead/i.test(porte)) return "cp-p-ads";
@@ -210,8 +246,9 @@ export default function Campagne() {
 
       <div className="cp-liste">
         {visibles.map((c, i) => {
-          const question = QUESTION[c.porte] ?? "";
-          const ouverture = c.ouverture || [c.preuve, question].filter(Boolean).join(" ");
+          const ouvertures =
+            lireOuvertures(c.ouverture) ??
+            [{ porte: c.porte, accroche: c.ouverture || c.preuve || "" }];
           const chips = c.contexte.split(/\s[|·]\s/).filter(Boolean);
           const alerte = chips.find((x) => /DEJA EQUIPE|CASSE/.test(x));
           return (
@@ -245,10 +282,19 @@ export default function Campagne() {
               </header>
 
               <div className="cp-corps">
-                <div className={`cp-porte ${classePorte(c.porte)}`}>
-                  <b>Porte {c.porte || "?"}</b>
+                <div className="cp-porte">
                   {alerte && <p className="cp-alerte">{alerte}</p>}
-                  <p className="cp-dit">{ouverture}</p>
+                  <ul className="cp-portes">
+                    {ouvertures.map((o, j) => (
+                      <li key={o.porte} className={`${classePorte(o.porte)} ${j === 0 ? "cp-principale" : ""}`}>
+                        <b>{j === 0 ? "Porte " : "Puis "}{o.porte}</b>
+                        <p className="cp-dit">
+                          {o.accroche ? <mark>{o.accroche}</mark> : <em>sans accroche, tu poses la question du script :</em>}{" "}
+                          <span className="cp-script">{ligneScript(o)}</span>
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
                 <div className="cp-cote">
                   <div className="cp-chips">
