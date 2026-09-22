@@ -825,7 +825,13 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .cp-cote{padding:14px 16px 16px}
 .cp-chips{display:flex;flex-wrap:wrap;gap:6px}
 .cp-chips span{font-size:12px;color:var(--gray-40);background:var(--gray-95,#F1F3F6);border-radius:9999px;padding:4px 10px}
-.cp-notes{margin:10px 0 0;font-size:12.5px;line-height:1.45;color:var(--gray-40)}
+.cp-notes{margin:10px 0 0;padding:0;list-style:none;font-size:12.5px;line-height:1.45;color:var(--gray-40)}
+.cp-notes li{padding:3px 0;border-top:1px dashed var(--gray-90)}
+.cp-noter{display:flex;gap:6px;margin-top:10px}
+.cp-noter input{flex:1;min-width:0;height:34px;border:1px solid var(--gray-90);border-radius:8px;padding:0 10px;font:inherit;font-size:13px;color:var(--ink)}
+.cp-noter input:focus{outline:none;border-color:var(--blue)}
+.cp-noter button{height:34px;padding:0 14px;border-radius:9999px;border:1px solid var(--gray-90);background:#fff;font:inherit;font-size:13px;cursor:pointer;color:var(--gray-30)}
+.cp-noter button:disabled{opacity:.5;cursor:default}
 .cp-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:10px 16px;border-top:1px solid var(--gray-95,#EEF0F3);background:#FAFBFC}
 .cp-actions button{height:34px;padding:0 14px;border-radius:9999px;border:1px solid var(--gray-90);background:#fff;font:inherit;font-size:13.5px;cursor:pointer;color:var(--gray-30)}
 .cp-actions button:hover{border-color:var(--ink);color:var(--ink)}

@@ -281,6 +281,27 @@ export const modifier = action({
   },
 });
 
+/* Ajouter une note sur un contact : elle passe devant les anciennes, dans la
+   propriete Notes, separee par « | ». Rien n'est jamais efface d'ici. */
+export const noter = action({
+  args: { secret: v.string(), id: v.string(), note: v.string() },
+  handler: async (_ctx, args) => {
+    verifier(args.secret);
+    const parNom = await proprietes();
+    const champ = parNom["notes"];
+    if (!champ) throw new Error("Propriete « Notes » absente dans Quo");
+    const actuel = (await quo("/contacts/" + encodeURIComponent(args.id))).data;
+    const ancien = texteDe((actuel.customFields ?? []).find((c: any) => c.key === champ.key)?.value);
+    const nouveau = [args.note.trim(), ancien].filter(Boolean).join(" | ").slice(0, 2000);
+    const custom: Array<{ key: string; value: unknown }> = (actuel.customFields ?? [])
+      .filter((c: any) => c.key !== champ.key)
+      .map((c: any) => ({ key: c.key, value: c.value ?? null }));
+    custom.push({ key: champ.key, value: nouveau });
+    const r = await quo("/contacts/" + encodeURIComponent(args.id), { method: "PATCH", body: JSON.stringify(corpsDe(actuel, custom)) });
+    return lireContact(r.data);
+  },
+});
+
 /* Poser un statut sur un contact, et au passage un prenom ou une note.
    PATCH remplace le contact entier : on relit, on modifie, on renvoie tout. */
 export const statut = action({

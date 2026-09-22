@@ -112,6 +112,7 @@ export default function Campagne() {
   const [voirTout, setVoirTout] = useState(false);
   const [porteFiltre, setPorteFiltre] = useState("");
   const [enCours, setEnCours] = useState<string | null>(null);
+  const [brouillons, setBrouillons] = useState<Record<string, string>>({});
 
   const chargerAppels = useCallback(async (liste: Contact[]) => {
     const numeros = liste.map((c) => c.telephone).filter(Boolean);
@@ -165,6 +166,28 @@ export default function Campagne() {
       const d = await r.json();
       if (!r.ok) throw new Error(d.detail || d.erreur || "erreur");
       setContacts((liste) => liste.map((x) => (x.id === c.id ? { ...x, ...d.contact } : x)));
+    } catch (e) {
+      setErreur(e instanceof Error ? e.message : "erreur");
+    }
+    setEnCours(null);
+  }
+
+  /* Une note tapee sur la fiche : elle part dans Quo tout de suite. */
+  async function noter(c: Contact) {
+    const note = (brouillons[c.id] ?? "").trim();
+    if (!note) return;
+    setEnCours(c.id);
+    setErreur("");
+    try {
+      const r = await fetch("/api/interne/campagne/note", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: c.id, note }),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || d.erreur || "erreur");
+      setContacts((liste) => liste.map((x) => (x.id === c.id ? { ...x, ...d.contact } : x)));
+      setBrouillons((b) => ({ ...b, [c.id]: "" }));
     } catch (e) {
       setErreur(e instanceof Error ? e.message : "erreur");
     }
@@ -304,7 +327,29 @@ export default function Campagne() {
                         <span key={x}>{x}</span>
                       ))}
                   </div>
-                  {c.notes && <p className="cp-notes">{c.notes}</p>}
+                  {c.notes && (
+                    <ul className="cp-notes">
+                      {c.notes.split(" | ").map((n, k) => (
+                        <li key={k}>{n}</li>
+                      ))}
+                    </ul>
+                  )}
+                  <form
+                    className="cp-noter"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      void noter(c);
+                    }}
+                  >
+                    <input
+                      value={brouillons[c.id] ?? ""}
+                      onChange={(e) => setBrouillons((b) => ({ ...b, [c.id]: e.target.value }))}
+                      placeholder="Une note sur l'appel, Entrée pour l'enregistrer dans Quo"
+                    />
+                    <button type="submit" disabled={enCours === c.id || !(brouillons[c.id] ?? "").trim()}>
+                      {enCours === c.id ? "…" : "Noter"}
+                    </button>
+                  </form>
                 </div>
               </div>
 
