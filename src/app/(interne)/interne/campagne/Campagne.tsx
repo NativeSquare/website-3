@@ -70,9 +70,9 @@ function ligneScript(o: Ouverture): string {
   return [preuveRemplacee ? "" : s.preuve, s.question].filter(Boolean).join(" ");
 }
 
-/* La liste d'origine d'une fiche : une chip « LISTE : 2026-09-24 · fenêtres »
-   dans Context. Les fiches d'avant cette convention sont la liste roofing. */
-const LISTE_ORIGINE = "2026-09-21 · roofing";
+/* La liste d'origine d'une fiche : une chip « LISTE : 2026-09-24 fenetres »
+   dans Context, sans point median (Context se coupe dessus). Les fiches d’avant cette convention sont la liste roofing. */
+const LISTE_ORIGINE = "2026-09-21 roofing";
 function listeDe(c: Contact): string {
   const chip = c.contexte.split(/\s[|·]\s/).find((x) => x.startsWith("LISTE : "));
   return chip ? chip.slice("LISTE : ".length).trim() : LISTE_ORIGINE;
