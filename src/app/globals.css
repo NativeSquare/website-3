@@ -788,6 +788,8 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .cp-filtres button{height:34px;padding:0 14px;border-radius:9999px;border:1px solid var(--gray-90);background:#fff;font:inherit;font-size:13.5px;cursor:pointer;color:var(--gray-30)}
 .cp-filtres button.on{background:var(--ink);border-color:var(--ink);color:#fff}
 .cp-filtres button:disabled{opacity:.6;cursor:default}
+.cp-filtres .cp-liste-btn{border-style:dashed;margin-right:6px}
+.cp-filtres .cp-liste-btn.on{border-style:solid}
 .cp-avert{margin:0 0 16px;padding:10px 14px;border-radius:10px;background:#FFF7E6;border:1px solid #F3D9A4;color:#7A5200;font-size:14px}
 .cp-liste{display:flex;flex-direction:column;gap:12px}
 .cp-carte{background:#fff;border:1px solid var(--gray-90);border-radius:14px;box-shadow:var(--shadow-tile);overflow:hidden}

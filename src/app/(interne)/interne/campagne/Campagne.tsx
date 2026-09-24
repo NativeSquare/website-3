@@ -70,6 +70,14 @@ function ligneScript(o: Ouverture): string {
   return [preuveRemplacee ? "" : s.preuve, s.question].filter(Boolean).join(" ");
 }
 
+/* La liste d'origine d'une fiche : une chip « LISTE : 2026-09-24 · fenêtres »
+   dans Context. Les fiches d'avant cette convention sont la liste roofing. */
+const LISTE_ORIGINE = "2026-09-21 · roofing";
+function listeDe(c: Contact): string {
+  const chip = c.contexte.split(/\s[|·]\s/).find((x) => x.startsWith("LISTE : "));
+  return chip ? chip.slice("LISTE : ".length).trim() : LISTE_ORIGINE;
+}
+
 function classePorte(porte: string): string {
   if (/lead/i.test(porte)) return "cp-p-ads";
   if (/estim/i.test(porte)) return "cp-p-dev";
@@ -113,6 +121,7 @@ export default function Campagne() {
   const [porteFiltre, setPorteFiltre] = useState("");
   const [enCours, setEnCours] = useState<string | null>(null);
   const [brouillons, setBrouillons] = useState<Record<string, string>>({});
+  const [listeFiltre, setListeFiltre] = useState("");
 
   const chargerAppels = useCallback(async (liste: Contact[]) => {
     const numeros = liste.map((c) => c.telephone).filter(Boolean);
@@ -205,16 +214,20 @@ export default function Campagne() {
     void poser(c, "Rappeler", { note: `RAPPEL ${quand}` });
   }
 
-  const portes = useMemo(() => [...new Set(contacts.map((c) => c.porte).filter(Boolean))], [contacts]);
+  /* Les listes, la plus recente d'abord ; c'est elle qu'on ouvre. */
+  const listes = useMemo(() => [...new Set(contacts.map(listeDe))].sort().reverse(), [contacts]);
+  const listeActive = listeFiltre || listes[0] || "";
+  const dansListe = useMemo(() => contacts.filter((c) => listeDe(c) === listeActive), [contacts, listeActive]);
+  const portes = useMemo(() => [...new Set(dansListe.map((c) => c.porte).filter(Boolean))], [dansListe]);
   const visibles = useMemo(
     () =>
-      contacts.filter(
+      dansListe.filter(
         (c) => (voirTout || !SORTIS.has(c.statut)) && (!porteFiltre || c.porte === porteFiltre),
       ),
-    [contacts, voirTout, porteFiltre],
+    [dansListe, voirTout, porteFiltre],
   );
-  const compte = (s: string) => contacts.filter((c) => c.statut === s).length;
-  const appelesAujourdhui = contacts.filter((c) => {
+  const compte = (s: string) => dansListe.filter((c) => c.statut === s).length;
+  const appelesAujourdhui = dansListe.filter((c) => {
     const a = appels[c.telephone];
     if (!a?.dernier) return false;
     const j = new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris" }).format(new Date(a.dernier.quand));
@@ -228,7 +241,7 @@ export default function Campagne() {
           <div className="pill">Pendant l&apos;appel</div>
           <h1>Campagne</h1>
           <p className="cp-sous">
-            {contacts.length} fiches dans Quo · {visibles.length} à appeler
+            {dansListe.length} fiches · {visibles.length} à appeler
             {" · "}
             <b>{appelesAujourdhui}</b> appelés aujourd&apos;hui
             {compte("Booké") ? ` · ${compte("Booké")} bookés` : ""}
@@ -237,6 +250,19 @@ export default function Campagne() {
           </p>
         </div>
         <div className="cp-filtres">
+          {listes.length > 1 &&
+            listes.map((l) => (
+              <button
+                key={l}
+                className={`cp-liste-btn ${listeActive === l ? "on" : ""}`}
+                onClick={() => {
+                  setListeFiltre(l);
+                  setPorteFiltre("");
+                }}
+              >
+                {l}
+              </button>
+            ))}
           <button className={!porteFiltre ? "on" : ""} onClick={() => setPorteFiltre("")}>
             Toutes portes
           </button>
@@ -272,7 +298,7 @@ export default function Campagne() {
           const ouvertures =
             lireOuvertures(c.ouverture) ??
             [{ porte: c.porte, accroche: c.ouverture || c.preuve || "" }];
-          const chips = c.contexte.split(/\s[|·]\s/).filter(Boolean);
+          const chips = c.contexte.split(/\s[|·]\s/).filter((x) => x && !x.startsWith("LISTE : "));
           const alerte = chips.find((x) => /DEJA EQUIPE|CASSE/.test(x));
           return (
             <article key={c.id} className={`cp-carte ${SORTIS.has(c.statut) ? "cp-sortie" : ""}`}>
