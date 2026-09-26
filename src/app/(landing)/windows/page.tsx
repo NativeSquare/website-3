@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Landing, { type Variante } from "../components/Landing";
+import Landing from "../components/Landing";
 import { contenu, lirePorte } from "../contenu";
 
 /* La landing des pubs Meta pour les poseurs de fenetres de Floride.
@@ -21,15 +21,10 @@ export default async function WindowsPage({
 }) {
   const params = await searchParams;
   const porte = lirePorte(typeof params.porte === "string" ? params.porte : undefined);
-  /* ?v=b le temps de choisir la mise en page ; la variante retenue deviendra
-     la seule. */
-  const variante: Variante = params.v === "b" ? "b" : "a";
-
   return (
     <Landing
       c={c}
       porte={porte}
-      variante={variante}
       source={`landing-windows${porte ? "-" + porte : ""}`}
     />
   );

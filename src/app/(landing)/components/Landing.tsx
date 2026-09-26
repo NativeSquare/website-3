@@ -4,14 +4,12 @@ import CalendrierInline from "./CalendrierInline";
 import type { Contenu, Porte } from "../contenu";
 
 /**
- * La landing d'une pub Meta. Une seule construction, deux variantes de mise
- * en page pour choisir :
- *   a : le calendrier apres la preuve (titre, comment ca marche, demo, calendrier)
- *   b : le calendrier dans le hero, a droite du titre, visible sans scroller
- * et un titre par porte de l'arbre d'appel (?porte=telephone|leads|estimates).
+ * La landing d'une pub Meta : le calendrier dans le hero, a droite du titre,
+ * visible sans scroller (mise en page B retenue par Alexandre le 26/09/2026 ;
+ * la mise en page A, calendrier apres la preuve, est dans l'historique git),
+ * puis comment ca marche, la demo, les questions. Un titre par porte de
+ * l'arbre d'appel (?porte=telephone|leads|estimates).
  */
-
-export type Variante = "a" | "b";
 
 function Etapes({ c, porte }: { c: Contenu; porte?: Porte }) {
   const accroche = porte ? c.portes[porte] : c.generique;
@@ -73,19 +71,17 @@ function Faq({ c }: { c: Contenu }) {
 export default function Landing({
   c,
   porte,
-  variante,
   source,
 }: {
   c: Contenu;
   porte?: Porte;
-  variante: Variante;
   source: string;
 }) {
   const accroche = porte ? c.portes[porte] : c.generique;
 
   return (
     <>
-      <section className={`ld-hero${variante === "b" ? " ld-b" : ""}`}>
+      <section className="ld-hero ld-b">
         <span className="blob bc-blob-amber" aria-hidden="true" />
         <span className="blob bc-blob-sky" aria-hidden="true" />
         <div className="ld-hero-inner">
@@ -100,26 +96,12 @@ export default function Landing({
               <span className="ld-note">{c.note}</span>
             </div>
           </div>
-          {variante === "b" && <CalendrierInline source={source} />}
+          <CalendrierInline source={source} />
         </div>
       </section>
 
       <Etapes c={c} porte={porte} />
       <Demo c={c} />
-
-      {variante === "a" && (
-        <section className="ld-section ld-alt">
-          <div className="ld-wrap">
-            <div className="ld-head">
-              <div className="pill">Next step</div>
-              <h2>{c.reserver.h2}</h2>
-              <p>{c.reserver.p}</p>
-            </div>
-            <CalendrierInline source={source} />
-          </div>
-        </section>
-      )}
-
       <Faq c={c} />
     </>
   );
