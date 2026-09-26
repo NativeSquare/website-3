@@ -9,6 +9,7 @@
  */
 
 import type * as http from "../http.js";
+import type * as meta from "../meta.js";
 import type * as quo from "../quo.js";
 import type * as rendezvous from "../rendezvous.js";
 import type * as sequence from "../sequence.js";
@@ -22,6 +23,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   http: typeof http;
+  meta: typeof meta;
   quo: typeof quo;
   rendezvous: typeof rendezvous;
   sequence: typeof sequence;
