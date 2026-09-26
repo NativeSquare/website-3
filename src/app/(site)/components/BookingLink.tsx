@@ -3,6 +3,7 @@
 import type { AnchorHTMLAttributes, MouseEvent, ReactNode } from "react";
 import posthog from "posthog-js";
 import { lireVisiteId } from "../../lib/visite";
+import { suivreMeta } from "../../lib/meta";
 
 export const BOOKING_URL =
   "https://cal.com/nativesquare-office-orlgbk/discovery-call";
@@ -42,6 +43,9 @@ const BookingLink: React.FC<BookingLinkProps> = ({
 }) => {
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     window.lintrk?.("track", { conversion_id: LINKEDIN_CONVERSION_ID });
+    /* Meta : le clic vers le calendrier est l'evenement standard « Lead ».
+       La reservation confirmee (Schedule) part du serveur, pas d'ici. */
+    suivreMeta("Lead", { content_name: source });
     onClick?.(event);
 
     const visiteId = lireVisiteId();

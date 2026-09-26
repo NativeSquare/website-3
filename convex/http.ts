@@ -107,6 +107,17 @@ http.route({
        creneau repart avec sa propre sequence, posee par la page interne. */
     if (evenement.triggerEvent !== "BOOKING_CREATED") {
       await ctx.runMutation(internal.sequence.annuler, { calUid: p.uid });
+    } else {
+      /* La reservation part a Meta (API Conversions) hors de la reponse au
+         webhook : Cal.com n'attend pas Meta, et un echec Meta ne touche pas
+         le rendez-vous. Sans identifiant ni token dans l'environnement,
+         l'action ne fait rien. */
+      await ctx.scheduler.runAfter(0, internal.meta.schedule, {
+        calUid: p.uid,
+        visiteId: valeurReponse(p.responses?.visite),
+        email: invite?.email,
+        nom: invite?.name,
+      });
     }
 
     return new Response("ok", { status: 200 });

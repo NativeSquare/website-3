@@ -230,6 +230,7 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                     <li><strong className="text-gray-5">Essential Cookies:</strong> Necessary for the website to function correctly.</li>
                     <li><strong className="text-gray-5">Analytics Cookies:</strong> Help us understand how visitors interact with the site.</li>
                     <li><strong className="text-gray-5">Functional Cookies:</strong> Remember your preferences and settings.</li>
+                    <li><strong className="text-gray-5">Advertising Cookies:</strong> Set by the Meta Pixel and the LinkedIn Insight Tag to measure whether our ads led to a booking and to show relevant ads on those platforms. Meta&apos;s cookies are used on the English version of the site only.</li>
                   </ul>
 
                   <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">3. Managing Cookies</h3>

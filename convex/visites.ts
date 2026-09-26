@@ -1,4 +1,4 @@
-import { mutation, query } from "./_generated/server";
+import { internalQuery, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
 /**
@@ -36,6 +36,9 @@ const visite = v.object({
   utmContent: v.optional(v.string()),
   utmTerm: v.optional(v.string()),
   parametres: v.optional(v.record(v.string(), v.string())),
+  fbp: v.optional(v.string()),
+  fbc: v.optional(v.string()),
+  agent: v.optional(v.string()),
 });
 
 export const enregistrer = mutation({
@@ -56,6 +59,46 @@ export const enregistrer = mutation({
 
     await ctx.db.insert("visites", args.visite);
     return null;
+  },
+});
+
+/**
+ * Le pixel Meta pose ses cookies quelques instants apres la page ; la route
+ * `/api/visite/meta` les accroche ici a la visite en cours. Une visite
+ * inconnue est ignoree sans bruit.
+ */
+export const attacherMeta = mutation({
+  args: {
+    secret: v.string(),
+    visiteId: v.string(),
+    fbp: v.optional(v.string()),
+    fbc: v.optional(v.string()),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    verifierSecret(args.secret);
+    const existante = await ctx.db
+      .query("visites")
+      .withIndex("by_visiteId", (q) => q.eq("visiteId", args.visiteId))
+      .unique();
+    if (!existante) return null;
+
+    const patch: { fbp?: string; fbc?: string } = {};
+    if (args.fbp && !existante.fbp) patch.fbp = args.fbp;
+    if (args.fbc && !existante.fbc) patch.fbc = args.fbc;
+    if (Object.keys(patch).length) await ctx.db.patch(existante._id, patch);
+    return null;
+  },
+});
+
+/* Pour l'API Conversions (convex/meta.ts) : la visite d'ou vient un rendez-vous. */
+export const parVisiteId = internalQuery({
+  args: { visiteId: v.string() },
+  handler: async (ctx, { visiteId }) => {
+    return await ctx.db
+      .query("visites")
+      .withIndex("by_visiteId", (q) => q.eq("visiteId", visiteId))
+      .unique();
   },
 });
 

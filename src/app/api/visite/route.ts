@@ -104,6 +104,12 @@ export async function POST(requete: Request) {
         chemin: (corps.chemin ?? "/").slice(0, 500),
         referent: propre(corps.referent),
         pays: enTetes.get("x-vercel-ip-country") ?? undefined,
+        /* Pour l'API Conversions Meta : le navigateur, et les cookies du
+           pixel s'il est deja passe par la (visiteur qui revient). A la
+           premiere visite, c'est /api/visite/meta qui les apporte. */
+        agent: enTetes.get("user-agent")?.slice(0, 300) ?? undefined,
+        fbp: boite.get("_fbp")?.value,
+        fbc: boite.get("_fbc")?.value,
         ...attribution,
         ...(Object.keys(parametres).length ? { parametres } : {}),
       },

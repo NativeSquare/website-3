@@ -40,6 +40,13 @@ export default defineSchema({
     chemin: v.string(),
     referent: v.optional(v.string()),
     pays: v.optional(v.string()),
+
+    /* Ce que le pixel Meta laisse dans le navigateur (_fbp toujours, _fbc si
+       la visite vient d'une pub) et le navigateur lui-meme : les indices que
+       l'API Conversions renvoie a Meta avec la reservation. */
+    fbp: v.optional(v.string()),
+    fbc: v.optional(v.string()),
+    agent: v.optional(v.string()),
   })
     .index("by_visiteId", ["visiteId"])
     .index("by_visiteurId", ["visiteurId"])
