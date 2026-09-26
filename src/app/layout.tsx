@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   title: "NativeSquare — AI systems for service businesses",
   description:
     "Speed-to-lead calling, automatic follow-ups, AI receptionists and custom tools, wired into what you already use.",
+  /* Vérification du domaine nativesquare.fr dans le portefeuille Meta
+     (Brand safety → Domains, 26/09/2026). Rendu en <meta name="facebook-domain-verification">. */
+  verification: {
+    other: { "facebook-domain-verification": "n0s1590h1oerzyfsib8ndbc1dsu9rc" },
+  },
 };
 
 export default async function RootLayout({
