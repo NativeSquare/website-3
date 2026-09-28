@@ -48,7 +48,10 @@ const SCRIPT: Record<string, { preuve?: string; question: string }> = {
     preuve: "I was reading your reviews and a couple of them mention waiting on an estimate.",
     question: "After you send a quote, what does your follow-up process look like?",
   },
-  "Leads payés": { question: "Do you guys run any ads, Facebook or Google? Are you working with an agency for that?" },
+  "Leads payés": {
+    preuve: "I filled out a form like two days ago and I didn't really get a response.",
+    question: "What's your follow-up process when a lead comes in?",
+  },
   Temps: {
     question: "If you mapped out your week, how much time are you spending on admin, scheduling, and follow-up versus actually running your business?",
   },
