@@ -25,8 +25,16 @@ type Contact = {
 
 type Appel = { n: number; dernier: { quand: string; statut: string; duree: number; direction: string } | null };
 
-/* Les statuts qui sortent une fiche de la liste du jour. */
+/* Les statuts qui grisent une fiche : elle reste a sa place dans la liste,
+   avec son numero, pour qu'Alexandre ne perde pas le compte ; le badge plein
+   dit qu'on ne la rappelle pas. Un bouton permet de les masquer. */
 const SORTIS = new Set(["Refus", "Booké"]);
+
+/* Le nombre d'avis Google, pour trier ; inconnu = a la fin. */
+function nbAvis(c: Contact): number {
+  const n = parseInt(c.avis, 10);
+  return Number.isFinite(n) ? n : 9999;
+}
 
 /* La phrase du script que l'accroche rejoint, porte par porte : ce sont les
    mots de l'arbre, pour qu'Alexandre enchaine sans chercher. La preuve du
@@ -117,7 +125,7 @@ export default function Campagne() {
   const [chargement, setChargement] = useState(true);
   const [chargementAppels, setChargementAppels] = useState(false);
   const [erreur, setErreur] = useState("");
-  const [voirTout, setVoirTout] = useState(false);
+  const [masquerSortis, setMasquerSortis] = useState(false);
   const [porteFiltre, setPorteFiltre] = useState("");
   const [enCours, setEnCours] = useState<string | null>(null);
   const [brouillons, setBrouillons] = useState<Record<string, string>>({});
@@ -217,15 +225,21 @@ export default function Campagne() {
   /* Les listes, la plus recente d'abord ; c'est elle qu'on ouvre. */
   const listes = useMemo(() => [...new Set(contacts.map(listeDe))].sort().reverse(), [contacts]);
   const listeActive = listeFiltre || listes[0] || "";
-  const dansListe = useMemo(() => contacts.filter((c) => listeDe(c) === listeActive), [contacts, listeActive]);
+  /* Tries par nombre d'avis croissant : hypothese d'Alexandre (28/09), au-dela
+     d'environ 25 avis le patron ne decroche plus lui-meme. L'ordre sert a le verifier. */
+  const dansListe = useMemo(
+    () => contacts.filter((c) => listeDe(c) === listeActive).sort((a, b) => nbAvis(a) - nbAvis(b)),
+    [contacts, listeActive],
+  );
   const portes = useMemo(() => [...new Set(dansListe.map((c) => c.porte).filter(Boolean))], [dansListe]);
   const visibles = useMemo(
     () =>
       dansListe.filter(
-        (c) => (voirTout || !SORTIS.has(c.statut)) && (!porteFiltre || c.porte === porteFiltre),
+        (c) => (!masquerSortis || !SORTIS.has(c.statut)) && (!porteFiltre || c.porte === porteFiltre),
       ),
-    [dansListe, voirTout, porteFiltre],
+    [dansListe, masquerSortis, porteFiltre],
   );
+  const aAppeler = visibles.filter((c) => !SORTIS.has(c.statut)).length;
   const compte = (s: string) => dansListe.filter((c) => c.statut === s).length;
   const appelesAujourdhui = dansListe.filter((c) => {
     const a = appels[c.telephone];
@@ -241,7 +255,7 @@ export default function Campagne() {
           <div className="pill">Pendant l&apos;appel</div>
           <h1>Campagne</h1>
           <p className="cp-sous">
-            {dansListe.length} fiches · {visibles.length} à appeler
+            {dansListe.length} fiches · {aAppeler} à appeler
             {" · "}
             <b>{appelesAujourdhui}</b> appelés aujourd&apos;hui
             {compte("Booké") ? ` · ${compte("Booké")} bookés` : ""}
@@ -271,8 +285,8 @@ export default function Campagne() {
               {p}
             </button>
           ))}
-          <button className={voirTout ? "on" : ""} onClick={() => setVoirTout((v) => !v)}>
-            {voirTout ? "Masquer refus et bookés" : "Voir tout"}
+          <button className={masquerSortis ? "on" : ""} onClick={() => setMasquerSortis((v) => !v)}>
+            {masquerSortis ? "Voir refus et bookés" : "Masquer refus et bookés"}
           </button>
           <button onClick={() => void charger()} disabled={chargement}>
             {chargement ? "Chargement…" : chargementAppels ? "Historique…" : "Actualiser"}
