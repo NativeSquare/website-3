@@ -156,6 +156,67 @@ export const appels = action({
   },
 });
 
+/* Les enregistrements des appels d'un numero, depuis la ligne de la campagne :
+   chaque appel avec ses fichiers audio (URL signees par Quo, valables un
+   temps). Sert a sortir les appels ou Alexandre a eu le patron, pour les
+   reecouter et les envoyer a Angelo. */
+export const enregistrements = action({
+  args: { secret: v.string(), numeros: v.array(v.string()) },
+  handler: async (_ctx, args) => {
+    verifier(args.secret);
+    const lignes = await quo("/phone-numbers");
+    const voulu = process.env.QUO_NUMERO;
+    const ligne = (lignes.data ?? []).find((l: any) => l.number === voulu) ?? lignes.data?.[0];
+    if (!ligne) throw new Error("aucune ligne Quo");
+
+    type Audio = { id: string; url: string; duree: number; type: string; statut: string };
+    type Appel = { id: string; quand: string; statut: string; duree: number; direction: string; audios: Audio[] };
+    const resultat: Record<string, Appel[]> = {};
+    const numeros = [...new Set(args.numeros.filter(Boolean))];
+    for (let i = 0; i < numeros.length; i += 4) {
+      const paquet = numeros.slice(i, i + 4);
+      await Promise.all(
+        paquet.map(async (numero) => {
+          try {
+            const p = new URLSearchParams({ phoneNumberId: ligne.id, participants: numero, maxResults: "10" });
+            const r = await quo("/calls?" + p.toString());
+            const appels: Appel[] = [];
+            for (const a of (r.data ?? []) as any[]) {
+              let audios: Audio[] = [];
+              try {
+                const e = await quo("/call-recordings/" + a.id);
+                audios = ((e.data ?? []) as any[]).map((x) => ({
+                  id: String(x.id ?? ""),
+                  url: String(x.url ?? ""),
+                  duree: Number(x.duration ?? 0),
+                  type: String(x.type ?? ""),
+                  statut: String(x.status ?? ""),
+                }));
+              } catch (err) {
+                console.error("enregistrement", a.id, String(err).slice(0, 200));
+              }
+              appels.push({
+                id: String(a.id),
+                quand: String(a.createdAt ?? ""),
+                statut: String(a.status ?? ""),
+                duree: Number(a.duration ?? 0),
+                direction: String(a.direction ?? ""),
+                audios,
+              });
+            }
+            resultat[numero] = appels;
+          } catch (e) {
+            resultat[numero] = [];
+            console.error("appels", numero, String(e).slice(0, 200));
+          }
+        }),
+      );
+      if (i + 4 < numeros.length) await new Promise((r) => setTimeout(r, 1000));
+    }
+    return resultat;
+  },
+});
+
 /* Creer des contacts de campagne. C'est par ici que les prochaines listes
    entrent dans Quo, sans passer par l'importeur CSV. Les proprietes sont
    nommees par leur nom Quo ; celles qui n'existent pas sont ignorees. */
