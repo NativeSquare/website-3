@@ -301,6 +301,7 @@ export const modifier = action({
     modifications: v.array(
       v.object({
         id: v.string(),
+        prenom: v.optional(v.string()),
         proprietes: v.record(v.string(), v.union(v.string(), v.number(), v.array(v.string()))),
       }),
     ),
@@ -331,7 +332,7 @@ export const modifier = action({
           if (i >= 0) custom[i] = { key: champ.key, value: v2 };
           else custom.push({ key: champ.key, value: v2 });
         }
-        await quo("/contacts/" + encodeURIComponent(m.id), { method: "PATCH", body: JSON.stringify(corpsDe(actuel, custom)) });
+        await quo("/contacts/" + encodeURIComponent(m.id), { method: "PATCH", body: JSON.stringify(corpsDe(actuel, custom, m.prenom)) });
         faits.push(m.id);
       } catch (e) {
         echecs.push(m.id + " : " + String(e).slice(0, 160));
