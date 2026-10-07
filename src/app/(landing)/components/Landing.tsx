@@ -12,7 +12,7 @@ import type { Contenu, Porte } from "../contenu";
  */
 
 function Etapes({ c, porte }: { c: Contenu; porte?: Porte }) {
-  const accroche = porte ? c.portes[porte] : c.generique;
+  const accroche = porte && c.portes ? c.portes[porte] : c.generique;
   return (
     <section className="ld-section ld-alt">
       <div className="ld-wrap">
@@ -34,6 +34,7 @@ function Etapes({ c, porte }: { c: Contenu; porte?: Porte }) {
 }
 
 function Demo({ c }: { c: Contenu }) {
+  if (!c.demo) return null;
   return (
     <section className="ld-section">
       <div className="ld-wrap ld-demo">
@@ -77,7 +78,7 @@ export default function Landing({
   porte?: Porte;
   source: string;
 }) {
-  const accroche = porte ? c.portes[porte] : c.generique;
+  const accroche = porte && c.portes ? c.portes[porte] : c.generique;
 
   return (
     <>

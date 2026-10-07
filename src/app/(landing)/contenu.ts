@@ -10,7 +10,7 @@
  */
 
 export type Porte = "telephone" | "leads" | "estimates";
-export type Niche = "windows";
+export type Niche = "windows" | "hvac";
 
 export const PORTES: Porte[] = ["telephone", "leads", "estimates"];
 
@@ -30,9 +30,11 @@ export type Contenu = {
   cta: string;
   note: string;
   generique: Accroche;
-  portes: Record<Porte, Accroche>;
+  /* Un titre par porte de l'arbre d'appel : seulement les landings des poseurs de fenetres. */
+  portes?: Record<Porte, Accroche>;
   etapesTitre: string;
-  demo: { h2: string; p: string };
+  /* La demo Emma (reception IA) : absente des landings qui ne la vendent pas. */
+  demo?: { h2: string; p: string };
   reserver: { h2: string; p: string };
   faq: { q: string; a: string }[];
 };
@@ -102,6 +104,49 @@ export const contenu: Record<Niche, Contenu> = {
       {
         q: "What happens on the call?",
         a: "Thirty minutes on video, free. You tell me how calls, leads and estimates get lost today, I show you the system running on screen, and you decide if it's worth a second call.",
+      },
+    ],
+  },
+
+  /* La page d'arrivee des pubs video HVAC (juillet-octobre 2026) : l'ecran de
+     fin du formulaire instantane renvoie ici. Elle suit la video, pas plus :
+     la meme promesse, les memes trois refus, le meme geste (reserver un
+     appel). Aucune affirmation de resultats passes, la video seule les porte. */
+  hvac: {
+    kicker: "For HVAC company owners",
+    metaTitle: "50 exclusive HVAC leads a month · NativeSquare",
+    cta: "Pick a time",
+    note: "Thirty minutes on video. Free.",
+    generique: {
+      h1: "50 or more exclusive leads a month, or you don't pay a cent.",
+      lead: "No waiting for a heat wave. No shared leads. No chasing quotes at 8 p.m. Pick a time and we'll go through it together.",
+      etapes: [
+        { h3: "You drop in your info", p: "A short form on Facebook. Thirty seconds." },
+        { h3: "You pick a time", p: "Thirty minutes on video. The calendar is right here." },
+        { h3: "We go through your numbers", p: "You tell me how your leads come in today. I show you how the system works and you decide." },
+      ],
+    },
+    etapesTitre: "What happens next",
+    reserver: {
+      h2: "Pick a time.",
+      p: "Thirty minutes on video. You tell me where your leads come from today, I show you how the system works, you decide.",
+    },
+    faq: [
+      {
+        q: "What happens on the call?",
+        a: "Thirty minutes on video, free. You tell me where your leads come from today, I show you how the system works, and you decide if it's a fit.",
+      },
+      {
+        q: "Are the leads really exclusive?",
+        a: "That's the promise. Every lead goes to your company only and is never shared with another contractor.",
+      },
+      {
+        q: "What if you don't deliver?",
+        a: "If we don't deliver 50 or more exclusive leads a month, you don't pay. We go through the details on the call.",
+      },
+      {
+        q: "What does it cost?",
+        a: "It depends on what we build for you. We go through your numbers on the call.",
       },
     ],
   },
