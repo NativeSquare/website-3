@@ -30,7 +30,35 @@ function detectLocale(request: NextRequest): "en" | "fr" {
   return "en";
 }
 
+/* Deux domaines, un site. Le .ai est le domaine americain (toujours anglais) ;
+   le .fr garde les visiteurs francais. Un visiteur anglais arrive donc toujours
+   sur le .ai, avec son chemin et ses parametres (utm, fbclid) intacts.
+   Restent sur le .fr meme pour un visiteur anglais :
+     - /interne : la console d'Alexandre ;
+     - /before-our-call : les liens deja envoyes par e-mail et SMS ;
+     - /legal : l'adresse de la politique de confidentialite donnee a l'operateur
+       telephonique pour l'enregistrement des SMS. */
+const HOTE_US = "nativesquare.ai";
+const HOTES_FR = new Set(["nativesquare.fr", "www.nativesquare.fr"]);
+const RESTENT_SUR_FR = ["/interne", "/before-our-call", "/legal"];
+
+function versLeDomaineUS(request: NextRequest): NextResponse | null {
+  const host = (request.headers.get("host") ?? "").toLowerCase();
+  const { pathname, search } = request.nextUrl;
+  const cible = new URL(pathname + search, `https://${HOTE_US}`);
+
+  /* www.nativesquare.ai -> nativesquare.ai */
+  if (host === `www.${HOTE_US}`) return NextResponse.redirect(cible, 308);
+
+  if (!HOTES_FR.has(host) || detectLocale(request) !== "en") return null;
+  if (RESTENT_SUR_FR.some((p) => pathname === p || pathname.startsWith(p + "/"))) return null;
+  return NextResponse.redirect(cible, 308);
+}
+
 export function proxy(request: NextRequest) {
+  const redirection = versLeDomaineUS(request);
+  if (redirection) return redirection;
+
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set(NS_LOCALE_HEADER, detectLocale(request));
 
