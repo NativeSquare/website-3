@@ -16,6 +16,11 @@ function detectLocale(request: NextRequest): "en" | "fr" {
   const force = request.nextUrl.searchParams.get("lang");
   if (force === "en" || force === "fr") return force;
 
+  /* nativesquare.ai : le domaine americain, toujours en anglais, quel que soit
+     le pays ou la langue du navigateur. Le .fr garde la negociation. */
+  const host = (request.headers.get("host") ?? "").toLowerCase();
+  if (host === "nativesquare.ai" || host.endsWith(".nativesquare.ai")) return "en";
+
   if (request.headers.get("x-vercel-ip-country") === "FR") return "fr";
 
   const acceptLanguage = request.headers.get("accept-language") ?? "";
