@@ -164,24 +164,36 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                   <h2 className="font-title fs-32 font-medium leading-tight tracking-tight mb-8 pb-4" style={{ borderBottom: "1px solid var(--gray-90)" }}>
                     Privacy Policy (GDPR)
                   </h2>
-                  <p className="text-[13px] tracking-tight text-gray-40 italic mb-8 uppercase">Last Updated: September 2026</p>
+                  <p className="text-[13px] tracking-tight text-gray-40 italic mb-8 uppercase">Last Updated: October 2026</p>
 
                   <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">1. Data Controller</h3>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30">
                     NativeSquare SAS is the controller of the personal data collected through this website. We are committed to protecting your privacy in accordance with the General Data Protection Regulation (GDPR).
                   </p>
 
-                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">2. Data Collection Purpose</h3>
+                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">2. Data We Collect</h3>
+                  <p className="fs-15 leading-relaxed tracking-tight text-gray-30">
+                    We collect the information you give us: your name, phone number, email address, the answers you give in a form (for example your company&apos;s monthly revenue range) and the details of any call you book with us. When you send your details through a Facebook or Instagram lead form, Meta passes them to us. We also collect technical data about your visit (pages viewed, device and browser, approximate location) through cookies and similar tools, as described in our Cookie Policy.
+                  </p>
+
+                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">3. Data Collection Purpose</h3>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30 mb-3">We collect data for the following purposes:</p>
                   <ul className="list-disc pl-6 space-y-2 fs-15 leading-relaxed tracking-tight text-gray-30">
                     <li>Responding to inquiries via our contact forms.</li>
+                    <li>Contacting you by phone or email about the offer you asked about, including when you send your details through a Facebook or Instagram lead form.</li>
                     <li>Scheduling strategy calls and managing appointments.</li>
                     <li>Improving website performance and user experience through analytics.</li>
+                    <li>Measuring whether our ads lead to bookings, with the Meta Pixel and the LinkedIn Insight Tag (see our Cookie Policy).</li>
                     <li>Sending newsletters or updates (only with explicit consent).</li>
-                    <li>Sending text messages about a call you have scheduled with us, only if you agreed to receive them (see section 4).</li>
+                    <li>Sending text messages about a call you have scheduled with us, only if you agreed to receive them (see section 6).</li>
                   </ul>
 
-                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">3. Your Rights</h3>
+                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">4. Who We Share Your Data With</h3>
+                  <p className="fs-15 leading-relaxed tracking-tight text-gray-30">
+                    We do not sell your personal data. We share it only with the service providers that help us run our business, for that purpose alone: Meta (lead forms and ad measurement), Google (email and calendar), Cal.com (scheduling), and our hosting, database, email, analytics and telephone providers. These providers process data on our instructions. Some of them are located outside the European Economic Area, notably in the United States.
+                  </p>
+
+                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">5. Your Rights</h3>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30 mb-3">Under the GDPR, you have the following rights:</p>
                   <ul className="list-disc pl-6 space-y-2 fs-15 leading-relaxed tracking-tight text-gray-30">
                     <li><strong className="text-gray-5">Access:</strong> The right to request copies of your personal data.</li>
@@ -193,7 +205,7 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                     To exercise these rights, please contact us at <strong className="text-gray-5">office@nativesquare.fr</strong>.
                   </p>
 
-                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">4. Text Messages (SMS)</h3>
+                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">6. Text Messages (SMS)</h3>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30 mb-3">
                     We only send text messages to people who have agreed to receive them, for example by saying yes during a phone call with us, before any message is sent. We use them for confirmations, reminders and follow-up about a call you have scheduled with us.
                   </p>
@@ -206,7 +218,7 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                     <strong className="text-gray-5">No mobile information will be shared with third parties or affiliates for marketing or promotional purposes.</strong> Text messaging opt-in data and consent are never shared with or sold to any third party. Your phone number is only passed to the provider that delivers our messages, and only to send the messages you agreed to receive.
                   </p>
 
-                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">5. Data Retention</h3>
+                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">7. Data Retention</h3>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30">
                     We retain personal data only for as long as necessary to fulfill the purposes it was collected for, including for the purposes of satisfying any legal, accounting, or reporting requirements.
                   </p>
