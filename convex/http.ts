@@ -58,6 +58,27 @@ function valeurReponse(reponse: unknown): string | undefined {
   return undefined;
 }
 
+/* Le telephone saisi dans le formulaire, au format que Quo attend (+1...). Un
+   numero a dix chiffres est americain. */
+function telephoneInternational(saisi: string): string | undefined {
+  const chiffres = saisi.replace(/\D/g, "");
+  if (saisi.trim().startsWith("+") && chiffres.length >= 10) return `+${chiffres}`;
+  if (chiffres.length === 10) return `+1${chiffres}`;
+  if (chiffres.length === 11 && chiffres.startsWith("1")) return `+${chiffres}`;
+  return undefined;
+}
+
+/* Le lien de visio, quand Cal.com le donne : il est dans les metadonnees, dans
+   les donnees de visio, ou dans le lieu de l'evenement. */
+function lienVisio(p: {
+  metadata?: { videoCallUrl?: string };
+  videoCallData?: { url?: string };
+  location?: string;
+}): string | undefined {
+  const candidats = [p.metadata?.videoCallUrl, p.videoCallData?.url, p.location];
+  return candidats.find((c) => typeof c === "string" && c.startsWith("http"));
+}
+
 const http = httpRouter();
 
 http.route({
@@ -74,11 +95,15 @@ http.route({
       triggerEvent?: string;
       payload?: {
         uid?: string;
+        rescheduleUid?: string;
         title?: string;
         startTime?: string;
         status?: string;
-        attendees?: Array<{ name?: string; email?: string }>;
+        attendees?: Array<{ name?: string; email?: string; timeZone?: string }>;
         responses?: Record<string, unknown>;
+        metadata?: { videoCallUrl?: string };
+        videoCallData?: { url?: string };
+        location?: string;
       };
     };
 
@@ -103,27 +128,55 @@ http.route({
       statut: p.status ?? evenement.triggerEvent,
     });
 
-    /* Un rendez-vous annule ou deplace ne doit plus rien envoyer. Le nouveau
-       creneau repart avec sa propre sequence, posee par la page interne. */
-    if (evenement.triggerEvent !== "BOOKING_CREATED") {
+    const cree = evenement.triggerEvent === "BOOKING_CREATED";
+    const reprogramme = evenement.triggerEvent === "BOOKING_RESCHEDULED";
+
+    /* Un rendez-vous annule ou deplace ne doit plus rien envoyer. Cal.com donne
+       a un rendez-vous deplace un nouvel identifiant et garde l'ancien dans
+       rescheduleUid : c'est l'ancienne sequence qu'il faut arreter. */
+    if (!cree) {
       await ctx.runMutation(internal.sequence.annuler, { calUid: p.uid });
-    } else {
+      if (p.rescheduleUid) {
+        await ctx.runMutation(internal.sequence.annuler, { calUid: p.rescheduleUid });
+      }
+    }
+
+    if (cree || reprogramme) {
       /* Le lead du formulaire passe en « reserve ». Un echec ici ne doit pas
          faire rejouer le webhook : le rendez-vous est deja enregistre. */
       try {
-        await ctx.runMutation(internal.leads.marquerReserve, {
+        const lead = await ctx.runMutation(internal.leads.marquerReserve, {
           email: invite?.email,
           calUid: p.uid,
           debut: p.startTime,
         });
+        /* Les reservations du tunnel de la landing recoivent la sequence
+           (e-mails, depuis Resend) toute seule, y compris apres un
+           deplacement. Celles qui ne viennent pas du formulaire (appels a
+           froid, page interne) gardent leur depart manuel, avec la phrase
+           notee pendant l'appel. */
+        if (lead && invite?.email && p.startTime) {
+          await ctx.runMutation(internal.sequence.demarrerAuto, {
+            calUid: p.uid,
+            prenom: lead.prenom,
+            nom: invite.name,
+            email: invite.email,
+            telephone: telephoneInternational(lead.telephone),
+            fuseau: invite.timeZone ?? "America/New_York",
+            debut: p.startTime,
+            lienVisio: lienVisio(p),
+          });
+        }
       } catch (erreur) {
-        console.error("[leads] marquerReserve a echoue", erreur);
+        console.error("[leads] suite de la reservation a echoue", erreur);
       }
+    }
 
+    if (cree) {
       /* La reservation part a Meta (API Conversions) hors de la reponse au
          webhook : Cal.com n'attend pas Meta, et un echec Meta ne touche pas
          le rendez-vous. Sans identifiant ni token dans l'environnement,
-         l'action ne fait rien. */
+         l'action ne fait rien. Un deplacement ne compte pas une seconde fois. */
       await ctx.scheduler.runAfter(0, internal.meta.schedule, {
         calUid: p.uid,
         visiteId: valeurReponse(p.responses?.visite),

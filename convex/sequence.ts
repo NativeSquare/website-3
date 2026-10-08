@@ -6,6 +6,7 @@ import {
   mutation,
   query,
 } from "./_generated/server";
+import type { MutationCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
 import { enveloppe } from "../src/lib/sequence-email";
@@ -57,6 +58,86 @@ export const envoisRecents = query({
 
 /* --------------------------------------------------------------- demarrage */
 
+type Donnees = {
+  calUid: string;
+  prenom: string;
+  nom?: string;
+  email: string;
+  telephone?: string;
+  entreprise?: string;
+  note?: string;
+  fuseau: string;
+  debut: string;
+  lienVisio?: string;
+};
+
+/**
+ * Pose les etapes de la sequence dans le planificateur. Commun au depart
+ * manuel (page interne) et au depart automatique (reservation du tunnel de la
+ * landing). `avecSms` : les textos ne partent que si on le dit.
+ */
+async function planifier(
+  ctx: MutationCtx,
+  donnees: Donnees,
+  avecSms: boolean,
+): Promise<{ etapes: string[] }> {
+  /* Une reservation rejouee ne doit pas envoyer deux fois. */
+  const existante = await ctx.db
+    .query("sequences")
+    .withIndex("by_calUid", (q) => q.eq("calUid", donnees.calUid))
+    .unique();
+  if (existante && !existante.annulee) {
+    return { etapes: [] };
+  }
+
+  const debut = new Date(donnees.debut).getTime();
+  const maintenant = Date.now();
+  const milieu = maintenant + (debut - maintenant) / 2;
+
+  /* Chaque etape a son moment. Une etape deja depassee est simplement
+     sautee : un rendez-vous cale dans l'heure ne recoit que l'immediat. */
+  const plan: Array<{ etape: Etape; quand: number }> = [
+    /* Trois minutes apres, pour ne pas arriver dans la meme seconde que la
+       confirmation de Cal.com. */
+    { etape: "email1", quand: maintenant + 3 * 60 * 1000 },
+    { etape: "sms1", quand: maintenant },
+    { etape: "email2", quand: milieu },
+    { etape: "sms2", quand: milieu },
+    { etape: "email3", quand: debut - TRENTE_MIN },
+    { etape: "sms3", quand: debut - TRENTE_MIN },
+  ];
+
+  const taches: Id<"_scheduled_functions">[] = [];
+  const etapes: string[] = [];
+  for (const { etape, quand } of plan) {
+    if (!avecSms && etape.startsWith("sms")) continue;
+    if (quand > maintenant + MARGE) {
+      taches.push(
+        await ctx.scheduler.runAt(quand, internal.sequence.envoyer, {
+          calUid: donnees.calUid,
+          etape,
+        }),
+      );
+      etapes.push(etape);
+    } else if (quand <= maintenant + MARGE && quand >= maintenant - MARGE) {
+      taches.push(
+        await ctx.scheduler.runAfter(0, internal.sequence.envoyer, {
+          calUid: donnees.calUid,
+          etape,
+        }),
+      );
+      etapes.push(etape);
+    }
+  }
+
+  if (existante) {
+    await ctx.db.patch("sequences", existante._id, { ...donnees, taches, annulee: false });
+  } else {
+    await ctx.db.insert("sequences", { ...donnees, taches, annulee: false });
+  }
+  return { etapes };
+}
+
 export const demarrer = mutation({
   args: {
     secret: v.string(),
@@ -78,73 +159,45 @@ export const demarrer = mutation({
     }
 
     /* Le secret ne va pas en base : on recopie champ par champ. */
-    const donnees = {
-      calUid: args.calUid,
-      prenom: args.prenom,
-      nom: args.nom,
-      email: args.email,
-      telephone: args.telephone,
-      entreprise: args.entreprise,
-      note: args.note,
-      fuseau: args.fuseau,
-      debut: args.debut,
-      lienVisio: args.lienVisio,
-    };
+    return await planifier(
+      ctx,
+      {
+        calUid: args.calUid,
+        prenom: args.prenom,
+        nom: args.nom,
+        email: args.email,
+        telephone: args.telephone,
+        entreprise: args.entreprise,
+        note: args.note,
+        fuseau: args.fuseau,
+        debut: args.debut,
+        lienVisio: args.lienVisio,
+      },
+      true,
+    );
+  },
+});
 
-    /* Une reservation rejouee ne doit pas envoyer deux fois. */
-    const existante = await ctx.db
-      .query("sequences")
-      .withIndex("by_calUid", (q) => q.eq("calUid", args.calUid))
-      .unique();
-    if (existante && !existante.annulee) {
-      return { etapes: [] };
-    }
-
-    const debut = new Date(args.debut).getTime();
-    const maintenant = Date.now();
-    const milieu = maintenant + (debut - maintenant) / 2;
-
-    /* Chaque etape a son moment. Une etape deja depassee est simplement
-       sautee : un rendez-vous cale dans l'heure ne recoit que l'immediat. */
-    const plan: Array<{ etape: Etape; quand: number }> = [
-      /* Dix minutes apres, pour ne pas arriver dans la meme seconde que la
-         confirmation de Cal.com. */
-      { etape: "email1", quand: maintenant + 10 * 60 * 1000 },
-      { etape: "sms1", quand: maintenant },
-      { etape: "email2", quand: milieu },
-      { etape: "sms2", quand: milieu },
-      { etape: "email3", quand: debut - TRENTE_MIN },
-      { etape: "sms3", quand: debut - TRENTE_MIN },
-    ];
-
-    const taches: Id<"_scheduled_functions">[] = [];
-    const etapes: string[] = [];
-    for (const { etape, quand } of plan) {
-      if (quand > maintenant + MARGE) {
-        taches.push(
-          await ctx.scheduler.runAt(quand, internal.sequence.envoyer, {
-            calUid: args.calUid,
-            etape,
-          }),
-        );
-        etapes.push(etape);
-      } else if (quand <= maintenant + MARGE && quand >= maintenant - MARGE) {
-        taches.push(
-          await ctx.scheduler.runAfter(0, internal.sequence.envoyer, {
-            calUid: args.calUid,
-            etape,
-          }),
-        );
-        etapes.push(etape);
-      }
-    }
-
-    if (existante) {
-      await ctx.db.patch(existante._id, { ...donnees, taches, annulee: false });
-    } else {
-      await ctx.db.insert("sequences", { ...donnees, taches, annulee: false });
-    }
-    return { etapes };
+/**
+ * Depart automatique, appele par le webhook Cal.com quand quelqu'un qui est
+ * passe par le formulaire de la landing reserve. Les e-mails partent toujours ;
+ * les textos seulement si SEQUENCE_SMS vaut « oui » dans l'environnement Convex :
+ * le formulaire ne demande pas encore l'accord pour les SMS.
+ */
+export const demarrerAuto = internalMutation({
+  args: {
+    calUid: v.string(),
+    prenom: v.string(),
+    nom: v.optional(v.string()),
+    email: v.string(),
+    telephone: v.optional(v.string()),
+    fuseau: v.string(),
+    debut: v.string(),
+    lienVisio: v.optional(v.string()),
+  },
+  returns: v.object({ etapes: v.array(v.string()) }),
+  handler: async (ctx, args) => {
+    return await planifier(ctx, args, process.env.SEQUENCE_SMS === "oui");
   },
 });
 
@@ -233,6 +286,7 @@ export const envoyer = internalAction({
                 signature: message.signature,
               })
             : undefined,
+          message.pieces,
         );
       } else {
         await envoyerSms(destinataire, message.texte);
@@ -251,7 +305,13 @@ export const envoyer = internalAction({
 });
 
 /* Resend : https://resend.com/docs/api-reference/emails/send-email */
-async function envoyerEmail(a: string, objet: string, texte: string, html?: string) {
+async function envoyerEmail(
+  a: string,
+  objet: string,
+  texte: string,
+  html?: string,
+  pieces?: { filename: string; url: string }[],
+) {
   const cle = process.env.RESEND_API_KEY;
   const expediteur = process.env.EXPEDITEUR_EMAIL;
   if (!cle || !expediteur) throw new Error("RESEND_API_KEY ou EXPEDITEUR_EMAIL absent");
@@ -265,6 +325,9 @@ async function envoyerEmail(a: string, objet: string, texte: string, html?: stri
       subject: objet,
       text: texte,
       ...(html ? { html } : {}),
+      ...(pieces?.length
+        ? { attachments: pieces.map((p) => ({ filename: p.filename, path: p.url })) }
+        : {}),
       reply_to: process.env.REPONSE_EMAIL ?? expediteur,
     }),
   });

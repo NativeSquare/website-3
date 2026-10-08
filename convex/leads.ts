@@ -128,7 +128,12 @@ export const marquerReserve = internalMutation({
     calUid: v.string(),
     debut: v.optional(v.string()),
   },
-  returns: v.null(),
+  /* Le lead retrouve (prenom et telephone), pour demarrer la sequence de
+     messages ; null si la reservation ne vient pas du formulaire. */
+  returns: v.union(
+    v.object({ prenom: v.string(), telephone: v.string() }),
+    v.null(),
+  ),
   handler: async (ctx, args) => {
     const email = args.email?.trim().toLowerCase();
     if (!email) return null;
@@ -137,7 +142,11 @@ export const marquerReserve = internalMutation({
       .withIndex("by_email", (q) => q.eq("email", email))
       .order("desc")
       .first();
-    if (!lead || lead.calUid === args.calUid) return null;
+    if (!lead) return null;
+    const retour = { prenom: lead.prenom, telephone: lead.telephone };
+    /* Webhook rejoue : le lead est deja marque, on rend les memes donnees sans
+       renvoyer l'alerte. */
+    if (lead.calUid === args.calUid) return retour;
 
     await ctx.db.patch("leads", lead._id, { statut: "reserve", calUid: args.calUid });
     await ctx.scheduler.runAfter(0, internal.notifications.lead, {
@@ -145,7 +154,7 @@ export const marquerReserve = internalMutation({
       moment: "reserve",
       debut: args.debut,
     });
-    return null;
+    return retour;
   },
 });
 

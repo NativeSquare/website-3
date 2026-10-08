@@ -7,7 +7,7 @@
  * atlas/agence/mentorat-angelo/assets-precall/sequence-post-booking.md
  */
 
-export const PAGE_PRECALL = "https://nativesquare.fr/before-our-call";
+export const PAGE_PRECALL = "https://nativesquare.ai/before-our-call";
 
 export type Contact = {
   prenom: string;
@@ -69,8 +69,22 @@ const phraseLien = (c: Contact) =>
     ? `Here's the call link: ${c.lienVisio}`
     : "The call link is in your confirmation email.";
 
+/* Pieces jointes : les one-pagers publics du site. Resend va chercher le
+   fichier a l'adresse donnee. */
+export const ONE_PAGERS = [
+  {
+    filename: "NativeSquare-case-study-roofing.pdf",
+    url: "https://nativesquare.ai/precall/one-pager-roofing.pdf",
+  },
+  {
+    filename: "NativeSquare-case-study-septic.pdf",
+    url: "https://nativesquare.ai/precall/one-pager-septic.pdf",
+  },
+];
+
 export type Message = {
   objet?: string;
+  pieces?: { filename: string; url: string }[];
   /* La version texte, envoyee telle quelle par SMS et jointe aux emails. */
   texte: string;
   /* Les emails ont en plus leurs paragraphes et leur bouton, pour l'habillage. */
@@ -81,12 +95,12 @@ export type Message = {
 
 export const EMAIL_1 = (c: Contact): Message => {
   const paragraphes = [
-    `Hey ${c.prenom}, Alex here. You should have the confirmation for ${jour(c)} at ${heure(c.debut, c.fuseau)} in your inbox, with the call link.`,
+    `Hey ${c.prenom}, looking forward to learning more about your business on ${jour(c)} at ${heure(c.debut, c.fuseau)}. ${phraseLien(c)}`,
     "Before we talk, I put together a page that covers exactly what we do, the results we've gotten for owners like you, and a short 5 minute video that walks through everything. The owners who watch it beforehand get a lot more out of our call. You can put it on 2x speed to go faster.",
     "If anything comes up before then, just reply to this email.",
   ];
   return {
-    objet: "Before our call",
+    objet: "Quick confirmation from Alex",
     paragraphes,
     bouton: { libelle: "Watch the 5 minute video", url: PAGE_PRECALL },
     signature: "Alex\nNativeSquare",
@@ -103,17 +117,18 @@ Reply STOP to opt out.`,
 export const EMAIL_2 = (c: Contact): Message => {
   const paragraphes = [
     `Hey ${c.prenom},`,
-    `Looking forward to our call on ${jour(c)} at ${heure(c.debut, c.fuseau)}. Quick note so you know exactly what to expect.`,
+    `Looking forward to our call on ${jour(c)} at ${heure(c.debut, c.fuseau)}. I've been thinking about ${c.entreprise || "your business"} ahead of it, so here's some extra value before we talk, and a quick note on what to expect.`,
     "On the call, we'll cover:",
     [
       "- Where the money is leaking in your business right now: missed calls, slow follow-up, dead leads.",
       "- How companies like yours book more jobs without hiring anyone.",
       `- A plan for what we'd build inside ${c.entreprise || "your business"}, and what it would be worth.`,
     ].join("\n"),
-    "I also put together a one-pager that shows exactly what we did for a company like yours. It's on the same page as the video, along with what to have ready for our call.",
+    "I attached two one-pagers that show exactly what we did for other owners. The video and what to have ready for our call are on the same page.",
   ];
   return {
     objet: `What we'll cover on ${jour(c)}`,
+    pieces: ONE_PAGERS,
     paragraphes,
     bouton: { libelle: "See the video and the one-pager", url: PAGE_PRECALL },
     signature: "Talk soon,\nAlex\nNativeSquare",
