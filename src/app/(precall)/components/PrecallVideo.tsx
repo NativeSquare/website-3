@@ -10,7 +10,12 @@ declare module "react" {
       "wistia-player": React.DetailedHTMLProps<
         React.HTMLAttributes<HTMLElement>,
         HTMLElement
-      > & { "media-id"?: string; aspect?: string };
+      > & {
+        "media-id"?: string;
+        aspect?: string;
+        autoplay?: string;
+        "silent-autoplay"?: string;
+      };
     }
   }
 }
@@ -71,7 +76,18 @@ export default function PrecallVideo({ mediaId }: { mediaId: string }) {
     <>
       {/* Apercu flou fourni par Wistia tant que le lecteur n'est pas charge. */}
       <style>{`wistia-player[media-id='${mediaId}']:not(:defined){background:center / contain no-repeat url('https://fast.wistia.com/embed/medias/${mediaId}/swatch');display:block;filter:blur(5px);padding-top:56.25%}`}</style>
-      <wistia-player ref={playerRef} media-id={mediaId} aspect="1.7777777777777777" />
+      {/* Lecture automatique : avec le son quand le navigateur le permet (le
+          prospect vient de cliquer sur la page), sinon sans le son, avec le
+          bouton « cliquer pour le son » de Wistia. Les navigateurs mobiles
+          refusent souvent : il reste alors le bouton de lecture.
+          Doc : https://docs.wistia.com/docs/player-attributes-and-properties */}
+      <wistia-player
+        ref={playerRef}
+        media-id={mediaId}
+        aspect="1.7777777777777777"
+        autoplay="true"
+        silent-autoplay="allow"
+      />
     </>
   );
 }
