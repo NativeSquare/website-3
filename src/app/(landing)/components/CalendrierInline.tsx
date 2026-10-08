@@ -73,9 +73,24 @@ function chargerCal(): CalApi {
 
 type Detail = { data?: { booking?: { uid?: string }; uid?: string } };
 
-export default function CalendrierInline({ source }: { source: string }) {
+export default function CalendrierInline({
+  source,
+  ancre = "book",
+  prefill,
+  apresReservation,
+}: {
+  source: string;
+  /* L'ancre du bouton « Book a call » du menu. */
+  ancre?: string;
+  /* Le nom et l'e-mail deja donnes dans le formulaire de la page. */
+  prefill?: { name: string; email: string };
+  /* Ou envoyer la personne une fois le rendez-vous pris. */
+  apresReservation?: string;
+}) {
   const conteneur = useRef<HTMLDivElement>(null);
   const [charge, setCharge] = useState(false);
+  const prefillNom = prefill?.name;
+  const prefillEmail = prefill?.email;
 
   useEffect(() => {
     let arrete = false;
@@ -101,6 +116,8 @@ export default function CalendrierInline({ source }: { source: string }) {
              reservation : c'est ainsi que la question « visite » se preremplit. */
           visite: visiteId ?? "",
           ns_source: source,
+          ...(prefillNom ? { name: prefillNom } : {}),
+          ...(prefillEmail ? { email: prefillEmail } : {}),
         },
       });
       api("ui", {
@@ -120,6 +137,11 @@ export default function CalendrierInline({ source }: { source: string }) {
           if (uid && window.fbq) {
             window.fbq("track", "Schedule", { content_name: "discovery-call" }, { eventID: `cal-${uid}` });
           }
+          /* La page pre-appel : la video, puis la preparation de l'appel. Le
+             delai laisse partir les evenements du navigateur avant de quitter. */
+          if (apresReservation) {
+            window.setTimeout(() => window.location.assign(apresReservation), 900);
+          }
         },
       });
       setCharge(true);
@@ -130,10 +152,10 @@ export default function CalendrierInline({ source }: { source: string }) {
       arrete = true;
       minuteurs.forEach((m) => window.clearTimeout(m));
     };
-  }, [source]);
+  }, [source, prefillNom, prefillEmail, apresReservation]);
 
   return (
-    <div className="ld-cal" id="book">
+    <div className="ld-cal" id={ancre}>
       {!charge && <div className="ld-cal-vide">Loading the calendar…</div>}
       <div ref={conteneur} style={{ width: "100%", overflow: "auto" }} />
     </div>

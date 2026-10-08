@@ -108,6 +108,18 @@ http.route({
     if (evenement.triggerEvent !== "BOOKING_CREATED") {
       await ctx.runMutation(internal.sequence.annuler, { calUid: p.uid });
     } else {
+      /* Le lead du formulaire passe en « reserve ». Un echec ici ne doit pas
+         faire rejouer le webhook : le rendez-vous est deja enregistre. */
+      try {
+        await ctx.runMutation(internal.leads.marquerReserve, {
+          email: invite?.email,
+          calUid: p.uid,
+          debut: p.startTime,
+        });
+      } catch (erreur) {
+        console.error("[leads] marquerReserve a echoue", erreur);
+      }
+
       /* La reservation part a Meta (API Conversions) hors de la reponse au
          webhook : Cal.com n'attend pas Meta, et un echec Meta ne touche pas
          le rendez-vous. Sans identifiant ni token dans l'environnement,

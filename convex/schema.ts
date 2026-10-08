@@ -84,6 +84,36 @@ export default defineSchema({
     .index("by_visiteId", ["visiteId"]),
 
   /**
+   * Une ligne par personne qui remplit le formulaire de la landing. Le premier
+   * temps (prenom, telephone, e-mail) cree la ligne en « partiel » : un lead
+   * qu'on peut appeler meme s'il ne reserve jamais. Le second temps (les
+   * questions) la passe en « complet », la reservation Cal.com en « reserve ».
+   * Rattachee a sa visite, donc a la pub et au hook qui l'ont amenee.
+   */
+  leads: defineTable({
+    visiteId: v.optional(v.string()),
+    prenom: v.string(),
+    telephone: v.string(),
+    /* En minuscules : la reservation Cal.com retrouve le lead par son e-mail. */
+    email: v.string(),
+    /* Preuve que l'appel du second temps vient du meme navigateur. */
+    jeton: v.string(),
+    sourcesChantiers: v.optional(v.array(v.string())),
+    chiffreAffaires: v.optional(v.string()),
+    delai: v.optional(v.string()),
+    role: v.optional(v.string()),
+    siteWeb: v.optional(v.string()),
+    statut: v.union(
+      v.literal("partiel"),
+      v.literal("complet"),
+      v.literal("reserve"),
+    ),
+    calUid: v.optional(v.string()),
+  })
+    .index("by_email", ["email"])
+    .index("by_visiteId", ["visiteId"]),
+
+  /**
    * Une ligne par sequence post-booking en cours. Contient ce que Cal.com ne
    * sait pas : le portable, le fuseau du prospect et la phrase notee pendant
    * l'appel. Le champ taches garde les identifiants planifies, pour pouvoir

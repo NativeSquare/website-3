@@ -33,6 +33,18 @@ export type Contenu = {
   /* Un titre par porte de l'arbre d'appel : seulement les landings des poseurs de fenetres. */
   portes?: Record<Porte, Accroche>;
   etapesTitre: string;
+  /* Le formulaire en deux temps puis le calendrier, en une colonne (HVAC) :
+     absent des landings qui gardent le calendrier dans le hero. */
+  formulaire?: {
+    titre: string;
+    boutonContact: string;
+    boutonQuestions: string;
+    consentement: string;
+    /* « {prenom} » est remplace par le prenom saisi. */
+    reserverTitre: string;
+    reserverTexte: string;
+    apresReservation: string;
+  };
   /* La demo Emma (reception IA) : absente des landings qui ne la vendent pas. */
   demo?: { h2: string; p: string };
   reserver: { h2: string; p: string };
@@ -43,7 +55,7 @@ export const contenu: Record<Niche, Contenu> = {
   windows: {
     kicker: "For Florida window & door companies",
     metaTitle: "Every call answered, every lead called back · NativeSquare",
-    cta: "Book your free audit",
+    cta: "Book your consultation",
     note: "You see the system running on the call. Fixed price before anything starts.",
     generique: {
       h1: "Every call answered. Every lead called back in under a minute.",
@@ -103,30 +115,43 @@ export const contenu: Record<Niche, Contenu> = {
       },
       {
         q: "What happens on the call?",
-        a: "Thirty minutes on video, free. You tell me how calls, leads and estimates get lost today, I show you the system running on screen, and you decide if it's worth a second call.",
+        a: "Thirty minutes on video. You tell me how calls, leads and estimates get lost today, I show you the system running on screen, and you decide if it's worth a second call.",
       },
     ],
   },
 
-  /* La page d'arrivee des pubs video HVAC (juillet-octobre 2026) : l'ecran de
-     fin du formulaire instantane renvoie ici. Elle suit la video, pas plus :
-     la meme promesse, les memes trois refus, le meme geste (reserver un
-     appel). Aucune affirmation de resultats passes, la video seule les porte. */
+  /* La page d'arrivee des pubs video HVAC (octobre 2026) : le clic sur la pub
+     arrive ici, sur le formulaire puis le calendrier (meeting Angelo du
+     08/10/2026, plus de formulaire instantane Meta). Elle suit la video, pas
+     plus : la meme promesse, le meme geste (une consultation). Aucune
+     affirmation de resultats passes, la video seule les porte. Jamais le mot
+     « free » : Angelo, « free doesn't make it sound premium ». */
   hvac: {
     kicker: "For HVAC company owners",
     metaTitle: "50 exclusive HVAC leads a month · NativeSquare",
-    cta: "Pick a time",
-    note: "Thirty minutes on video. Free.",
+    cta: "Book your consultation",
+    note: "Thirty minutes on video with NativeSquare.",
     generique: {
-      h1: "50 or more exclusive leads a month, or you don't pay a cent.",
-      lead: "No waiting for a heat wave. No shared leads. No chasing quotes at 8 p.m. Pick a time and we'll go through it together.",
+      h1: "50 or more exclusive HVAC leads a month, or you don't pay a cent.",
+      lead: "Answer a few questions, pick a time, and we'll go through it together.",
       etapes: [
-        { h3: "You drop in your info", p: "A short form on Facebook. Thirty seconds." },
-        { h3: "You pick a time", p: "Thirty minutes on video. The calendar is right here." },
+        { h3: "You answer a few questions", p: "Your contact info first, then five quick ones about your company. Two minutes." },
+        { h3: "You pick a time", p: "A thirty-minute video consultation with NativeSquare. The calendar opens right after the form." },
         { h3: "We go through your numbers", p: "You tell me how your leads come in today. I show you how the system works and you decide." },
       ],
     },
     etapesTitre: "What happens next",
+    formulaire: {
+      titre: "Book your consultation with NativeSquare",
+      boutonContact: "Continue",
+      boutonQuestions: "See available times",
+      consentement:
+        "NativeSquare will use your name, phone number and email to contact you by phone or email about this offer and to book your call.",
+      reserverTitre: "Pick a time",
+      reserverTexte:
+        "Thanks, {prenom}. Choose the slot that suits you for the thirty-minute video consultation.",
+      apresReservation: "/before-our-call",
+    },
     reserver: {
       h2: "Pick a time.",
       p: "Thirty minutes on video. You tell me where your leads come from today, I show you how the system works, you decide.",
@@ -134,7 +159,7 @@ export const contenu: Record<Niche, Contenu> = {
     faq: [
       {
         q: "What happens on the call?",
-        a: "Thirty minutes on video, free. You tell me where your leads come from today, I show you how the system works, and you decide if it's a fit.",
+        a: "Thirty minutes on video. You tell me where your leads come from today, I show you how the system works, and you decide if it's a fit.",
       },
       {
         q: "Are the leads really exclusive?",

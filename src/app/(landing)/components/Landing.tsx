@@ -1,6 +1,7 @@
 import EmmaCallCard from "../../(site)/components/EmmaCallCard";
 import { content } from "../../(site)/content";
 import CalendrierInline from "./CalendrierInline";
+import Entonnoir from "./Entonnoir";
 import type { Contenu, Porte } from "../contenu";
 
 /**
@@ -79,6 +80,41 @@ export default function Landing({
   source: string;
 }) {
   const accroche = porte && c.portes ? c.portes[porte] : c.generique;
+
+  /* Le tunnel en une colonne : l'accroche, le formulaire, puis le calendrier
+     qui n'arrive qu'apres les questions (meeting Angelo du 08/10/2026). */
+  if (c.formulaire) {
+    const f = c.formulaire;
+    return (
+      <>
+        <section className="ld-hero ld-c">
+          <span className="blob bc-blob-amber" aria-hidden="true" />
+          <span className="blob bc-blob-sky" aria-hidden="true" />
+          <div className="ld-hero-inner">
+            <div className="ld-copy">
+              <div className="pill">{c.kicker}</div>
+              <h1>{accroche.h1}</h1>
+              <p className="lead">{accroche.lead}</p>
+            </div>
+            <Entonnoir
+              source={source}
+              titre={f.titre}
+              boutonContact={f.boutonContact}
+              boutonQuestions={f.boutonQuestions}
+              consentement={f.consentement}
+              reserverTitre={f.reserverTitre}
+              reserverTexte={f.reserverTexte}
+              apresReservation={f.apresReservation}
+            />
+          </div>
+        </section>
+
+        <Etapes c={c} porte={porte} />
+        <Demo c={c} />
+        <Faq c={c} />
+      </>
+    );
+  }
 
   return (
     <>

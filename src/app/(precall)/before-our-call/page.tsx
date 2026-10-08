@@ -81,6 +81,11 @@ export default function BeforeOurCallPage() {
             Five minutes on who I am and what we build for companies like yours.
             It will make our call a lot more useful.
           </p>
+          <p className="bc-confirm">
+            <b>First, confirm your call.</b> We just emailed you the meeting
+            link. Open it and add the call to your calendar so it doesn&apos;t
+            slip.
+          </p>
           <div className="bc-video corners">
             <Croisillons />
             <PrecallVideo mediaId={WISTIA_ID} />

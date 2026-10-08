@@ -39,11 +39,114 @@ async function hacherSi(valeur: string | undefined): Promise<string[] | undefine
   return v ? [await hacher(v)] : undefined;
 }
 
+/* Le telephone se hache comme le reste : chiffres seulement, indicatif compris.
+   Un numero americain a dix chiffres recoit le 1 devant. */
+async function hacherTelephone(valeur: string | undefined): Promise<string[] | undefined> {
+  const chiffres = (valeur ?? "").replace(/\D/g, "");
+  if (!chiffres) return undefined;
+  return [await hacher(chiffres.length === 10 ? `1${chiffres}` : chiffres)];
+}
+
+/* Le domaine americain : c'est lui que Meta doit voir comme source des
+   evenements. Le chemin vient de la visite. */
+const ORIGINE_SITE = "https://nativesquare.ai";
+
+type EvenementMeta = {
+  event_name: string;
+  event_id: string;
+  event_source_url: string;
+  user_data: Record<string, unknown>;
+  custom_data?: Record<string, unknown>;
+};
+
+/**
+ * Envoie un evenement a l'API Conversions. Sans identifiant de pixel ni token
+ * dans l'environnement Convex, on ne fait rien et on le dit dans les logs : le
+ * site ne depend jamais de Meta.
+ */
+async function envoyerEvenement(evenement: EvenementMeta): Promise<void> {
+  const pixel = process.env.META_PIXEL_ID;
+  const token = process.env.META_CAPI_TOKEN;
+  if (!pixel || !token) {
+    console.log(`[meta] META_PIXEL_ID ou META_CAPI_TOKEN absent : ${evenement.event_name} non envoye`);
+    return;
+  }
+
+  for (const cle of Object.keys(evenement.user_data)) {
+    if (evenement.user_data[cle] === undefined) delete evenement.user_data[cle];
+  }
+
+  const corps: Record<string, unknown> = {
+    data: [
+      {
+        ...evenement,
+        event_time: Math.floor(Date.now() / 1000),
+        action_source: "website",
+      },
+    ],
+    access_token: token,
+  };
+  /* Le code de test du Gestionnaire d'evenements (onglet « Tester les
+     evenements ») : pose dans l'environnement le temps de verifier, retire
+     ensuite, sinon les evenements ne comptent pas. */
+  if (process.env.META_TEST_EVENT_CODE) {
+    corps.test_event_code = process.env.META_TEST_EVENT_CODE;
+  }
+
+  const reponse = await fetch(
+    `https://graph.facebook.com/${VERSION_API}/${pixel}/events`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(corps),
+    },
+  );
+  const texte = await reponse.text();
+  if (!reponse.ok) {
+    console.error(`[meta] ${evenement.event_name} refuse`, reponse.status, texte.slice(0, 500));
+    return;
+  }
+  console.log(`[meta] ${evenement.event_name} envoye`, evenement.event_id, texte.slice(0, 200));
+}
+
+/**
+ * Un lead qui a repondu aux questions du formulaire : l'evenement standard
+ * « Lead ». Meme identifiant d'evenement que le pixel du navigateur
+ * (`lead-<id>`), donc Meta n'en compte qu'un.
+ */
+export const lead = internalAction({
+  args: { leadId: v.id("leads") },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const lead = await ctx.runQuery(internal.leads.parId, { leadId: args.leadId });
+    if (!lead) return null;
+    const visite = lead.visiteId
+      ? await ctx.runQuery(internal.visites.parVisiteId, { visiteId: lead.visiteId })
+      : null;
+
+    await envoyerEvenement({
+      event_name: "Lead",
+      event_id: `lead-${lead._id}`,
+      event_source_url: ORIGINE_SITE + (visite?.chemin ?? "/hvac"),
+      user_data: {
+        em: await hacherSi(lead.email),
+        ph: await hacherTelephone(lead.telephone),
+        fn: await hacherSi(lead.prenom),
+        external_id: await hacherSi(visite?.visiteurId),
+        country: await hacherSi(visite?.pays),
+        fbp: visite?.fbp,
+        fbc: visite?.fbc,
+        client_user_agent: visite?.agent,
+      },
+      custom_data: { content_name: "hvac-application" },
+    });
+    return null;
+  },
+});
+
 /**
  * Un rendez-vous reserve : l'evenement standard « Schedule ». Identifiant
  * d'evenement = l'uid Cal.com, donc un webhook rejoue ne compte pas deux fois.
- * Sans identifiant de pixel ni token dans l'environnement Convex, on ne fait
- * rien et on le dit dans les logs : le site ne depend jamais de Meta.
  */
 export const schedule = internalAction({
   args: {
@@ -54,13 +157,6 @@ export const schedule = internalAction({
   },
   returns: v.null(),
   handler: async (ctx, args) => {
-    const pixel = process.env.META_PIXEL_ID;
-    const token = process.env.META_CAPI_TOKEN;
-    if (!pixel || !token) {
-      console.log("[meta] META_PIXEL_ID ou META_CAPI_TOKEN absent : Schedule non envoye");
-      return null;
-    }
-
     const visite = args.visiteId
       ? await ctx.runQuery(internal.visites.parVisiteId, { visiteId: args.visiteId })
       : null;
@@ -69,54 +165,24 @@ export const schedule = internalAction({
     const prenom = morceaux[0];
     const nomFamille = morceaux.length > 1 ? morceaux[morceaux.length - 1] : undefined;
 
-    const user_data: Record<string, unknown> = {
-      em: await hacherSi(args.email),
-      fn: await hacherSi(prenom),
-      ln: await hacherSi(nomFamille),
-      /* L'identifiant durable du navigateur, le meme que le pixel envoie en
-         external_id a l'initialisation. */
-      external_id: await hacherSi(visite?.visiteurId),
-      country: await hacherSi(visite?.pays),
-      fbp: visite?.fbp,
-      fbc: visite?.fbc,
-      client_user_agent: visite?.agent,
-    };
-    for (const cle of Object.keys(user_data)) {
-      if (user_data[cle] === undefined) delete user_data[cle];
-    }
-
-    const evenement = {
+    await envoyerEvenement({
       event_name: "Schedule",
-      event_time: Math.floor(Date.now() / 1000),
       event_id: `cal-${args.calUid}`,
-      action_source: "website",
-      event_source_url: "https://nativesquare.fr" + (visite?.chemin ?? "/"),
-      user_data,
-      custom_data: { content_name: "discovery-call" },
-    };
-
-    const corps: Record<string, unknown> = { data: [evenement], access_token: token };
-    /* Le code de test du Gestionnaire d'evenements (onglet « Tester les
-       evenements ») : pose dans l'environnement le temps de verifier, retire
-       ensuite, sinon les evenements ne comptent pas. */
-    if (process.env.META_TEST_EVENT_CODE) {
-      corps.test_event_code = process.env.META_TEST_EVENT_CODE;
-    }
-
-    const reponse = await fetch(
-      `https://graph.facebook.com/${VERSION_API}/${pixel}/events`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(corps),
+      event_source_url: ORIGINE_SITE + (visite?.chemin ?? "/"),
+      user_data: {
+        em: await hacherSi(args.email),
+        fn: await hacherSi(prenom),
+        ln: await hacherSi(nomFamille),
+        /* L'identifiant durable du navigateur, le meme que le pixel envoie en
+           external_id a l'initialisation. */
+        external_id: await hacherSi(visite?.visiteurId),
+        country: await hacherSi(visite?.pays),
+        fbp: visite?.fbp,
+        fbc: visite?.fbc,
+        client_user_agent: visite?.agent,
       },
-    );
-    const texte = await reponse.text();
-    if (!reponse.ok) {
-      console.error("[meta] Schedule refuse", reponse.status, texte.slice(0, 500));
-      return null;
-    }
-    console.log("[meta] Schedule envoye", args.calUid, texte.slice(0, 200));
+      custom_data: { content_name: "discovery-call" },
+    });
     return null;
   },
 });

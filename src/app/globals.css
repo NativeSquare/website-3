@@ -686,6 +686,7 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .bc-inner h1{font-size:54px;line-height:1.05;letter-spacing:-.025em;text-wrap:balance;max-width:800px}
 .bc-inner .lead{margin-top:20px;max-width:620px;font-size:19px;line-height:1.4;letter-spacing:-.02em;color:var(--gray-40);text-wrap:pretty}
 .bc-video{margin-top:44px;width:100%;background:#fff;border:1px solid var(--gray-90);border-radius:16px;padding:8px;box-shadow:var(--shadow-tile)}
+.bc-confirm{margin:26px auto 0;max-width:560px;padding:14px 18px;border:1px solid var(--gray-80);border-radius:12px;background:#fff;font-size:15.5px;line-height:1.4;color:var(--gray-30);box-shadow:var(--shadow-tile)}
 .bc-video wistia-player{display:block;border-radius:10px;overflow:hidden}
 .bc-video-empty{aspect-ratio:16/9;border-radius:10px;background:var(--media-bg);display:flex;align-items:center;justify-content:center;
   color:var(--gray-50);font-size:15px;border:1px dashed var(--gray-80)}
@@ -902,7 +903,36 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-faq summary::after{content:"+";color:var(--gray-50);font-size:22px;flex:none}
 .ld-faq details[open] summary::after{content:"3"}
 .ld-faq details p{margin-top:10px;font-size:16px;line-height:1.5;color:var(--gray-40)}
+/* Le tunnel HVAC en une colonne : accroche, formulaire en deux temps, calendrier. */
+.ld-hero.ld-c .ld-hero-inner{padding-top:72px;padding-bottom:64px}
+.ld-hero.ld-c h1{font-size:48px}
+.ld-funnel{max-width:640px;margin:36px auto 0;text-align:left}
+.ld-form{background:#fff;border:1px solid var(--gray-90);border-radius:16px;padding:28px;box-shadow:var(--shadow-tile);scroll-margin-top:80px}
+.ld-form h2{font-size:24px;line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
+.ld-step-label{margin:0 0 8px;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-50)}
+.ld-field{display:flex;flex-direction:column;gap:8px;margin:18px 0 0;padding:0;border:0;min-width:0}
+.ld-field .lab{font-size:15px;font-weight:500;letter-spacing:-.01em;color:var(--ink);padding:0}
+.ld-field input[type=text],.ld-field input[type=tel],.ld-field input[type=email]{height:48px;border:1px solid var(--gray-80);border-radius:10px;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);background:#fff;width:100%}
+.ld-field input:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
+.ld-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.ld-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ld-chip{position:relative}
+.ld-chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.ld-chip span{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--gray-80);border-radius:999px;font-size:15px;line-height:1.2;background:#fff;color:var(--gray-20)}
+.ld-chip input:checked + span{border-color:var(--blue);background:rgba(0,131,245,.08);color:var(--blue-active)}
+.ld-chip input:focus-visible + span{outline:2px solid var(--blue);outline-offset:2px}
+.ld-form .btn{width:100%;height:52px;margin-top:24px;font-size:16px}
+.ld-form .btn:disabled{opacity:.6;cursor:default}
+.ld-consent{margin:12px 0 0;font-size:12.5px;line-height:1.45;color:var(--gray-50)}
+.ld-consent a{color:inherit;text-decoration:underline}
+.ld-erreur{margin:14px 0 0;font-size:14.5px;color:var(--red)}
+.ld-calbloc{scroll-margin-top:80px}
+.ld-calbloc h2{font-size:28px;line-height:1.1;letter-spacing:-.025em}
+.ld-calbloc>p{margin:8px 0 16px;font-size:16px;line-height:1.45;color:var(--gray-40)}
 @media (max-width:900px){
+  .ld-hero.ld-c h1{font-size:34px}
+  .ld-form{padding:22px 18px}
+  .ld-funnel{margin-top:28px}
   .ld-hero-inner{padding:72px 24px 56px}
   .ld-hero h1,.ld-hero.ld-b .ld-copy h1{font-size:36px}
   .ld-hero.ld-b .ld-hero-inner{grid-template-columns:1fr;gap:32px}
