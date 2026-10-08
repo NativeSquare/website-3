@@ -918,12 +918,10 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-field input[type=text],.ld-field input[type=tel],.ld-field input[type=email]{height:48px;border:1px solid var(--gray-80);border-radius:10px;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);background:#fff;width:100%}
 .ld-field input:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
 .ld-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-.ld-chips{display:flex;flex-wrap:wrap;gap:8px}
-.ld-chip{position:relative}
-.ld-chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
-.ld-chip span{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--gray-80);border-radius:999px;font-size:15px;line-height:1.2;background:#fff;color:var(--gray-20)}
-.ld-chip input:checked + span{border-color:var(--blue);background:rgba(0,131,245,.08);color:var(--blue-active)}
-.ld-chip input:focus-visible + span{outline:2px solid var(--blue);outline-offset:2px}
+.ld-opts{display:flex;flex-direction:column;gap:2px}
+.ld-opt{display:flex;align-items:flex-start;gap:12px;padding:9px 2px;cursor:pointer;font-size:16px;line-height:1.35;color:var(--ink)}
+.ld-opt input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--blue);cursor:pointer}
+.ld-opt input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .ld-form .btn{width:100%;height:52px;margin-top:24px;font-size:16px}
 .ld-form .btn:disabled{opacity:.6;cursor:default}
 .ld-consent{margin:12px 0 0;font-size:12.5px;line-height:1.45;color:var(--gray-50)}

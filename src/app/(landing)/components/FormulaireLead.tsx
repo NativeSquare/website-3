@@ -49,9 +49,9 @@ function Puces({
   onChange: (valeurs: string[]) => void;
 }) {
   return (
-    <div className="ld-chips">
+    <div className="ld-opts">
       {options.map((o) => (
-        <label className="ld-chip" key={o}>
+        <label className="ld-opt" key={o}>
           <input
             type={type}
             name={nom}

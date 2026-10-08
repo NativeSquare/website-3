@@ -53,11 +53,13 @@ export type EmailHtml = {
   paragraphes: string[];
   /* Le bouton principal : son libelle et son adresse. */
   bouton?: { libelle: string; url: string };
+  /* Un lien discret sous le bouton (ajouter l'appel a l'agenda). */
+  lienSecondaire?: { libelle: string; url: string };
   /* La signature, posee apres le bouton. */
   signature?: string;
 };
 
-export function enveloppe({ paragraphes, bouton, signature }: EmailHtml): string {
+export function enveloppe({ paragraphes, bouton, lienSecondaire, signature }: EmailHtml): string {
   const corps = paragraphes
     .map((p) => {
       /* Une ligne qui commence par un tiret devient une puce. */
@@ -83,6 +85,10 @@ export function enveloppe({ paragraphes, bouton, signature }: EmailHtml): string
       </table>`
     : "";
 
+  const secondaire = lienSecondaire
+    ? `<p style="margin:-8px 0 22px;font-family:${POLICE};font-size:14px;line-height:1.5"><a href="${lienSecondaire.url}" style="color:${BLEU};text-decoration:none">${echapper(lienSecondaire.libelle)}</a></p>`
+    : "";
+
   const fin = signature
     ? `<p style="margin:0 0 18px;color:${GRIS};font-size:15px;line-height:1.6">${lier(signature).replace(/\n/g, "<br>")}</p>`
     : "";
@@ -101,6 +107,7 @@ export function enveloppe({ paragraphes, bouton, signature }: EmailHtml): string
         <tr><td style="padding:22px 30px 0;font-family:${POLICE}">
           ${corps}
           ${cta}
+          ${secondaire}
           ${fin}
         </td></tr>
         <tr><td style="padding:0 30px 26px">

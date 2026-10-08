@@ -251,6 +251,7 @@ export const envoyer = internalAction({
       debut: sequence.debut,
       fuseau: sequence.fuseau,
       lienVisio: sequence.lienVisio,
+      calUid: sequence.calUid,
     };
 
     const canal: "email" | "sms" = etape.startsWith("email") ? "email" : "sms";
@@ -283,10 +284,12 @@ export const envoyer = internalAction({
             ? enveloppe({
                 paragraphes: message.paragraphes,
                 bouton: message.bouton,
+                lienSecondaire: message.lienSecondaire,
                 signature: message.signature,
               })
             : undefined,
           message.pieces,
+          message.ics,
         );
       } else {
         await envoyerSms(destinataire, message.texte);
@@ -311,6 +314,7 @@ async function envoyerEmail(
   texte: string,
   html?: string,
   pieces?: { filename: string; url: string }[],
+  ics?: { filename: string; contenu: string },
 ) {
   const cle = process.env.RESEND_API_KEY;
   const expediteur = process.env.EXPEDITEUR_EMAIL;
@@ -325,8 +329,21 @@ async function envoyerEmail(
       subject: objet,
       text: texte,
       ...(html ? { html } : {}),
-      ...(pieces?.length
-        ? { attachments: pieces.map((p) => ({ filename: p.filename, path: p.url })) }
+      ...(pieces?.length || ics
+        ? {
+            attachments: [
+              ...(pieces ?? []).map((p) => ({ filename: p.filename, path: p.url })),
+              ...(ics
+                ? [
+                    {
+                      filename: ics.filename,
+                      content: btoa(ics.contenu),
+                      content_type: "text/calendar",
+                    },
+                  ]
+                : []),
+            ],
+          }
         : {}),
       reply_to: process.env.REPONSE_EMAIL ?? expediteur,
     }),

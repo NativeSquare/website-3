@@ -19,7 +19,73 @@ export type Contact = {
   /* Fuseau du prospect, pour que les heures affichees soient les siennes. */
   fuseau: string;
   lienVisio?: string;
+  /* Identifiant Cal.com du rendez-vous, pour le fichier d'agenda. */
+  calUid?: string;
 };
+
+/* Format des dates d'agenda : 20261008T210000Z. */
+function dateAgenda(date: Date): string {
+  return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+}
+
+const TITRE_AGENDA = "Consultation with NativeSquare";
+const DUREE_APPEL = 30 * 60 * 1000;
+
+function detailsAgenda(c: Contact): string {
+  return [
+    c.lienVisio ? `Video call: ${c.lienVisio}` : "",
+    `Before we talk: ${PAGE_PRECALL}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+/* Le lien « Ajouter a Google Agenda ». */
+export function lienGoogleAgenda(c: Contact): string {
+  const debut = new Date(c.debut);
+  const fin = new Date(debut.getTime() + DUREE_APPEL);
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: TITRE_AGENDA,
+    dates: `${dateAgenda(debut)}/${dateAgenda(fin)}`,
+    details: detailsAgenda(c),
+    ...(c.lienVisio ? { location: c.lienVisio } : {}),
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}
+
+/* Le fichier .ics pour Apple Agenda, Outlook et les autres. */
+export function fichierAgenda(c: Contact): { filename: string; contenu: string } {
+  const debut = new Date(c.debut);
+  const fin = new Date(debut.getTime() + DUREE_APPEL);
+  const echapper = (t: string) =>
+    t
+      .replace(/\\/g, "\\\\")
+      .replace(/;/g, "\\;")
+      .replace(/,/g, "\\,")
+      .replace(/\n/g, "\\n");
+  const lignes = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//NativeSquare//Consultation//EN",
+    "CALSCALE:GREGORIAN",
+    "METHOD:PUBLISH",
+    "BEGIN:VEVENT",
+    `UID:${c.calUid ?? dateAgenda(debut)}@nativesquare.ai`,
+    `DTSTAMP:${dateAgenda(new Date())}`,
+    `DTSTART:${dateAgenda(debut)}`,
+    `DTEND:${dateAgenda(fin)}`,
+    `SUMMARY:${echapper(TITRE_AGENDA)}`,
+    `DESCRIPTION:${echapper(detailsAgenda(c))}`,
+    ...(c.lienVisio ? [`LOCATION:${echapper(c.lienVisio)}`] : []),
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ];
+  return {
+    filename: "consultation-nativesquare.ics",
+    contenu: lignes.join("\r\n") + "\r\n",
+  };
+}
 
 /* « Tuesday, September 22 » dans le fuseau du prospect. */
 export function jour(c: Pick<Contact, "debut" | "fuseau">): string {
@@ -85,6 +151,10 @@ export const ONE_PAGERS = [
 export type Message = {
   objet?: string;
   pieces?: { filename: string; url: string }[];
+  /* Fichier d'agenda joint, en texte (converti en base64 a l'envoi). */
+  ics?: { filename: string; contenu: string };
+  /* Lien discret sous le bouton. */
+  lienSecondaire?: { libelle: string; url: string };
   /* La version texte, envoyee telle quelle par SMS et jointe aux emails. */
   texte: string;
   /* Les emails ont en plus leurs paragraphes et leur bouton, pour l'habillage. */
@@ -103,8 +173,18 @@ export const EMAIL_1 = (c: Contact): Message => {
     objet: "Quick confirmation from Alex",
     paragraphes,
     bouton: { libelle: "Watch the 5 minute video", url: PAGE_PRECALL },
+    lienSecondaire: {
+      libelle: "Add the call to your calendar",
+      url: lienGoogleAgenda(c),
+    },
+    ics: fichierAgenda(c),
     signature: "Alex\nNativeSquare",
-    texte: [...paragraphes, PAGE_PRECALL, "Alex\nNativeSquare"].join("\n\n"),
+    texte: [
+      ...paragraphes,
+      PAGE_PRECALL,
+      `Add the call to your calendar: ${lienGoogleAgenda(c)}`,
+      "Alex\nNativeSquare",
+    ].join("\n\n"),
   };
 };
 
