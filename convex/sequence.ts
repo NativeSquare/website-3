@@ -97,9 +97,9 @@ async function planifier(
   /* Chaque etape a son moment. Une etape deja depassee est simplement
      sautee : un rendez-vous cale dans l'heure ne recoit que l'immediat. */
   const plan: Array<{ etape: Etape; quand: number }> = [
-    /* Trois minutes apres, pour ne pas arriver dans la meme seconde que la
-       confirmation de Cal.com. */
-    { etape: "email1", quand: maintenant + 3 * 60 * 1000 },
+    /* Tout de suite, pour le depart manuel comme pour le tunnel : Alexandre
+       est encore au telephone avec le patron quand le message arrive. */
+    { etape: "email1", quand: maintenant },
     { etape: "sms1", quand: maintenant },
     { etape: "email2", quand: milieu },
     { etape: "sms2", quand: milieu },
