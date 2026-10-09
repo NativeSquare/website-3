@@ -30,7 +30,7 @@ export default function AvisClients({ avis }: { avis: Avis[] }) {
           <figcaption>
             <p className="av-nom">{a.nom}</p>
             <p className="av-meta">
-              {[a.entreprise, a.ville].filter(Boolean).join(", ")}
+              {[a.poste, a.entreprise, a.ville].filter(Boolean).join(", ")}
               {a.source ? ` · ${a.source} review` : ""}
             </p>
           </figcaption>

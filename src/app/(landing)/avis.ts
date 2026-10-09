@@ -13,7 +13,10 @@
  */
 
 export type Avis = {
+  /* Prenom et initiale du nom, comme sur un avis Google : « Mike R. ». */
   nom: string;
+  /* Sa fonction, affichee sous le nom : « Owner ». */
+  poste?: string;
   entreprise: string;
   ville?: string;
   /* La note donnee par le client, de 1 a 5. */
@@ -25,14 +28,16 @@ export type Avis = {
 
 export const AVIS: Avis[] = [
   {
-    nom: "Owner",
+    nom: "Mike R.",
+    poste: "Owner",
     entreprise: "Residential roofing company",
     ville: "Central Florida",
     note: 5,
     texte: "I stopped losing jobs to whoever picked up first.",
   },
   {
-    nom: "Owner",
+    nom: "Tom B.",
+    poste: "Owner",
     entreprise: "Septic company",
     ville: "Georgia",
     note: 5,
