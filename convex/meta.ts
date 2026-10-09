@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { parametresLead } from "../src/lib/lead-meta";
 
 /**
  * L'API Conversions de Meta : les evenements que le navigateur ne peut pas
@@ -139,7 +140,7 @@ export const lead = internalAction({
         fbc: visite?.fbc,
         client_user_agent: visite?.agent,
       },
-      custom_data: { content_name: "hvac-application" },
+      custom_data: parametresLead(lead.role, lead.chiffreAffaires),
     });
     return null;
   },

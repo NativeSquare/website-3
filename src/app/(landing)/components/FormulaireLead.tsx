@@ -5,6 +5,7 @@ import Link from "next/link";
 import posthog from "posthog-js";
 import { lireVisiteId } from "../../lib/visite";
 import { suivreMeta } from "../../lib/meta";
+import { parametresLead } from "../../../lib/lead-meta";
 import {
   CHIFFRES_AFFAIRES,
   DELAIS,
@@ -165,10 +166,11 @@ export default function FormulaireLead({
     /* Le Lead du navigateur porte l'identifiant que le serveur a envoye a
        l'API Conversions : Meta n'en compte qu'un. Sans identifiant (serveur
        muet), le navigateur compte seul. */
+    const parametres = parametresLead(role[0], chiffreAffaires[0]);
     if (eventId && window.fbq) {
-      window.fbq("track", "Lead", { content_name: "hvac-application" }, { eventID: eventId });
+      window.fbq("track", "Lead", parametres, { eventID: eventId });
     } else {
-      suivreMeta("Lead", { content_name: "hvac-application" });
+      suivreMeta("Lead", parametres);
     }
     posthog.capture("formulaire_complet", { source, visiteId: lireVisiteId() });
     setEnvoi(false);
