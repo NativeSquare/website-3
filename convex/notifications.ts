@@ -44,7 +44,7 @@ export const lead = internalAction({
     };
     const lignes = [
       `*${titres[args.moment]}*`,
-      `${echapper(lead.prenom)} | ${echapper(lead.telephone)} | ${echapper(lead.email)}`,
+      `${echapper([lead.prenom, lead.nom].filter(Boolean).join(" "))} | ${echapper(lead.telephone)} | ${echapper(lead.email)}`,
     ];
 
     if (args.moment !== "contact" && lead.chiffreAffaires) {

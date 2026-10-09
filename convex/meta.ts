@@ -132,6 +132,7 @@ export const lead = internalAction({
         em: await hacherSi(lead.email),
         ph: await hacherTelephone(lead.telephone),
         fn: await hacherSi(lead.prenom),
+        ln: await hacherSi(lead.nom),
         external_id: await hacherSi(visite?.visiteurId),
         country: await hacherSi(visite?.pays),
         fbp: visite?.fbp,

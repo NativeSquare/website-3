@@ -34,6 +34,7 @@ export const contact = mutation({
     secret: v.string(),
     visiteId: v.optional(v.string()),
     prenom: v.string(),
+    nom: v.optional(v.string()),
     telephone: v.string(),
     email: v.string(),
     jeton: v.string(),
@@ -53,6 +54,7 @@ export const contact = mutation({
     if (dernier && dernier.statut === "partiel") {
       await ctx.db.patch("leads", dernier._id, {
         prenom: args.prenom,
+        nom: args.nom,
         telephone: args.telephone,
         jeton: args.jeton,
         ...(args.visiteId ? { visiteId: args.visiteId } : {}),
@@ -63,6 +65,7 @@ export const contact = mutation({
     const leadId = await ctx.db.insert("leads", {
       visiteId: args.visiteId,
       prenom: args.prenom,
+      nom: args.nom,
       telephone: args.telephone,
       email,
       jeton: args.jeton,

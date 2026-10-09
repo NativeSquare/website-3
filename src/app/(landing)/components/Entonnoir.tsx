@@ -31,7 +31,7 @@ export default function Entonnoir({
   reserverTexte,
   apresReservation,
 }: Props) {
-  const [lead, setLead] = useState<{ prenom: string; email: string } | null>(null);
+  const [lead, setLead] = useState<{ prenom: string; nom: string; email: string } | null>(null);
   const bloc = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function Entonnoir({
           <CalendrierInline
             source={source}
             ancre="book"
-            prefill={{ name: lead.prenom, email: lead.email }}
+            prefill={{ name: `${lead.prenom} ${lead.nom}`.trim(), email: lead.email }}
             apresReservation={apresReservation}
           />
         </div>

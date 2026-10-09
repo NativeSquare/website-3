@@ -14,7 +14,7 @@ import {
 
 /**
  * Le formulaire de la landing, en deux temps (meeting Angelo du 08/10/2026) :
- *   1. prenom, telephone, e-mail : le lead est enregistre tout de suite, meme
+ *   1. prenom, nom, telephone, e-mail : le lead est enregistre tout de suite, meme
  *      s'il s'arrete la ;
  *   2. les questions : c'est ce temps-la qui envoie « Lead » a Meta, du
  *      navigateur ici, du serveur depuis Convex, avec le meme eventID.
@@ -24,7 +24,7 @@ import {
  * en panne ne doit jamais empecher une reservation.
  */
 
-type Lead = { prenom: string; email: string };
+type Lead = { prenom: string; nom: string; email: string };
 
 type Props = {
   source: string;
@@ -81,6 +81,7 @@ export default function FormulaireLead({
   const [erreur, setErreur] = useState("");
 
   const [prenom, setPrenom] = useState("");
+  const [nom, setNom] = useState("");
   const [telephone, setTelephone] = useState("");
   const [email, setEmail] = useState("");
   const [fax, setFax] = useState("");
@@ -113,7 +114,7 @@ export default function FormulaireLead({
     setErreur("");
     setEnvoi(true);
     try {
-      const r = await envoyer({ etape: 1, prenom, telephone, email, fax });
+      const r = await envoyer({ etape: 1, prenom, nom, telephone, email, fax });
       /* Une erreur de saisie (400) se corrige ; une panne du serveur ne
          retient personne. */
       if (r.erreur) {
@@ -171,7 +172,11 @@ export default function FormulaireLead({
     }
     posthog.capture("formulaire_complet", { source, visiteId: lireVisiteId() });
     setEnvoi(false);
-    onComplete({ prenom: prenom.trim(), email: email.trim().toLowerCase() });
+    onComplete({
+      prenom: prenom.trim(),
+      nom: nom.trim(),
+      email: email.trim().toLowerCase(),
+    });
   }
 
   return (
@@ -181,17 +186,30 @@ export default function FormulaireLead({
 
       {etape === 1 ? (
         <form onSubmit={validerContact} noValidate>
-          <label className="ld-field">
-            <span className="lab">First name</span>
-            <input
-              type="text"
-              name="prenom"
-              autoComplete="given-name"
-              value={prenom}
-              onChange={(e) => setPrenom(e.target.value)}
-              required
-            />
-          </label>
+          <div className="ld-row">
+            <label className="ld-field">
+              <span className="lab">First name</span>
+              <input
+                type="text"
+                name="prenom"
+                autoComplete="given-name"
+                value={prenom}
+                onChange={(e) => setPrenom(e.target.value)}
+                required
+              />
+            </label>
+            <label className="ld-field">
+              <span className="lab">Last name</span>
+              <input
+                type="text"
+                name="nom"
+                autoComplete="family-name"
+                value={nom}
+                onChange={(e) => setNom(e.target.value)}
+                required
+              />
+            </label>
+          </div>
           <label className="ld-field">
             <span className="lab">Mobile phone</span>
             <input

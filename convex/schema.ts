@@ -93,6 +93,8 @@ export default defineSchema({
   leads: defineTable({
     visiteId: v.optional(v.string()),
     prenom: v.string(),
+    /* Absent des leads d'avant le 09/10/2026, ou le formulaire n'avait qu'un champ. */
+    nom: v.optional(v.string()),
     telephone: v.string(),
     /* En minuscules : la reservation Cal.com retrouve le lead par son e-mail. */
     email: v.string(),

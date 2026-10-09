@@ -917,6 +917,7 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-field .lab{font-size:15px;font-weight:500;letter-spacing:-.01em;color:var(--ink);padding:0}
 .ld-field input[type=text],.ld-field input[type=tel],.ld-field input[type=email]{height:48px;border:1px solid var(--gray-80);border-radius:10px;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);background:#fff;width:100%}
 .ld-field input:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
+.ld-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .ld-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .ld-opts{display:flex;flex-direction:column;gap:2px}
 .ld-opt{display:flex;align-items:flex-start;gap:12px;padding:9px 2px;cursor:pointer;font-size:16px;line-height:1.35;color:var(--ink)}
