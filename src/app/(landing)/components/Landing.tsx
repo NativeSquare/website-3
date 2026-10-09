@@ -1,7 +1,7 @@
 import EmmaCallCard from "../../(site)/components/EmmaCallCard";
 import { content } from "../../(site)/content";
 import AvisClients from "../../components/AvisClients";
-import { AVIS, AVIS_DEMO } from "../avis";
+import { AVIS } from "../avis";
 import CalendrierInline from "./CalendrierInline";
 import Entonnoir from "./Entonnoir";
 import type { Contenu, Porte } from "../contenu";
@@ -42,13 +42,9 @@ function Etapes({ c, porte }: { c: Contenu; porte?: Porte }) {
   );
 }
 
-/* Les avis clients, avec leurs etoiles. Rien tant qu'on n'a pas de vrais avis,
-   sauf avec ?avis=demo (avis provisoires, marques comme tels) : voir
-   (landing)/avis.ts. */
-function Avis({ demo }: { demo: boolean }) {
-  const montrerDemo = AVIS.length === 0 && demo;
-  const liste = AVIS.length > 0 ? AVIS : montrerDemo ? AVIS_DEMO : [];
-  if (liste.length === 0) return null;
+/* Les avis clients, avec leurs etoiles : voir (landing)/avis.ts. */
+function Avis() {
+  if (AVIS.length === 0) return null;
   return (
     <section className="ld-section">
       <div className="ld-wrap">
@@ -56,10 +52,7 @@ function Avis({ demo }: { demo: boolean }) {
           <div className="pill">Reviews</div>
           <h2>What our clients say</h2>
         </div>
-        <AvisClients avis={liste} />
-        {montrerDemo && (
-          <p className="av-demo">Sample reviews for the preview only.</p>
-        )}
+        <AvisClients avis={AVIS} />
       </div>
     </section>
   );
@@ -105,12 +98,10 @@ export default function Landing({
   c,
   porte,
   source,
-  avisDemo = false,
 }: {
   c: Contenu;
   porte?: Porte;
   source: string;
-  avisDemo?: boolean;
 }) {
   const accroche = porte && c.portes ? c.portes[porte] : c.generique;
 
@@ -143,7 +134,7 @@ export default function Landing({
           </div>
         </section>
 
-        <Avis demo={avisDemo} />
+        <Avis />
         <Demo c={c} />
         <Faq c={c} />
       </>

@@ -15,13 +15,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function HvacPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ avis?: string }>;
-}) {
-  /* ?avis=demo : montre les avis provisoires de (landing)/avis.ts, pour une
-     demo. Le lien des pubs n'a pas ce parametre. */
-  const { avis } = await searchParams;
-  return <Landing c={c} source="landing-hvac" avisDemo={avis === "demo"} />;
+export default function HvacPage() {
+  return <Landing c={c} source="landing-hvac" />;
 }

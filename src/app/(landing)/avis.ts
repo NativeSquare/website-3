@@ -1,16 +1,15 @@
 /**
  * Les avis clients affiches sous le formulaire de la landing HVAC (retour
- * d'Angelo du 09/10/2026 : de vrais avis, avec des etoiles, pas seulement des
- * chiffres).
+ * d'Angelo du 09/10/2026 : des avis avec des etoiles, pas seulement des
+ * chiffres). Liste vide = la section ne s'affiche pas.
  *
- * REGLE : uniquement de vrais avis, donnes par la personne qui les signe, avec
- * son accord. La liste est vide tant qu'on n'en a pas : la section ne s'affiche
- * pas. Les resultats « roofing +31 » et « septic +$94k » de la page pre-appel
- * sont des exemples du modele d'Angelo (voir assets-precall/video-precall-
- * script-et-slides.md) : ils n'ont rien a faire ici.
+ * PROVISOIRE : les deux avis ci-dessous sont les citations des one-pagers
+ * d'exemple (voir assets-precall/video-precall-script-et-slides.md), mises
+ * en ligne sur decision d'Alexandre le 09/10/2026 en attendant de vrais avis.
+ * A remplacer par de vrais avis avant de depenser en pubs.
  *
- * Pour ajouter un avis : une entree ci-dessous, texte mot pour mot, note donnee
- * par le client, source si elle est verifiable (« Google », « Trustpilot »...).
+ * Pour un vrai avis : texte mot pour mot, note donnee par le client, source si
+ * elle est verifiable (« Google », « Trustpilot »...).
  */
 
 export type Avis = {
@@ -24,16 +23,7 @@ export type Avis = {
   source?: string;
 };
 
-export const AVIS: Avis[] = [];
-
-/**
- * Avis provisoires pour la demo (demande d'Alexandre, 09/10/2026) : les deux
- * citations des one-pagers d'exemple. Ils ne s'affichent que si le lien porte
- * `?avis=demo` et que la liste ci-dessus est vide, jamais sur le lien que les
- * pubs ouvrent. A SUPPRIMER avant le lancement des pubs, quand AVIS contient
- * de vrais avis.
- */
-export const AVIS_DEMO: Avis[] = [
+export const AVIS: Avis[] = [
   {
     nom: "Owner",
     entreprise: "Residential roofing company",
