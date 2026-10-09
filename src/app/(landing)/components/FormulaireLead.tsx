@@ -6,6 +6,8 @@ import posthog from "posthog-js";
 import { lireVisiteId } from "../../lib/visite";
 import { suivreMeta } from "../../lib/meta";
 import { parametresLead } from "../../../lib/lead-meta";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import TelephoneInput from "./TelephoneInput";
 import {
   CHIFFRES_AFFAIRES,
   DELAIS,
@@ -84,6 +86,7 @@ export default function FormulaireLead({
   const [prenom, setPrenom] = useState("");
   const [nom, setNom] = useState("");
   const [telephone, setTelephone] = useState("");
+  const [consentSms, setConsentSms] = useState(false);
   const [email, setEmail] = useState("");
   const [fax, setFax] = useState("");
   const [lead, setLead] = useState<{ leadId?: string; jeton?: string }>({});
@@ -113,9 +116,15 @@ export default function FormulaireLead({
     e.preventDefault();
     if (envoi) return;
     setErreur("");
+    /* Le numero doit etre valide pour son pays : un mauvais indicatif ferait
+       echouer les appels et les textos. */
+    if (!telephone || !isValidPhoneNumber(telephone)) {
+      setErreur("Please enter a valid mobile number for the country selected.");
+      return;
+    }
     setEnvoi(true);
     try {
-      const r = await envoyer({ etape: 1, prenom, nom, telephone, email, fax });
+      const r = await envoyer({ etape: 1, prenom, nom, telephone, consentSms, email, fax });
       /* Une erreur de saisie (400) se corrige ; une panne du serveur ne
          retient personne. */
       if (r.erreur) {
@@ -212,18 +221,10 @@ export default function FormulaireLead({
               />
             </label>
           </div>
-          <label className="ld-field">
+          <div className="ld-field">
             <span className="lab">Mobile phone</span>
-            <input
-              type="tel"
-              name="telephone"
-              autoComplete="tel"
-              inputMode="tel"
-              value={telephone}
-              onChange={(e) => setTelephone(e.target.value)}
-              required
-            />
-          </label>
+            <TelephoneInput value={telephone} onChange={setTelephone} />
+          </div>
           <label className="ld-field">
             <span className="lab">Email</span>
             <input
@@ -235,6 +236,23 @@ export default function FormulaireLead({
               onChange={(e) => setEmail(e.target.value)}
               required
             />
+          </label>
+          <label className="ld-opt ld-sms">
+            <input
+              type="checkbox"
+              name="consentSms"
+              checked={consentSms}
+              onChange={(e) => setConsentSms(e.target.checked)}
+            />
+            <span>
+              Text me the call link and reminders. By checking this box I agree to
+              receive text messages from NativeSquare about my call. Message
+              frequency varies, message and data rates may apply, reply STOP to
+              opt out. Agreeing is not required to book.{" "}
+              <Link href="/legal?section=privacy" target="_blank">
+                Privacy policy
+              </Link>
+            </span>
           </label>
           {/* Piege a robots : invisible, jamais rempli par une personne. */}
           <input

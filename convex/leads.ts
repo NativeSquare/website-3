@@ -36,6 +36,7 @@ export const contact = mutation({
     prenom: v.string(),
     nom: v.optional(v.string()),
     telephone: v.string(),
+    consentSms: v.optional(v.boolean()),
     email: v.string(),
     jeton: v.string(),
   },
@@ -56,6 +57,8 @@ export const contact = mutation({
         prenom: args.prenom,
         nom: args.nom,
         telephone: args.telephone,
+        consentSms: args.consentSms === true,
+        consentSmsLe: args.consentSms === true ? Date.now() : undefined,
         jeton: args.jeton,
         ...(args.visiteId ? { visiteId: args.visiteId } : {}),
       });
@@ -67,6 +70,8 @@ export const contact = mutation({
       prenom: args.prenom,
       nom: args.nom,
       telephone: args.telephone,
+      consentSms: args.consentSms === true,
+      consentSmsLe: args.consentSms === true ? Date.now() : undefined,
       email,
       jeton: args.jeton,
       statut: "partiel",
@@ -134,7 +139,11 @@ export const marquerReserve = internalMutation({
   /* Le lead retrouve (prenom et telephone), pour demarrer la sequence de
      messages ; null si la reservation ne vient pas du formulaire. */
   returns: v.union(
-    v.object({ prenom: v.string(), telephone: v.string() }),
+    v.object({
+      prenom: v.string(),
+      telephone: v.string(),
+      consentSms: v.boolean(),
+    }),
     v.null(),
   ),
   handler: async (ctx, args) => {
@@ -146,7 +155,11 @@ export const marquerReserve = internalMutation({
       .order("desc")
       .first();
     if (!lead) return null;
-    const retour = { prenom: lead.prenom, telephone: lead.telephone };
+    const retour = {
+      prenom: lead.prenom,
+      telephone: lead.telephone,
+      consentSms: lead.consentSms === true,
+    };
     /* Webhook rejoue : le lead est deja marque, on rend les memes donnees sans
        renvoyer l'alerte. */
     if (lead.calUid === args.calUid) return retour;

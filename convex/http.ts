@@ -162,6 +162,7 @@ http.route({
             nom: invite.name,
             email: invite.email,
             telephone: telephoneInternational(lead.telephone),
+            sms: lead.consentSms,
             fuseau: invite.timeZone ?? "America/New_York",
             debut: p.startTime,
             lienVisio: lienVisio(p),

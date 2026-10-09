@@ -95,7 +95,13 @@ export default defineSchema({
     prenom: v.string(),
     /* Absent des leads d'avant le 09/10/2026, ou le formulaire n'avait qu'un champ. */
     nom: v.optional(v.string()),
+    /* Au format international (« +13055550147 ») depuis le 09/10/2026 ; les
+       leads d'avant peuvent avoir un numero saisi a la main. */
     telephone: v.string(),
+    /* Accord aux SMS donne en cochant la case du formulaire, avec l'heure : c'est
+       la preuve a garder si un operateur la demande. */
+    consentSms: v.optional(v.boolean()),
+    consentSmsLe: v.optional(v.number()),
     /* En minuscules : la reservation Cal.com retrouve le lead par son e-mail. */
     email: v.string(),
     /* Preuve que l'appel du second temps vient du meme navigateur. */

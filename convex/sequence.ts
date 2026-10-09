@@ -180,8 +180,8 @@ export const demarrer = mutation({
 /**
  * Depart automatique, appele par le webhook Cal.com quand quelqu'un qui est
  * passe par le formulaire de la landing reserve. Les e-mails partent toujours ;
- * les textos seulement si SEQUENCE_SMS vaut « oui » dans l'environnement Convex :
- * le formulaire ne demande pas encore l'accord pour les SMS.
+ * les textos seulement si la personne a coche la case d'accord aux SMS du
+ * formulaire et a donne un numero valide.
  */
 export const demarrerAuto = internalMutation({
   args: {
@@ -190,13 +190,15 @@ export const demarrerAuto = internalMutation({
     nom: v.optional(v.string()),
     email: v.string(),
     telephone: v.optional(v.string()),
+    /* L'accord aux SMS donne dans le formulaire. Sans lui, aucun texto. */
+    sms: v.boolean(),
     fuseau: v.string(),
     debut: v.string(),
     lienVisio: v.optional(v.string()),
   },
   returns: v.object({ etapes: v.array(v.string()) }),
-  handler: async (ctx, args) => {
-    return await planifier(ctx, args, process.env.SEQUENCE_SMS === "oui");
+  handler: async (ctx, { sms, ...donnees }) => {
+    return await planifier(ctx, donnees, sms && !!donnees.telephone);
   },
 });
 
