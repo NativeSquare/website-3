@@ -118,7 +118,9 @@ export default function FormulaireLead({
   const [zone, setZone] = useState("");
   const [prenom, setPrenom] = useState("");
   const [telephone, setTelephone] = useState("");
-  const [consentSms, setConsentSms] = useState(false);
+  /* Cochee d'emblée (demande d'Alexandre, 09/10/2026) : la personne la decoche
+     si elle ne veut pas de textos, et reserver n'en depend pas. */
+  const [consentSms, setConsentSms] = useState(true);
   const [email, setEmail] = useState("");
   const [fax, setFax] = useState("");
   const [lead, setLead] = useState<{ leadId?: string; jeton?: string }>({});
@@ -428,13 +430,19 @@ export default function FormulaireLead({
               onChange={(e) => setConsentSms(e.target.checked)}
             />
             <span>
-              Text me the call link and reminders. By checking this box I agree to
-              receive text messages from NativeSquare about my call. Message
-              frequency varies, message and data rates may apply, reply STOP to
-              opt out. Agreeing is not required to book.{" "}
-              <Link href="/legal?section=privacy" target="_blank">
-                Privacy policy
-              </Link>
+              <b className="ld-sms-titre">
+                Recommended: text me the call link and reminders
+              </b>
+              <span className="ld-sms-detail">
+                No spam. We only text you about our appointment, so you don&apos;t
+                miss it. By leaving this box checked I agree to receive text
+                messages from NativeSquare about my call. Message frequency
+                varies, message and data rates may apply, reply STOP to opt out.
+                Agreeing is not required to book.{" "}
+                <Link href="/legal?section=privacy" target="_blank">
+                  Privacy policy
+                </Link>
+              </span>
             </span>
           </label>
           {/* Piege a robots : invisible, jamais rempli par une personne. */}

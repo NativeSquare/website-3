@@ -207,7 +207,7 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
 
                   <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">6. Text Messages (SMS)</h3>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30 mb-3">
-                    We only send text messages to people who have agreed to receive them, by saying yes during a phone call with us or by ticking the text message box on our booking form, before any message is sent. Agreeing is never a condition of booking a call. We use them for confirmations, reminders and follow-up about a call you have scheduled with us.
+                    We only send text messages to people who have agreed to receive them, by saying yes during a phone call with us or by leaving the text message box on our booking form ticked (it is ticked by default and you can untick it), before any message is sent. Agreeing is never a condition of booking a call. We use them for confirmations, reminders and follow-up about a call you have scheduled with us.
                   </p>
                   <ul className="list-disc pl-6 space-y-2 fs-15 leading-relaxed tracking-tight text-gray-30">
                     <li>Message frequency varies. Message and data rates may apply.</li>

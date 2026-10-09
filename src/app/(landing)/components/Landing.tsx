@@ -1,6 +1,7 @@
 import EmmaCallCard from "../../(site)/components/EmmaCallCard";
 import { content } from "../../(site)/content";
-import CasClients from "../../components/CasClients";
+import AvisClients from "../../components/AvisClients";
+import { AVIS } from "../avis";
 import CalendrierInline from "./CalendrierInline";
 import Entonnoir from "./Entonnoir";
 import type { Contenu, Porte } from "../contenu";
@@ -13,8 +14,9 @@ import type { Contenu, Porte } from "../contenu";
  * l'arbre d'appel (?porte=telephone|leads|estimates).
  *
  * La landing HVAC est un tunnel : l'accroche, les questions un ecran chacune,
- * le calendrier, puis des resultats clients et la FAQ (retour d'Angelo du
- * 09/10/2026 : le plus simple possible, pas d'etapes sous le formulaire).
+ * le calendrier, puis les avis clients (quand on en a de vrais) et la FAQ
+ * (retour d'Angelo du 09/10/2026 : le plus simple possible, pas d'etapes sous
+ * le formulaire).
  */
 
 function Etapes({ c, porte }: { c: Contenu; porte?: Porte }) {
@@ -40,15 +42,18 @@ function Etapes({ c, porte }: { c: Contenu; porte?: Porte }) {
   );
 }
 
-function Preuves() {
+/* Les avis clients, avec leurs etoiles. Rien tant qu'on n'a pas de vrais avis :
+   voir (landing)/avis.ts. */
+function Avis() {
+  if (AVIS.length === 0) return null;
   return (
     <section className="ld-section">
       <div className="ld-wrap">
         <div className="ld-head">
-          <div className="pill">Results</div>
-          <h2>What it looks like for owners we&apos;ve worked with</h2>
+          <div className="pill">Reviews</div>
+          <h2>What our clients say</h2>
         </div>
-        <CasClients />
+        <AvisClients avis={AVIS} />
       </div>
     </section>
   );
@@ -130,7 +135,7 @@ export default function Landing({
           </div>
         </section>
 
-        <Preuves />
+        <Avis />
         <Demo c={c} />
         <Faq c={c} />
       </>

@@ -938,7 +938,10 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-field .PhoneInput:focus-within{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
 .ld-field .PhoneInput .PhoneInputInput{flex:1;min-width:0;width:auto;height:100%;padding:0;border:0;background:transparent;font:inherit;font-size:16px;color:var(--ink)}
 .ld-field .PhoneInput .PhoneInputInput:focus{outline:0;border:0}
-.ld-opt.ld-sms{margin-top:18px;font-size:13px;line-height:1.45;color:var(--gray-40)}
+.ld-opt.ld-sms{margin-top:18px;padding:14px;border:1px solid rgba(0,131,245,.35);border-radius:12px;background:rgba(0,131,245,.05);font-size:13px;line-height:1.45;color:var(--gray-40)}
+.ld-opt.ld-sms input{margin-top:3px}
+.ld-sms-titre{display:block;margin-bottom:4px;font-size:15px;font-weight:500;letter-spacing:-.01em;color:var(--ink)}
+.ld-sms-detail{display:block}
 .ld-opt.ld-sms a{color:inherit;text-decoration:underline}
 .ld-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .ld-opt{display:flex;align-items:flex-start;gap:12px;padding:9px 2px;cursor:pointer;font-size:16px;line-height:1.35;color:var(--ink)}
@@ -952,6 +955,15 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-calbloc{scroll-margin-top:80px}
 .ld-calbloc h2{font-size:28px;line-height:1.1;letter-spacing:-.025em}
 .ld-calbloc>p{margin:8px 0 16px;font-size:16px;line-height:1.45;color:var(--gray-40)}
+/* Les avis clients et leurs etoiles. */
+.av-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px}
+.av-card{display:flex;flex-direction:column;gap:14px;margin:0;background:#fff;border:1px solid var(--gray-90);border-radius:16px;padding:26px;box-shadow:var(--shadow-tile)}
+.av-stars{display:flex;gap:3px;color:#F5A623}
+.av-stars svg{fill:currentColor}
+.av-stars svg.off{fill:none;color:var(--gray-80)}
+.av-texte{margin:0;flex:1;font-size:17px;line-height:1.45;letter-spacing:-.015em;color:var(--ink)}
+.av-nom{margin:0;font-size:15px;font-weight:500;color:var(--ink)}
+.av-meta{margin:2px 0 0;font-size:14px;color:var(--gray-50)}
 @media (max-width:900px){
   .ld-hero.ld-c h1{font-size:34px}
   .ld-form{padding:22px 18px}
