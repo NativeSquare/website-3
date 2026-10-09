@@ -9,7 +9,6 @@ import {
 import type { MutationCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
-import { enveloppe } from "../src/lib/sequence-email";
 import {
   EMAIL_1,
   EMAIL_2,
@@ -280,14 +279,6 @@ export const envoyer = internalAction({
           destinataire,
           message.objet ?? "",
           message.texte,
-          message.paragraphes
-            ? enveloppe({
-                paragraphes: message.paragraphes,
-                bouton: message.bouton,
-                lienSecondaire: message.lienSecondaire,
-                signature: message.signature,
-              })
-            : undefined,
           message.pieces,
           message.ics,
         );
@@ -312,7 +303,6 @@ async function envoyerEmail(
   a: string,
   objet: string,
   texte: string,
-  html?: string,
   pieces?: { filename: string; url: string }[],
   ics?: { filename: string; contenu: string },
 ) {
@@ -328,7 +318,6 @@ async function envoyerEmail(
       to: [a],
       subject: objet,
       text: texte,
-      ...(html ? { html } : {}),
       ...(pieces?.length || ics
         ? {
             attachments: [

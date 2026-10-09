@@ -153,40 +153,24 @@ export type Message = {
   pieces?: { filename: string; url: string }[];
   /* Fichier d'agenda joint, en texte (converti en base64 a l'envoi). */
   ics?: { filename: string; contenu: string };
-  /* Lien discret sous le bouton. */
-  lienSecondaire?: { libelle: string; url: string };
-  /* La version texte, envoyee telle quelle par SMS et jointe aux emails. */
+  /* Le message, en texte brut : c'est ce qui part par e-mail comme par SMS.
+     Les e-mails sont du texte simple, sans habillage : ils tombent dans la boite
+     principale et ressemblent a ce qu'Alexandre ecrirait a la main. */
   texte: string;
-  /* Les emails ont en plus leurs paragraphes et leur bouton, pour l'habillage. */
-  paragraphes?: string[];
-  bouton?: { libelle: string; url: string };
-  signature?: string;
 };
 
-export const EMAIL_1 = (c: Contact): Message => {
-  const paragraphes = [
+export const EMAIL_1 = (c: Contact): Message => ({
+  objet: "Quick confirmation from Alex",
+  ics: fichierAgenda(c),
+  texte: [
     `Hey ${c.prenom}, looking forward to learning more about your business on ${jour(c)} at ${heure(c.debut, c.fuseau)}. ${phraseLien(c)}`,
-    "Before we talk, I put together a page that covers exactly what we do, the results we've gotten for owners like you, and a short 5 minute video that walks through everything. The owners who watch it beforehand get a lot more out of our call. You can put it on 2x speed to go faster.",
-    "If anything comes up before then, just reply to this email.",
-  ];
-  return {
-    objet: "Quick confirmation from Alex",
-    paragraphes,
-    bouton: { libelle: "Watch the 5 minute video", url: PAGE_PRECALL },
-    lienSecondaire: {
-      libelle: "Add the call to your calendar",
-      url: lienGoogleAgenda(c),
-    },
-    ics: fichierAgenda(c),
-    signature: "Alex\nNativeSquare",
-    texte: [
-      ...paragraphes,
-      PAGE_PRECALL,
-      `Add the call to your calendar: ${lienGoogleAgenda(c)}`,
-      "Alex\nNativeSquare",
-    ].join("\n\n"),
-  };
-};
+    "I put together a page that covers exactly what we do, the results we've gotten for owners like you, and a short 5 minute video that walks through everything. The owners who watch it beforehand get a lot more out of our call. You can put it on 2x speed to go faster.",
+    `Check it out here: ${PAGE_PRECALL}`,
+    `Add the call to your calendar: ${lienGoogleAgenda(c)}`,
+    "If anything comes up before then, just reply to this email. Looking forward to it.",
+    "Alex\nNativeSquare",
+  ].join("\n\n"),
+});
 
 export const SMS_1 = (c: Contact): Message => ({
   texte: `Hey ${c.prenom}, it's Alex. Confirmation email just hit your inbox. I ask everyone I meet with to watch this short video beforehand, it'll make our time together a lot more productive (you can put it on 2x speed): ${PAGE_PRECALL}
@@ -194,27 +178,22 @@ export const SMS_1 = (c: Contact): Message => ({
 Reply STOP to opt out.`,
 });
 
-export const EMAIL_2 = (c: Contact): Message => {
-  const paragraphes = [
+export const EMAIL_2 = (c: Contact): Message => ({
+  objet: `What we'll cover on ${jour(c)}`,
+  pieces: ONE_PAGERS,
+  texte: [
     `Hey ${c.prenom},`,
     `Looking forward to our call on ${jour(c)} at ${heure(c.debut, c.fuseau)}. I've been thinking about ${c.entreprise || "your business"} ahead of it, so here's some extra value before we talk, and a quick note on what to expect.`,
-    "On the call, we'll cover:",
     [
+      "On the call, we'll cover:",
       "- Where the money is leaking in your business right now: missed calls, slow follow-up, dead leads.",
       "- How companies like yours book more jobs without hiring anyone.",
       `- A plan for what we'd build inside ${c.entreprise || "your business"}, and what it would be worth.`,
     ].join("\n"),
-    "I attached two one-pagers that show exactly what we did for other owners. The video and what to have ready for our call are on the same page.",
-  ];
-  return {
-    objet: `What we'll cover on ${jour(c)}`,
-    pieces: ONE_PAGERS,
-    paragraphes,
-    bouton: { libelle: "See the video and the one-pager", url: PAGE_PRECALL },
-    signature: "Talk soon,\nAlex\nNativeSquare",
-    texte: [...paragraphes, PAGE_PRECALL, "Talk soon,\nAlex\nNativeSquare"].join("\n\n"),
-  };
-};
+    `I attached two one-pagers that show exactly what we did for other owners. The video and what to have ready for our call are on the same page: ${PAGE_PRECALL}`,
+    "Talk soon,\nAlex\nNativeSquare",
+  ].join("\n\n"),
+});
 
 export const SMS_2 = (c: Contact): Message => ({
   texte: c.note
@@ -222,19 +201,15 @@ export const SMS_2 = (c: Contact): Message => ({
     : `Hey ${c.prenom}, looking forward to our call on ${jour(c)} at ${heure(c.debut, c.fuseau)}. Did you get a chance to watch that video I sent? It's worth the 5 minutes before we hop on: ${PAGE_PRECALL}`,
 });
 
-export const EMAIL_3 = (c: Contact): Message => {
-  const paragraphes = [
+export const EMAIL_3 = (c: Contact): Message => ({
+  objet: "We're on in 30 minutes",
+  texte: [
     `Hey ${c.prenom}, we're on in 30 minutes. ${phraseLien(c)}`,
     "Everything else is in one place: the one-pager I put together, the results we've gotten for other owners, and how we did it. If you have a few minutes before we get on, take a look. Our conversation will be a lot more productive having seen it first.",
-  ];
-  return {
-    objet: "We're on in 30 minutes",
-    paragraphes,
-    bouton: { libelle: "Open the page", url: PAGE_PRECALL },
-    signature: "See you soon.\nAlex",
-    texte: [...paragraphes, PAGE_PRECALL, "See you soon.\nAlex"].join("\n\n"),
-  };
-};
+    PAGE_PRECALL,
+    "See you soon.\nAlex",
+  ].join("\n\n"),
+});
 
 export const SMS_3 = (c: Contact): Message => ({
   texte: `Hey ${c.prenom}, we're on in 30. Call link is in your email. If you haven't had a chance to watch the video yet, no worries. If you can watch it now, it'll make our conversation a lot more productive: ${PAGE_PRECALL}`,

@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { enveloppe } from "../../../../lib/sequence-email";
 import {
   EMAIL_1,
   EMAIL_2,
@@ -66,9 +65,6 @@ function carteEmail(titre: string, m: Message, indice?: string): Carte {
     objet: m.objet,
     texte: m.texte,
     indice,
-    html: m.paragraphes
-      ? enveloppe({ paragraphes: m.paragraphes, bouton: m.bouton, signature: m.signature })
-      : undefined,
   };
 }
 
@@ -341,7 +337,7 @@ export default function Booker() {
         {contact && (
           <article className="bk-agenda">
             <h4>Ton agenda · dès la réservation</h4>
-            <p className="bk-objet">Free audit with {nomComplet || prenom}</p>
+            <p className="bk-objet">Consultation with {nomComplet || prenom}</p>
             <pre>
               {[
                 `${heureParis(contact.debut)} chez toi, ${heure(contact.debut, fuseau)} chez lui.`,
