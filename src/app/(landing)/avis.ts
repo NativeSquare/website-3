@@ -25,3 +25,27 @@ export type Avis = {
 };
 
 export const AVIS: Avis[] = [];
+
+/**
+ * Avis provisoires pour la demo (demande d'Alexandre, 09/10/2026) : les deux
+ * citations des one-pagers d'exemple. Ils ne s'affichent que si le lien porte
+ * `?avis=demo` et que la liste ci-dessus est vide, jamais sur le lien que les
+ * pubs ouvrent. A SUPPRIMER avant le lancement des pubs, quand AVIS contient
+ * de vrais avis.
+ */
+export const AVIS_DEMO: Avis[] = [
+  {
+    nom: "Owner",
+    entreprise: "Residential roofing company",
+    ville: "Central Florida",
+    note: 5,
+    texte: "I stopped losing jobs to whoever picked up first.",
+  },
+  {
+    nom: "Owner",
+    entreprise: "Septic company",
+    ville: "Georgia",
+    note: 5,
+    texte: "The work was sitting in our own files the whole time. We just never called.",
+  },
+];
