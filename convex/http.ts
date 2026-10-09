@@ -141,6 +141,10 @@ http.route({
       }
     }
 
+    /* Le role et le chiffre d'affaires du lead partent avec le Schedule. */
+    let roleLead: string | undefined;
+    let chiffreAffairesLead: string | undefined;
+
     if (cree || reprogramme) {
       /* Le lead du formulaire passe en « reserve ». Un echec ici ne doit pas
          faire rejouer le webhook : le rendez-vous est deja enregistre. */
@@ -150,6 +154,8 @@ http.route({
           calUid: p.uid,
           debut: p.startTime,
         });
+        roleLead = lead?.role;
+        chiffreAffairesLead = lead?.chiffreAffaires;
         /* Les reservations du tunnel de la landing recoivent la sequence
            (e-mails, depuis Resend) toute seule, y compris apres un
            deplacement. Celles qui ne viennent pas du formulaire (appels a
@@ -183,6 +189,8 @@ http.route({
         visiteId: valeurReponse(p.responses?.visite),
         email: invite?.email,
         nom: invite?.name,
+        role: roleLead,
+        revenue: chiffreAffairesLead,
       });
     }
 

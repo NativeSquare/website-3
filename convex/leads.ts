@@ -1,16 +1,21 @@
 import { v } from "convex/values";
 import { internalMutation, internalQuery, mutation } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { idEvenementLead } from "../src/lib/lead-meta";
 
 /**
- * Le formulaire de la landing des pubs, en deux temps. Les deux mutations sont
- * publiques parce qu'elles sont appelees depuis la route Next `/api/lead` avec
- * le client HTTP, qui n'atteint pas les fonctions internes ; le secret partage
- * (le meme que pour les visites) evite qu'un tiers vienne remplir la table.
+ * Le formulaire de la landing des pubs, en deux temps (retour d'Angelo du
+ * 09/10/2026). Les deux mutations sont publiques parce qu'elles sont appelees
+ * depuis la route Next `/api/lead` avec le client HTTP, qui n'atteint pas les
+ * fonctions internes ; le secret partage (le meme que pour les visites) evite
+ * qu'un tiers vienne remplir la table.
  *
- * Premier temps : prenom, telephone, e-mail. Le lead existe des cet instant,
- * meme s'il ne va pas plus loin : on peut l'appeler.
- * Second temps : les questions. C'est la qu'on dit a Meta « Lead ».
+ * Premier temps : le visiteur a repondu aux deux questions faciles (combien de
+ * chantiers, quelle zone) puis laisse prenom, telephone, e-mail. Le lead existe
+ * des cet instant, meme s'il ne va pas plus loin : on peut l'appeler. C'est la
+ * qu'on dit a Meta « Lead ».
+ * Second temps : les questions de qualification (role, chiffre d'affaires...),
+ * juste avant le calendrier.
  * Reservation : le webhook Cal.com retrouve le lead par son e-mail.
  */
 function verifierSecret(secret: string) {
@@ -23,12 +28,6 @@ function verifierSecret(secret: string) {
   }
 }
 
-/* L'identifiant d'evenement partage entre le pixel du navigateur et l'API
-   Conversions : Meta ne compte qu'un Lead des deux. */
-function idEvenement(leadId: string): string {
-  return `lead-${leadId}`;
-}
-
 export const contact = mutation({
   args: {
     secret: v.string(),
@@ -38,6 +37,8 @@ export const contact = mutation({
     telephone: v.string(),
     consentSms: v.optional(v.boolean()),
     email: v.string(),
+    capacite: v.optional(v.string()),
+    zone: v.optional(v.string()),
     jeton: v.string(),
   },
   returns: v.id("leads"),
@@ -46,7 +47,7 @@ export const contact = mutation({
     const email = args.email.trim().toLowerCase();
 
     /* Retour en arriere ou rechargement : la meme personne qui renvoie le
-       premier temps garde sa ligne, sans nouvelle alerte. */
+       premier temps garde sa ligne, sans nouvelle alerte ni nouveau Lead. */
     const dernier = await ctx.db
       .query("leads")
       .withIndex("by_email", (q) => q.eq("email", email))
@@ -59,6 +60,8 @@ export const contact = mutation({
         telephone: args.telephone,
         consentSms: args.consentSms === true,
         consentSmsLe: args.consentSms === true ? Date.now() : undefined,
+        capacite: args.capacite,
+        zone: args.zone,
         jeton: args.jeton,
         ...(args.visiteId ? { visiteId: args.visiteId } : {}),
       });
@@ -73,9 +76,12 @@ export const contact = mutation({
       consentSms: args.consentSms === true,
       consentSmsLe: args.consentSms === true ? Date.now() : undefined,
       email,
+      capacite: args.capacite,
+      zone: args.zone,
       jeton: args.jeton,
       statut: "partiel",
     });
+    await ctx.scheduler.runAfter(0, internal.meta.lead, { leadId });
     await ctx.scheduler.runAfter(0, internal.notifications.lead, {
       leadId,
       moment: "contact",
@@ -85,8 +91,10 @@ export const contact = mutation({
 });
 
 /**
- * Renvoie l'identifiant d'evenement a utiliser pour le Lead du navigateur, ou
- * null si le lead est inconnu ou si le jeton ne correspond pas.
+ * Les questions de qualification. Renvoie l'identifiant d'evenement du Lead
+ * (deja envoye au contact), ou null si le lead est inconnu ou si le jeton ne
+ * correspond pas. Plus de Meta ici : le role et le chiffre d'affaires partent
+ * avec le Schedule, a la reservation.
  */
 export const reponses = mutation({
   args: {
@@ -106,7 +114,7 @@ export const reponses = mutation({
     if (!lead || lead.jeton !== args.jeton) return null;
 
     /* Un second envoi des reponses ne repart ni vers Meta ni vers Slack. */
-    if (lead.statut !== "partiel") return idEvenement(lead._id);
+    if (lead.statut !== "partiel") return idEvenementLead(lead._id);
 
     await ctx.db.patch("leads", lead._id, {
       sourcesChantiers: args.sourcesChantiers,
@@ -116,12 +124,11 @@ export const reponses = mutation({
       siteWeb: args.siteWeb,
       statut: "complet",
     });
-    await ctx.scheduler.runAfter(0, internal.meta.lead, { leadId: lead._id });
     await ctx.scheduler.runAfter(0, internal.notifications.lead, {
       leadId: lead._id,
       moment: "complet",
     });
-    return idEvenement(lead._id);
+    return idEvenementLead(lead._id);
   },
 });
 
@@ -137,12 +144,15 @@ export const marquerReserve = internalMutation({
     debut: v.optional(v.string()),
   },
   /* Le lead retrouve (prenom et telephone), pour demarrer la sequence de
-     messages ; null si la reservation ne vient pas du formulaire. */
+     messages, et son role et son chiffre d'affaires, pour le Schedule envoye
+     a Meta ; null si la reservation ne vient pas du formulaire. */
   returns: v.union(
     v.object({
       prenom: v.string(),
       telephone: v.string(),
       consentSms: v.boolean(),
+      role: v.optional(v.string()),
+      chiffreAffaires: v.optional(v.string()),
     }),
     v.null(),
   ),
@@ -159,6 +169,8 @@ export const marquerReserve = internalMutation({
       prenom: lead.prenom,
       telephone: lead.telephone,
       consentSms: lead.consentSms === true,
+      role: lead.role,
+      chiffreAffaires: lead.chiffreAffaires,
     };
     /* Webhook rejoue : le lead est deja marque, on rend les memes donnees sans
        renvoyer l'alerte. */

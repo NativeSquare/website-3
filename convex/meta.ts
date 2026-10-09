@@ -1,7 +1,11 @@
 import { v } from "convex/values";
 import { internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
-import { parametresLead } from "../src/lib/lead-meta";
+import {
+  idEvenementLead,
+  parametresLead,
+  parametresSchedule,
+} from "../src/lib/lead-meta";
 
 /**
  * L'API Conversions de Meta : les evenements que le navigateur ne peut pas
@@ -111,9 +115,9 @@ async function envoyerEvenement(evenement: EvenementMeta): Promise<void> {
 }
 
 /**
- * Un lead qui a repondu aux questions du formulaire : l'evenement standard
- * « Lead ». Meme identifiant d'evenement que le pixel du navigateur
- * (`lead-<id>`), donc Meta n'en compte qu'un.
+ * Un lead qui a laisse ses coordonnees (apres les deux questions faciles) :
+ * l'evenement standard « Lead ». Meme identifiant d'evenement que le pixel du
+ * navigateur (`lead-<id>`), donc Meta n'en compte qu'un.
  */
 export const lead = internalAction({
   args: { leadId: v.id("leads") },
@@ -125,22 +129,27 @@ export const lead = internalAction({
       ? await ctx.runQuery(internal.visites.parVisiteId, { visiteId: lead.visiteId })
       : null;
 
+    /* Quand la zone donnee est un code postal americain, il aide Meta a
+       reconnaitre la personne. Une ville en toutes lettres ne s'envoie pas. */
+    const codePostal = lead.zone?.match(/\b\d{5}\b/)?.[0];
+
     await envoyerEvenement({
       event_name: "Lead",
-      event_id: `lead-${lead._id}`,
+      event_id: idEvenementLead(lead._id),
       event_source_url: ORIGINE_SITE + (visite?.chemin ?? "/hvac"),
       user_data: {
         em: await hacherSi(lead.email),
         ph: await hacherTelephone(lead.telephone),
         fn: await hacherSi(lead.prenom),
         ln: await hacherSi(lead.nom),
+        zp: await hacherSi(codePostal),
         external_id: await hacherSi(visite?.visiteurId),
         country: await hacherSi(visite?.pays),
         fbp: visite?.fbp,
         fbc: visite?.fbc,
         client_user_agent: visite?.agent,
       },
-      custom_data: parametresLead(lead.role, lead.chiffreAffaires),
+      custom_data: parametresLead(lead.capacite),
     });
     return null;
   },
@@ -149,6 +158,8 @@ export const lead = internalAction({
 /**
  * Un rendez-vous reserve : l'evenement standard « Schedule ». Identifiant
  * d'evenement = l'uid Cal.com, donc un webhook rejoue ne compte pas deux fois.
+ * Le role et le chiffre d'affaires viennent du lead du formulaire : ce sont les
+ * memes valeurs que le navigateur envoie avec son propre Schedule.
  */
 export const schedule = internalAction({
   args: {
@@ -156,6 +167,8 @@ export const schedule = internalAction({
     visiteId: v.optional(v.string()),
     email: v.optional(v.string()),
     nom: v.optional(v.string()),
+    role: v.optional(v.string()),
+    revenue: v.optional(v.string()),
   },
   returns: v.null(),
   handler: async (ctx, args) => {
@@ -183,7 +196,7 @@ export const schedule = internalAction({
         fbc: visite?.fbc,
         client_user_agent: visite?.agent,
       },
-      custom_data: { content_name: "discovery-call" },
+      custom_data: parametresSchedule(args.role, args.revenue),
     });
     return null;
   },

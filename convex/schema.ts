@@ -104,8 +104,13 @@ export default defineSchema({
     consentSmsLe: v.optional(v.number()),
     /* En minuscules : la reservation Cal.com retrouve le lead par son e-mail. */
     email: v.string(),
-    /* Preuve que l'appel du second temps vient du meme navigateur. */
+    /* Preuve que l'appel des questions de qualification vient du meme navigateur. */
     jeton: v.string(),
+    /* Les deux premieres questions du tunnel (retour d'Angelo du 09/10/2026) :
+       combien de chantiers il peut prendre, et sa zone (ville ou code postal,
+       texte libre). Absents des leads d'avant. */
+    capacite: v.optional(v.string()),
+    zone: v.optional(v.string()),
     sourcesChantiers: v.optional(v.array(v.string())),
     chiffreAffaires: v.optional(v.string()),
     delai: v.optional(v.string()),

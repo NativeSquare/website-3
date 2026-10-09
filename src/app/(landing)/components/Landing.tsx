@@ -1,5 +1,6 @@
 import EmmaCallCard from "../../(site)/components/EmmaCallCard";
 import { content } from "../../(site)/content";
+import CasClients from "../../components/CasClients";
 import CalendrierInline from "./CalendrierInline";
 import Entonnoir from "./Entonnoir";
 import type { Contenu, Porte } from "../contenu";
@@ -10,10 +11,15 @@ import type { Contenu, Porte } from "../contenu";
  * la mise en page A, calendrier apres la preuve, est dans l'historique git),
  * puis comment ca marche, la demo, les questions. Un titre par porte de
  * l'arbre d'appel (?porte=telephone|leads|estimates).
+ *
+ * La landing HVAC est un tunnel : l'accroche, les questions un ecran chacune,
+ * le calendrier, puis des resultats clients et la FAQ (retour d'Angelo du
+ * 09/10/2026 : le plus simple possible, pas d'etapes sous le formulaire).
  */
 
 function Etapes({ c, porte }: { c: Contenu; porte?: Porte }) {
   const accroche = porte && c.portes ? c.portes[porte] : c.generique;
+  if (!accroche.etapes) return null;
   return (
     <section className="ld-section ld-alt">
       <div className="ld-wrap">
@@ -29,6 +35,20 @@ function Etapes({ c, porte }: { c: Contenu; porte?: Porte }) {
             </article>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+function Preuves() {
+  return (
+    <section className="ld-section">
+      <div className="ld-wrap">
+        <div className="ld-head">
+          <div className="pill">Results</div>
+          <h2>What it looks like for owners we&apos;ve worked with</h2>
+        </div>
+        <CasClients />
       </div>
     </section>
   );
@@ -81,8 +101,9 @@ export default function Landing({
 }) {
   const accroche = porte && c.portes ? c.portes[porte] : c.generique;
 
-  /* Le tunnel en une colonne : l'accroche, le formulaire, puis le calendrier
-     qui n'arrive qu'apres les questions (meeting Angelo du 08/10/2026). */
+  /* Le tunnel en une colonne : l'accroche, les questions, puis le calendrier
+     qui n'arrive qu'apres les questions (meeting Angelo du 08/10/2026, retour
+     du 09/10/2026). */
   if (c.formulaire) {
     const f = c.formulaire;
     return (
@@ -98,10 +119,10 @@ export default function Landing({
             </div>
             <Entonnoir
               source={source}
-              titre={f.titre}
               boutonContact={f.boutonContact}
-              boutonQuestions={f.boutonQuestions}
+              boutonFinal={f.boutonFinal}
               consentement={f.consentement}
+              zoneOuverte={f.zoneOuverte}
               reserverTitre={f.reserverTitre}
               reserverTexte={f.reserverTexte}
               apresReservation={f.apresReservation}
@@ -109,7 +130,7 @@ export default function Landing({
           </div>
         </section>
 
-        <Etapes c={c} porte={porte} />
+        <Preuves />
         <Demo c={c} />
         <Faq c={c} />
       </>

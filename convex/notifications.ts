@@ -38,7 +38,7 @@ export const lead = internalAction({
       : null;
 
     const titres = {
-      contact: "New HVAC lead, left their contact info",
+      contact: "New HVAC lead, left their contact info. Call them.",
       complet: "Lead answered the questions, no call booked yet",
       reserve: "Call booked",
     };
@@ -47,6 +47,11 @@ export const lead = internalAction({
       `${echapper([lead.prenom, lead.nom].filter(Boolean).join(" "))} | ${echapper(lead.telephone)} | ${echapper(lead.email)}`,
       `Texts OK: ${lead.consentSms ? "yes" : "no"}`,
     ];
+    if (lead.capacite || lead.zone) {
+      lignes.push(
+        `Can take on: ${echapper(lead.capacite ?? "?")} | Area: ${echapper(lead.zone ?? "?")}`,
+      );
+    }
 
     if (args.moment !== "contact" && lead.chiffreAffaires) {
       lignes.push(

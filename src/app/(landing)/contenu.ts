@@ -21,7 +21,9 @@ export function lirePorte(valeur: string | undefined): Porte | undefined {
 type Accroche = {
   h1: string;
   lead: string;
-  etapes: { h3: string; p: string }[];
+  /* Absentes de la landing HVAC : le tunnel se suffit, Angelo a retire les
+     etapes sous le formulaire (09/10/2026). */
+  etapes?: { h3: string; p: string }[];
 };
 
 export type Contenu = {
@@ -32,14 +34,16 @@ export type Contenu = {
   generique: Accroche;
   /* Un titre par porte de l'arbre d'appel : seulement les landings des poseurs de fenetres. */
   portes?: Record<Porte, Accroche>;
-  etapesTitre: string;
-  /* Le formulaire en deux temps puis le calendrier, en une colonne (HVAC) :
-     absent des landings qui gardent le calendrier dans le hero. */
+  etapesTitre?: string;
+  /* Le tunnel en une colonne (HVAC) : les questions, un ecran chacune, puis le
+     calendrier. Absent des landings qui gardent le calendrier dans le hero. */
   formulaire?: {
-    titre: string;
     boutonContact: string;
-    boutonQuestions: string;
+    boutonFinal: string;
     consentement: string;
+    /* Affiche sur le premier ecran de qualification, apres le contact.
+       « {prenom} » et « {zone} » sont remplaces par les reponses. */
+    zoneOuverte: string;
     /* « {prenom} » est remplace par le prenom saisi. */
     reserverTitre: string;
     reserverTexte: string;
@@ -134,19 +138,14 @@ export const contenu: Record<Niche, Contenu> = {
     generique: {
       h1: "50 or more exclusive HVAC leads a month, or you don't pay a cent.",
       lead: "Answer a few questions, pick a time, and we'll go through it together.",
-      etapes: [
-        { h3: "You answer a few questions", p: "Your contact info first, then five quick ones about your company. Two minutes." },
-        { h3: "You pick a time", p: "A thirty-minute video consultation with NativeSquare. The calendar opens right after the form." },
-        { h3: "We go through your numbers", p: "You tell me how your leads come in today. I show you how the system works and you decide." },
-      ],
     },
-    etapesTitre: "What happens next",
     formulaire: {
-      titre: "Book your consultation with NativeSquare",
-      boutonContact: "Continue",
-      boutonQuestions: "See available times",
+      boutonContact: "Check my area",
+      boutonFinal: "See available times",
       consentement:
         "NativeSquare will use your name, phone number and email to contact you by phone or email about this offer and to book your call.",
+      zoneOuverte:
+        "Good news, {prenom}. We're taking on HVAC companies in {zone}. Four quick questions, then you pick your time.",
       reserverTitre: "Pick a time",
       reserverTexte:
         "Thanks, {prenom}. Choose the slot that suits you for the thirty-minute video consultation.",

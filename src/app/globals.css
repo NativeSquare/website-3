@@ -904,20 +904,34 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-faq summary{cursor:pointer;font-family:var(--font-title);font-weight:500;font-size:19px;letter-spacing:-.02em;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px}
 .ld-faq summary::-webkit-details-marker{display:none}
 .ld-faq summary::after{content:"+";color:var(--gray-50);font-size:22px;flex:none}
-.ld-faq details[open] summary::after{content:"3"}
+.ld-faq details[open] summary::after{content:"−"}
 .ld-faq details p{margin-top:10px;font-size:16px;line-height:1.5;color:var(--gray-40)}
-/* Le tunnel HVAC en une colonne : accroche, formulaire en deux temps, calendrier. */
+/* Le tunnel HVAC en une colonne : accroche, une question par ecran, calendrier. */
 .ld-hero.ld-c .ld-hero-inner{padding-top:72px;padding-bottom:64px}
 .ld-hero.ld-c h1{font-size:48px}
 .ld-funnel{max-width:640px;margin:36px auto 0;text-align:left}
 .ld-form{background:#fff;border:1px solid var(--gray-90);border-radius:16px;padding:28px;box-shadow:var(--shadow-tile);scroll-margin-top:80px}
 .ld-form h2{font-size:24px;line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
-.ld-step-label{margin:0 0 8px;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-50)}
+.ld-prog{height:4px;border-radius:2px;background:var(--gray-90);margin:0 0 22px;overflow:hidden}
+.ld-prog i{display:block;height:100%;border-radius:2px;background:var(--blue);transition:width .25s cubic-bezier(.4,0,.2,1)}
+.ld-retour{margin:-6px 0 12px;padding:2px 0;border:0;background:none;font:inherit;font-size:14px;color:var(--gray-50);cursor:pointer}
+.ld-retour:hover{color:var(--ink)}
+.ld-retour:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:4px}
+.ld-aide{margin:6px 0 0;font-size:14.5px;color:var(--gray-50)}
+.ld-ok{display:flex;align-items:flex-start;gap:10px;margin:0 0 18px;padding:12px 14px;border-radius:12px;background:rgba(51,121,62,.09);color:#2A6334;font-size:15px;line-height:1.4}
+.ld-ok svg{flex:none;margin-top:1px}
+.ld-cartes{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.ld-carte{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-height:56px;padding:14px 18px;border:1px solid var(--gray-80);border-radius:12px;background:#fff;font:inherit;font-size:17px;line-height:1.3;letter-spacing:-.01em;color:var(--ink);text-align:left;cursor:pointer;transition:border-color .12s,background-color .12s}
+.ld-carte:hover{border-color:var(--blue)}
+.ld-carte:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.ld-carte[aria-pressed=true]{border-color:var(--blue);background:rgba(0,131,245,.07)}
+.ld-carte .case{flex:none;position:relative;width:20px;height:20px;border:1.5px solid var(--gray-70);border-radius:6px;background:#fff}
+.ld-carte[aria-pressed=true] .case{border-color:var(--blue);background:var(--blue)}
+.ld-carte[aria-pressed=true] .case::after{content:"";position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
 .ld-field{display:flex;flex-direction:column;gap:8px;margin:18px 0 0;padding:0;border:0;min-width:0}
 .ld-field .lab{font-size:15px;font-weight:500;letter-spacing:-.01em;color:var(--ink);padding:0}
 .ld-field input[type=text],.ld-field input[type=tel],.ld-field input[type=email]{height:48px;border:1px solid var(--gray-80);border-radius:10px;padding:0 14px;font:inherit;font-size:16px;color:var(--ink);background:#fff;width:100%}
 .ld-field input:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
-.ld-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 /* Le champ telephone : drapeau et indicatif, puis le numero, dans le meme cadre que les autres champs. */
 .ld-field .PhoneInput{display:flex;align-items:center;gap:10px;height:48px;padding:0 12px;border:1px solid var(--gray-80);border-radius:10px;background:#fff;
   --PhoneInputCountryFlag-height:18px;--PhoneInputCountryFlag-borderColor:transparent;--PhoneInputCountrySelectArrow-color:var(--gray-50);--PhoneInputCountrySelectArrow-opacity:1}
@@ -927,7 +941,6 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-opt.ld-sms{margin-top:18px;font-size:13px;line-height:1.45;color:var(--gray-40)}
 .ld-opt.ld-sms a{color:inherit;text-decoration:underline}
 .ld-hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
-.ld-opts{display:flex;flex-direction:column;gap:2px}
 .ld-opt{display:flex;align-items:flex-start;gap:12px;padding:9px 2px;cursor:pointer;font-size:16px;line-height:1.35;color:var(--ink)}
 .ld-opt input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--blue);cursor:pointer}
 .ld-opt input:focus-visible{outline:2px solid var(--blue);outline-offset:2px}

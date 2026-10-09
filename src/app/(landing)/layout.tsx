@@ -1,9 +1,10 @@
 import Link from "next/link";
 import NsMark from "../(site)/components/NsMark";
+import BoutonEntete from "./components/BoutonEntete";
 
-/* Les landings de pubs : pas de menu, un seul bouton, qui descend au
-   calendrier de la page. Le visiteur vient d'une pub, il n'a rien d'autre a
-   faire ici que reserver. */
+/* Les landings de pubs : pas de menu, au plus un bouton, qui descend au
+   calendrier de la page (voir BoutonEntete). Le visiteur vient d'une pub, il
+   n'a rien d'autre a faire ici que reserver. */
 export default function LandingLayout({
   children,
 }: {
@@ -17,9 +18,7 @@ export default function LandingLayout({
             <NsMark className="ns-mark" />
             <span>NativeSquare</span>
           </Link>
-          <a href="#book" className="btn btn-primary btn-sm">
-            Book a call
-          </a>
+          <BoutonEntete />
         </div>
       </header>
       <main className="ld-main">{children}</main>

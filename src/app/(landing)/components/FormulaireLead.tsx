@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { Check } from "lucide-react";
 import posthog from "posthog-js";
+import { isValidPhoneNumber } from "react-phone-number-input";
 import { lireVisiteId } from "../../lib/visite";
 import { suivreMeta } from "../../lib/meta";
 import { parametresLead } from "../../../lib/lead-meta";
-import { isValidPhoneNumber } from "react-phone-number-input";
 import TelephoneInput from "./TelephoneInput";
 import {
+  CAPACITES,
   CHIFFRES_AFFAIRES,
   DELAIS,
   ROLES,
@@ -16,56 +18,82 @@ import {
 } from "../formulaire";
 
 /**
- * Le formulaire de la landing, en deux temps (meeting Angelo du 08/10/2026) :
- *   1. prenom, nom, telephone, e-mail : le lead est enregistre tout de suite, meme
- *      s'il s'arrete la ;
- *   2. les questions : c'est ce temps-la qui envoie « Lead » a Meta, du
- *      navigateur ici, du serveur depuis Convex, avec le meme eventID.
- * Quand le second temps est fini, la page affiche le calendrier.
+ * Le tunnel de la landing HVAC, un ecran par question (retour d'Angelo du
+ * 09/10/2026) :
+ *   0. combien de chantiers peut-il prendre ;
+ *   1. sa zone ;
+ *   2. prenom, telephone, e-mail : le lead est enregistre, c'est un lead
+ *      partiel qu'on peut appeler, et c'est ce temps-la qui envoie « Lead » a
+ *      Meta, du navigateur ici, du serveur depuis Convex, avec le meme eventID ;
+ *   3 a 6. les questions de qualification, juste avant le calendrier.
+ * Quand le dernier ecran est fini, la page affiche le calendrier.
  *
  * Si le serveur ne repond pas, la personne avance quand meme : un formulaire
  * en panne ne doit jamais empecher une reservation.
+ *
+ * La progression est gardee dans l'onglet (sessionStorage) : un rechargement
+ * ne renvoie pas la personne au debut ni ne lui fait redonner son contact.
  */
 
-type Lead = { prenom: string; nom: string; email: string };
+export type LeadQualifie = {
+  prenom: string;
+  email: string;
+  role: string;
+  chiffreAffaires: string;
+};
 
 type Props = {
   source: string;
-  titre: string;
   boutonContact: string;
-  boutonQuestions: string;
+  boutonFinal: string;
   consentement: string;
-  onComplete: (lead: Lead) => void;
+  /* « {prenom} » et « {zone} » sont remplaces par les reponses. */
+  zoneOuverte: string;
+  onComplete: (lead: LeadQualifie) => void;
 };
 
-function Puces({
-  nom,
-  type,
+const ECRAN = { CAPACITE: 0, ZONE: 1, CONTACT: 2, ROLE: 3, CA: 4, DELAI: 5, FIN: 6 } as const;
+const NB_ECRANS = 7;
+const CLE_STOCKAGE = "ns_quiz";
+
+type Sauvegarde = {
+  ecran: number;
+  capacite: string;
+  zone: string;
+  prenom: string;
+  email: string;
+  lead: { leadId?: string; jeton?: string };
+  role: string;
+  chiffreAffaires: string;
+  delai: string;
+  sources: string[];
+  siteWeb: string;
+};
+
+function Cartes({
   options,
   valeurs,
-  onChange,
+  multiple,
+  onChoix,
 }: {
-  nom: string;
-  type: "checkbox" | "radio";
   options: readonly string[];
   valeurs: string[];
-  onChange: (valeurs: string[]) => void;
+  multiple?: boolean;
+  onChoix: (option: string) => void;
 }) {
   return (
-    <div className="ld-opts">
+    <div className="ld-cartes" role="group">
       {options.map((o) => (
-        <label className="ld-opt" key={o}>
-          <input
-            type={type}
-            name={nom}
-            checked={valeurs.includes(o)}
-            onChange={(e) => {
-              if (type === "radio") onChange([o]);
-              else onChange(e.target.checked ? [...valeurs, o] : valeurs.filter((v) => v !== o));
-            }}
-          />
+        <button
+          type="button"
+          key={o}
+          className={multiple ? "ld-carte multi" : "ld-carte"}
+          aria-pressed={valeurs.includes(o)}
+          onClick={() => onChoix(o)}
+        >
           <span>{o}</span>
-        </label>
+          {multiple && <i className="case" aria-hidden="true" />}
+        </button>
       ))}
     </div>
   );
@@ -73,29 +101,113 @@ function Puces({
 
 export default function FormulaireLead({
   source,
-  titre,
   boutonContact,
-  boutonQuestions,
+  boutonFinal,
   consentement,
+  zoneOuverte,
   onComplete,
 }: Props) {
-  const [etape, setEtape] = useState<1 | 2>(1);
+  const [ecran, setEcran] = useState<number>(ECRAN.CAPACITE);
+  const [restaure, setRestaure] = useState(false);
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
+  const carte = useRef<HTMLDivElement>(null);
+  const premierRendu = useRef(true);
 
+  const [capacite, setCapacite] = useState("");
+  const [zone, setZone] = useState("");
   const [prenom, setPrenom] = useState("");
-  const [nom, setNom] = useState("");
   const [telephone, setTelephone] = useState("");
   const [consentSms, setConsentSms] = useState(false);
   const [email, setEmail] = useState("");
   const [fax, setFax] = useState("");
   const [lead, setLead] = useState<{ leadId?: string; jeton?: string }>({});
 
+  const [role, setRole] = useState("");
+  const [chiffreAffaires, setChiffreAffaires] = useState("");
+  const [delai, setDelai] = useState("");
   const [sources, setSources] = useState<string[]>([]);
-  const [chiffreAffaires, setChiffreAffaires] = useState<string[]>([]);
-  const [delai, setDelai] = useState<string[]>([]);
-  const [role, setRole] = useState<string[]>([]);
   const [siteWeb, setSiteWeb] = useState("");
+
+  /* Reprise apres un rechargement : le stockage n'existe pas cote serveur, on
+     le lit apres l'affichage pour que les deux rendus restent identiques. C'est
+     de la synchronisation avec un systeme externe, pas un etat derive. */
+  /* eslint-disable react-hooks/set-state-in-effect */
+  useEffect(() => {
+    try {
+      const brut = sessionStorage.getItem(CLE_STOCKAGE);
+      if (brut) {
+        const s = JSON.parse(brut) as Partial<Sauvegarde>;
+        if (typeof s.ecran === "number" && s.ecran >= 0 && s.ecran < NB_ECRANS) setEcran(s.ecran);
+        if (typeof s.capacite === "string") setCapacite(s.capacite);
+        if (typeof s.zone === "string") setZone(s.zone);
+        if (typeof s.prenom === "string") setPrenom(s.prenom);
+        if (typeof s.email === "string") setEmail(s.email);
+        if (s.lead && typeof s.lead === "object") setLead(s.lead);
+        if (typeof s.role === "string") setRole(s.role);
+        if (typeof s.chiffreAffaires === "string") setChiffreAffaires(s.chiffreAffaires);
+        if (typeof s.delai === "string") setDelai(s.delai);
+        if (Array.isArray(s.sources)) setSources(s.sources.filter((x) => typeof x === "string"));
+        if (typeof s.siteWeb === "string") setSiteWeb(s.siteWeb);
+      }
+    } catch {
+      /* Stockage refuse (navigation privee) : on repart du debut. */
+    }
+    setRestaure(true);
+  }, []);
+  /* eslint-enable react-hooks/set-state-in-effect */
+
+  useEffect(() => {
+    if (!restaure) return;
+    const sauvegarde: Sauvegarde = {
+      ecran,
+      capacite,
+      zone,
+      prenom,
+      email,
+      lead,
+      role,
+      chiffreAffaires,
+      delai,
+      sources,
+      siteWeb,
+    };
+    try {
+      sessionStorage.setItem(CLE_STOCKAGE, JSON.stringify(sauvegarde));
+    } catch {
+      /* Pas de stockage : le tunnel marche quand meme. */
+    }
+  }, [restaure, ecran, capacite, zone, prenom, email, lead, role, chiffreAffaires, delai, sources, siteWeb]);
+
+  /* Un evenement par ecran pour voir ou les gens s'arretent. */
+  useEffect(() => {
+    if (!restaure) return;
+    posthog.capture("quiz_ecran", { source, ecran, visiteId: lireVisiteId() });
+  }, [restaure, ecran, source]);
+
+  /* Sur un ecran plus haut que ce qui reste visible, on remonte au debut de la
+     carte ; sinon la page ne bouge pas. */
+  useEffect(() => {
+    if (premierRendu.current) {
+      premierRendu.current = false;
+      return;
+    }
+    const haut = carte.current?.getBoundingClientRect().top ?? 0;
+    if (haut < 0) carte.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [ecran]);
+
+  function aller(vers: number) {
+    setErreur("");
+    setEcran(vers);
+  }
+
+  /* Un clic sur une carte la choisit, puis passe a l'ecran suivant apres un
+     court instant, le temps de voir la selection. */
+  function choisir(poser: (valeur: string) => void, valeur: string, depuis: number) {
+    poser(valeur);
+    setErreur("");
+    window.setTimeout(() => setEcran((e) => (e === depuis ? depuis + 1 : e)), 170);
+  }
 
   async function envoyer(corps: Record<string, unknown>) {
     const reponse = await fetch("/api/lead", {
@@ -112,115 +224,186 @@ export default function FormulaireLead({
     };
   }
 
+  function validerZone(e: React.FormEvent) {
+    e.preventDefault();
+    if (zone.trim().length < 2) {
+      setErreur("Please tell us your area.");
+      return;
+    }
+    aller(ECRAN.CONTACT);
+  }
+
   async function validerContact(e: React.FormEvent) {
     e.preventDefault();
     if (envoi) return;
     setErreur("");
+    if (!prenom.trim()) {
+      setErreur("Please enter your first name.");
+      return;
+    }
     /* Le numero doit etre valide pour son pays : un mauvais indicatif ferait
        echouer les appels et les textos. */
     if (!telephone || !isValidPhoneNumber(telephone)) {
       setErreur("Please enter a valid mobile number for the country selected.");
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setErreur("Please enter a valid email.");
+      return;
+    }
     setEnvoi(true);
+    let eventId: string | null | undefined;
+    let erreurDeSaisie = false;
     try {
-      const r = await envoyer({ etape: 1, prenom, nom, telephone, consentSms, email, fax });
+      const r = await envoyer({
+        etape: 1,
+        prenom,
+        telephone,
+        consentSms,
+        email,
+        capacite,
+        zone,
+        fax,
+      });
       /* Une erreur de saisie (400) se corrige ; une panne du serveur ne
          retient personne. */
       if (r.erreur) {
         setErreur(r.erreur);
-        return;
+        erreurDeSaisie = true;
+      } else {
+        setLead({ leadId: r.leadId, jeton: r.jeton });
+        eventId = r.eventId;
       }
-      setLead({ leadId: r.leadId, jeton: r.jeton });
-      posthog.capture("formulaire_contact", { source, visiteId: lireVisiteId() });
-      setEtape(2);
-    } catch {
-      setEtape(2);
-    } finally {
-      setEnvoi(false);
-    }
-  }
-
-  async function validerQuestions(e: React.FormEvent) {
-    e.preventDefault();
-    if (envoi) return;
-    if (!sources.length || !chiffreAffaires.length || !delai.length || !role.length) {
-      setErreur("Please answer every question.");
-      return;
-    }
-    setErreur("");
-    setEnvoi(true);
-    let eventId: string | null | undefined;
-    try {
-      const r = await envoyer({
-        etape: 2,
-        leadId: lead.leadId,
-        jeton: lead.jeton,
-        sources,
-        chiffreAffaires: chiffreAffaires[0],
-        delai: delai[0],
-        role: role[0],
-        siteWeb,
-      });
-      if (r.erreur) {
-        setErreur(r.erreur);
-        setEnvoi(false);
-        return;
-      }
-      eventId = r.eventId;
     } catch {
       /* On continue : voir plus haut. */
     }
+    setEnvoi(false);
+    if (erreurDeSaisie) return;
 
-    /* Le Lead du navigateur porte l'identifiant que le serveur a envoye a
-       l'API Conversions : Meta n'en compte qu'un. Sans identifiant (serveur
-       muet), le navigateur compte seul. */
-    const parametres = parametresLead(role[0], chiffreAffaires[0]);
+    /* Le Lead du navigateur porte l'identifiant que le serveur envoie a l'API
+       Conversions : Meta n'en compte qu'un. Sans identifiant (serveur muet), le
+       navigateur compte seul. */
+    const parametres = parametresLead(capacite);
     if (eventId && window.fbq) {
       window.fbq("track", "Lead", parametres, { eventID: eventId });
     } else {
       suivreMeta("Lead", parametres);
     }
+    posthog.capture("formulaire_contact", { source, visiteId: lireVisiteId(), capacite });
+    aller(ECRAN.ROLE);
+  }
+
+  async function validerFin(e: React.FormEvent) {
+    e.preventDefault();
+    if (envoi) return;
+    if (!sources.length) {
+      setErreur("Please pick at least one answer.");
+      return;
+    }
+    setErreur("");
+    setEnvoi(true);
+    /* Sans lead enregistre (serveur muet au contact), il n'y a rien a mettre a
+       jour : on passe au calendrier. */
+    if (lead.leadId && lead.jeton) {
+      try {
+        const r = await envoyer({
+          etape: 2,
+          leadId: lead.leadId,
+          jeton: lead.jeton,
+          sources,
+          chiffreAffaires,
+          delai,
+          role,
+          siteWeb,
+        });
+        if (r.erreur) {
+          setErreur(r.erreur);
+          setEnvoi(false);
+          return;
+        }
+      } catch {
+        /* On continue : voir plus haut. */
+      }
+    }
     posthog.capture("formulaire_complet", { source, visiteId: lireVisiteId() });
     setEnvoi(false);
     onComplete({
       prenom: prenom.trim(),
-      nom: nom.trim(),
       email: email.trim().toLowerCase(),
+      role,
+      chiffreAffaires,
     });
   }
 
-  return (
-    <div className="ld-form" id="book">
-      <p className="ld-step-label">Step {etape} of 2</p>
-      <h2>{titre}</h2>
+  const zoneAffichee = zone.trim().length <= 40 ? zone.trim() : "your area";
+  const retourPossible = ecran === ECRAN.ZONE || ecran === ECRAN.CONTACT || ecran >= ECRAN.CA;
 
-      {etape === 1 ? (
+  return (
+    <div className="ld-form" id="book" ref={carte}>
+      <div
+        className="ld-prog"
+        role="progressbar"
+        aria-label="Progress"
+        aria-valuemin={1}
+        aria-valuemax={NB_ECRANS}
+        aria-valuenow={ecran + 1}
+      >
+        <i style={{ width: `${((ecran + 1) / NB_ECRANS) * 100}%` }} />
+      </div>
+      {retourPossible && (
+        <button type="button" className="ld-retour" onClick={() => aller(ecran - 1)}>
+          ← Back
+        </button>
+      )}
+
+      {ecran === ECRAN.CAPACITE && (
+        <>
+          <h2>How many jobs can you take on right now?</h2>
+          <Cartes
+            options={CAPACITES}
+            valeurs={[capacite]}
+            onChoix={(o) => choisir(setCapacite, o, ECRAN.CAPACITE)}
+          />
+        </>
+      )}
+
+      {ecran === ECRAN.ZONE && (
+        <form onSubmit={validerZone} noValidate>
+          <h2>What area are you in?</h2>
+          <label className="ld-field">
+            <span className="lab">City or ZIP code</span>
+            <input
+              type="text"
+              name="zone"
+              autoComplete="off"
+              autoFocus
+              maxLength={80}
+              placeholder="Miami, FL or 33101"
+              value={zone}
+              onChange={(e) => setZone(e.target.value)}
+            />
+          </label>
+          {erreur && <p className="ld-erreur" role="alert">{erreur}</p>}
+          <button type="submit" className="btn btn-primary">
+            Continue
+          </button>
+        </form>
+      )}
+
+      {ecran === ECRAN.CONTACT && (
         <form onSubmit={validerContact} noValidate>
-          <div className="ld-row">
-            <label className="ld-field">
-              <span className="lab">First name</span>
-              <input
-                type="text"
-                name="prenom"
-                autoComplete="given-name"
-                value={prenom}
-                onChange={(e) => setPrenom(e.target.value)}
-                required
-              />
-            </label>
-            <label className="ld-field">
-              <span className="lab">Last name</span>
-              <input
-                type="text"
-                name="nom"
-                autoComplete="family-name"
-                value={nom}
-                onChange={(e) => setNom(e.target.value)}
-                required
-              />
-            </label>
-          </div>
+          <h2>Where can we reach you?</h2>
+          <label className="ld-field">
+            <span className="lab">First name</span>
+            <input
+              type="text"
+              name="prenom"
+              autoComplete="given-name"
+              value={prenom}
+              onChange={(e) => setPrenom(e.target.value)}
+              required
+            />
+          </label>
           <div className="ld-field">
             <span className="lab">Mobile phone</span>
             <TelephoneInput value={telephone} onChange={setTelephone} />
@@ -276,24 +459,62 @@ export default function FormulaireLead({
             </Link>
           </p>
         </form>
-      ) : (
-        <form onSubmit={validerQuestions} noValidate>
-          <fieldset className="ld-field">
-            <legend className="lab">How do you get jobs right now? (pick all that apply)</legend>
-            <Puces nom="sources" type="checkbox" options={SOURCES_CHANTIERS} valeurs={sources} onChange={(v) => { setErreur(""); setSources(v); }} />
-          </fieldset>
-          <fieldset className="ld-field">
-            <legend className="lab">What does your company bring in per month?</legend>
-            <Puces nom="ca" type="radio" options={CHIFFRES_AFFAIRES} valeurs={chiffreAffaires} onChange={(v) => { setErreur(""); setChiffreAffaires(v); }} />
-          </fieldset>
-          <fieldset className="ld-field">
-            <legend className="lab">How soon do you want more jobs?</legend>
-            <Puces nom="delai" type="radio" options={DELAIS} valeurs={delai} onChange={(v) => { setErreur(""); setDelai(v); }} />
-          </fieldset>
-          <fieldset className="ld-field">
-            <legend className="lab">What is your role in the company?</legend>
-            <Puces nom="role" type="radio" options={ROLES} valeurs={role} onChange={(v) => { setErreur(""); setRole(v); }} />
-          </fieldset>
+      )}
+
+      {ecran === ECRAN.ROLE && (
+        <>
+          <p className="ld-ok">
+            <Check size={18} strokeWidth={2.25} aria-hidden="true" />
+            <span>
+              {zoneOuverte
+                .replace("{prenom}", prenom.trim())
+                .replace("{zone}", zoneAffichee || "your area")}
+            </span>
+          </p>
+          <h2>What is your role in the company?</h2>
+          <Cartes
+            options={ROLES}
+            valeurs={[role]}
+            onChoix={(o) => choisir(setRole, o, ECRAN.ROLE)}
+          />
+        </>
+      )}
+
+      {ecran === ECRAN.CA && (
+        <>
+          <h2>What does your company bring in per month?</h2>
+          <Cartes
+            options={CHIFFRES_AFFAIRES}
+            valeurs={[chiffreAffaires]}
+            onChoix={(o) => choisir(setChiffreAffaires, o, ECRAN.CA)}
+          />
+        </>
+      )}
+
+      {ecran === ECRAN.DELAI && (
+        <>
+          <h2>How soon do you want more jobs?</h2>
+          <Cartes
+            options={DELAIS}
+            valeurs={[delai]}
+            onChoix={(o) => choisir(setDelai, o, ECRAN.DELAI)}
+          />
+        </>
+      )}
+
+      {ecran === ECRAN.FIN && (
+        <form onSubmit={validerFin} noValidate>
+          <h2>How do you get jobs right now?</h2>
+          <p className="ld-aide">Pick all that apply.</p>
+          <Cartes
+            multiple
+            options={SOURCES_CHANTIERS}
+            valeurs={sources}
+            onChoix={(o) => {
+              setErreur("");
+              setSources((s) => (s.includes(o) ? s.filter((x) => x !== o) : [...s, o]));
+            }}
+          />
           <label className="ld-field">
             <span className="lab">Company website (optional)</span>
             <input
@@ -308,7 +529,7 @@ export default function FormulaireLead({
           </label>
           {erreur && <p className="ld-erreur" role="alert">{erreur}</p>}
           <button type="submit" className="btn btn-primary" disabled={envoi}>
-            {envoi ? "One moment…" : boutonQuestions}
+            {envoi ? "One moment…" : boutonFinal}
           </button>
         </form>
       )}

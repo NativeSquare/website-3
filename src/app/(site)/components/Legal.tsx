@@ -183,7 +183,7 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                     <li>Contacting you by phone or email about the offer you asked about, including when you send your details through a Facebook or Instagram lead form.</li>
                     <li>Scheduling strategy calls and managing appointments.</li>
                     <li>Improving website performance and user experience through analytics.</li>
-                    <li>Measuring whether our ads lead to bookings and to relevant leads, with the Meta Pixel, Meta&apos;s server connection (Conversions API) and the LinkedIn Insight Tag. When you send a form, Meta receives the fact that you did, with your role in the company and your revenue range, so that our ads reach more business owners (see our Cookie Policy).</li>
+                    <li>Measuring whether our ads lead to bookings and to relevant leads, with the Meta Pixel, Meta&apos;s server connection (Conversions API) and the LinkedIn Insight Tag. When you send your contact details, Meta receives the fact that you did, with the number of jobs you can take on. When you book a call, Meta receives the booking, with your role in the company and your revenue range, so that our ads reach more business owners (see our Cookie Policy).</li>
                     <li>Sending newsletters or updates (only with explicit consent).</li>
                     <li>Sending text messages about a call you have scheduled with us, only if you agreed to receive them (see section 6).</li>
                   </ul>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Mail } from "lucide-react";
 import PrecallVideo from "../components/PrecallVideo";
 import SansParametres from "../components/SansParametres";
-import LienOnePager from "../components/LienOnePager";
+import CasClients from "../../components/CasClients";
 
 /* La page que le prospect voit juste apres avoir reserve son appel : la video
    pre-call et les deux one-pagers.
@@ -17,24 +17,6 @@ import LienOnePager from "../components/LienOnePager";
 
 /* Identifiant Wistia de la video (media-id du code d'embed). */
 const WISTIA_ID = "1c0hslv1e7";
-
-/* Memes chiffres que la slide 7 de la video et que les one-pagers. */
-const CAS = [
-  {
-    id: "roofing",
-    tag: "Roofing · Central Florida",
-    big: "+31",
-    lbl: "booked jobs in 90 days, from calls that used to go to voicemail.",
-    pdf: "/precall/one-pager-roofing.pdf",
-  },
-  {
-    id: "septic",
-    tag: "Septic · Georgia",
-    big: "+$94k",
-    lbl: "in rebooked pumping and installs from customers they already had.",
-    pdf: "/precall/one-pager-septic.pdf",
-  },
-];
 
 const A_PREPARER = [
   {
@@ -107,19 +89,7 @@ export default function BeforeOurCallPage() {
             <div className="pill">Results</div>
             <h2>What it looks like for owners we&apos;ve worked with</h2>
           </div>
-          <div className="bc-cases">
-            {CAS.map((c) => (
-              <article key={c.id} className="bc-case corners">
-                <Croisillons />
-                <p className="bc-tag">{c.tag}</p>
-                <p className="bc-big">{c.big}</p>
-                <p className="bc-lbl">{c.lbl}</p>
-                <LienOnePager href={c.pdf} cas={c.id} className="bc-link">
-                  Read the one-pager (PDF)
-                </LienOnePager>
-              </article>
-            ))}
-          </div>
+          <CasClients avecPdf />
         </div>
       </section>
 

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import posthog from "posthog-js";
 import { lireVisiteId } from "../../lib/visite";
+import { parametresSchedule } from "../../../lib/lead-meta";
 
 /**
  * Le calendrier Cal.com dans la page, au lieu d'un lien qui ouvre un onglet :
@@ -77,6 +78,7 @@ export default function CalendrierInline({
   source,
   ancre = "book",
   prefill,
+  reponses,
   apresReservation,
 }: {
   source: string;
@@ -84,6 +86,9 @@ export default function CalendrierInline({
   ancre?: string;
   /* Le nom et l'e-mail deja donnes dans le formulaire de la page. */
   prefill?: { name: string; email: string };
+  /* Les reponses de qualification du formulaire : elles partent avec le
+     Schedule du navigateur, comme le serveur envoie celles du lead. */
+  reponses?: { role: string; chiffreAffaires: string };
   /* Ou envoyer la personne une fois le rendez-vous pris. */
   apresReservation?: string;
 }) {
@@ -91,6 +96,8 @@ export default function CalendrierInline({
   const [charge, setCharge] = useState(false);
   const prefillNom = prefill?.name;
   const prefillEmail = prefill?.email;
+  const reponseRole = reponses?.role;
+  const reponseChiffre = reponses?.chiffreAffaires;
 
   useEffect(() => {
     let arrete = false;
@@ -135,7 +142,12 @@ export default function CalendrierInline({
              garde un seul Schedule des deux. Sans uid, on laisse le serveur
              seul parler. */
           if (uid && window.fbq) {
-            window.fbq("track", "Schedule", { content_name: "discovery-call" }, { eventID: `cal-${uid}` });
+            window.fbq(
+              "track",
+              "Schedule",
+              parametresSchedule(reponseRole || undefined, reponseChiffre || undefined),
+              { eventID: `cal-${uid}` },
+            );
           }
           /* La page pre-appel : la video, puis la preparation de l'appel. Le
              delai laisse partir les evenements du navigateur avant de quitter. */
@@ -152,7 +164,7 @@ export default function CalendrierInline({
       arrete = true;
       minuteurs.forEach((m) => window.clearTimeout(m));
     };
-  }, [source, prefillNom, prefillEmail, apresReservation]);
+  }, [source, prefillNom, prefillEmail, reponseRole, reponseChiffre, apresReservation]);
 
   return (
     <div className="ld-cal" id={ancre}>

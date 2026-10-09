@@ -4,7 +4,9 @@ import { ConvexHttpClient } from "convex/browser";
 import { isValidPhoneNumber } from "libphonenumber-js/min";
 import { api } from "../../../../convex/_generated/api";
 import type { Id } from "../../../../convex/_generated/dataModel";
+import { idEvenementLead } from "../../../lib/lead-meta";
 import {
+  CAPACITES,
   CHIFFRES_AFFAIRES,
   DELAIS,
   ROLES,
@@ -16,8 +18,9 @@ import {
  * cette route, pas a Convex : le secret partage reste cote serveur, comme pour
  * `/api/visite`.
  *
- * Temps 1 : prenom, nom, telephone, e-mail. Le lead est enregistre tout de suite.
- * Temps 2 : les questions, et l'identifiant d'evenement du Lead Meta.
+ * Temps 1 : capacite en chantiers, zone, prenom, telephone, e-mail. Le lead est
+ * enregistre tout de suite, et on rend l'identifiant d'evenement du Lead Meta.
+ * Temps 2 : les questions de qualification (role, chiffre d'affaires...).
  *
  * Meme principe que partout ailleurs sur le site : si la base ne repond pas,
  * on le dit au navigateur, qui laisse quand meme la personne reserver.
@@ -59,12 +62,14 @@ export async function POST(requete: Request) {
   try {
     if (corps.etape === 1) {
       const prenom = texte(corps.prenom, 60);
-      const nom = texte(corps.nom, 60);
       const telephone = texte(corps.telephone, 30);
       const email = texte(corps.email, 120).toLowerCase();
+      const capacite = dans(CAPACITES, corps.capacite);
+      const zone = texte(corps.zone, 80);
 
+      if (!capacite) return refuser("Please answer every question.");
+      if (zone.length < 2) return refuser("Please tell us your area.");
       if (!prenom) return refuser("Please enter your first name.");
-      if (!nom) return refuser("Please enter your last name.");
       /* Le formulaire envoie le numero au format international (+1305...). */
       if (!telephone.startsWith("+") || !isValidPhoneNumber(telephone)) {
         return refuser("Please enter a valid mobile number.");
@@ -79,13 +84,14 @@ export async function POST(requete: Request) {
         secret,
         visiteId: boite.get(COOKIE_VISITE)?.value,
         prenom,
-        nom,
         telephone,
         consentSms: corps.consentSms === true,
         email,
+        capacite,
+        zone,
         jeton,
       });
-      return NextResponse.json({ ok: true, leadId, jeton });
+      return NextResponse.json({ ok: true, leadId, jeton, eventId: idEvenementLead(leadId) });
     }
 
     if (corps.etape === 2) {
