@@ -115,10 +115,9 @@ export default function BeforeOurCallPage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/precall/alexandre.png" alt="" width={56} height={56} />
             <div>
-              <b>Alexandre</b>
+              <b>Alex</b>
               <span>Growth manager at NativeSquare</span>
             </div>
-            <a href="mailto:office@nativesquare.fr">office@nativesquare.fr</a>
           </div>
         </div>
       </section>
