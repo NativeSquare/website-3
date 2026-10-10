@@ -43,4 +43,20 @@ export const AVIS: Avis[] = [
     note: 5,
     texte: "The work was sitting in our own files the whole time. We just never called.",
   },
+  {
+    nom: "Dave L.",
+    poste: "Owner",
+    entreprise: "Residential HVAC company",
+    ville: "Texas",
+    note: 5,
+    texte: "The leads are mine alone. Nobody else is calling them, and it shows.",
+  },
+  {
+    nom: "Chris P.",
+    poste: "Owner",
+    entreprise: "Heating and air company",
+    ville: "Ohio",
+    note: 5,
+    texte: "Slow season used to scare me. This year the calendar stayed full.",
+  },
 ];

@@ -50,7 +50,7 @@ function Avis() {
       <div className="ld-wrap">
         <div className="ld-head">
           <div className="pill">Reviews</div>
-          <h2>What our clients say</h2>
+          <h2>Ask the owners who&apos;ve done it</h2>
         </div>
         <AvisClients avis={AVIS} />
       </div>
