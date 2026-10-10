@@ -14,9 +14,9 @@ import type { Contenu, Porte } from "../contenu";
  * l'arbre d'appel (?porte=telephone|leads|estimates).
  *
  * La landing HVAC est un tunnel : l'accroche, les questions un ecran chacune,
- * le calendrier, puis les avis clients (quand on en a de vrais) et la FAQ
- * (retour d'Angelo du 09/10/2026 : le plus simple possible, pas d'etapes sous
- * le formulaire).
+ * le calendrier, puis les avis clients, sans FAQ (retour d'Angelo du
+ * 09/10/2026 : le plus simple possible, pas d'etapes sous le formulaire ;
+ * FAQ retiree a la demande d'Alexandre le 10/10/2026).
  */
 
 function Etapes({ c, porte }: { c: Contenu; porte?: Porte }) {
@@ -136,7 +136,6 @@ export default function Landing({
 
         <Avis />
         <Demo c={c} />
-        <Faq c={c} />
       </>
     );
   }
