@@ -6,6 +6,7 @@ import { LinkedInInsightTag } from "./components/LinkedInInsightTag";
 import { SuiviVisite } from "./components/SuiviVisite";
 import { Analytique } from "./components/Analytique";
 import { MetaPixel } from "./components/MetaPixel";
+import { GoogleTag } from "./components/GoogleTag";
 
 /* Aeonik substitute — closest free match for the search-party DA. */
 const figtree = Figtree({
@@ -58,6 +59,7 @@ export default async function RootLayout({
         {/* Pages anglaises seulement : le trafic des pubs US, pas les
             visiteurs francais. */}
         <MetaPixel actif={locale === "en"} />
+        <GoogleTag actif={locale === "en"} />
       </body>
     </html>
   );
