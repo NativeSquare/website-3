@@ -183,7 +183,7 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                     <li>Contacting you by phone or email about the offer you asked about, including when you send your details through a Facebook or Instagram lead form.</li>
                     <li>Scheduling strategy calls and managing appointments.</li>
                     <li>Improving website performance and user experience through analytics.</li>
-                    <li>Measuring whether our ads lead to bookings and to relevant leads, with the Meta Pixel, Meta&apos;s server connection (Conversions API), the Google tag and the LinkedIn Insight Tag. When you send your contact details, Meta receives the fact that you did, with the number of jobs you can take on. When you book a call, Meta receives the booking, with your role in the company and your revenue range, so that our ads reach more business owners (see our Cookie Policy).</li>
+                    <li>Measuring whether our ads lead to bookings and to relevant leads, with the Meta Pixel, Meta&apos;s server connection (Conversions API), the Google tag (which also feeds Google Analytics) and the LinkedIn Insight Tag. When you send your contact details, Meta receives the fact that you did, with the number of jobs you can take on. When you book a call, Meta receives the booking, with your role in the company and your revenue range, so that our ads reach more business owners (see our Cookie Policy).</li>
                     <li>Sending newsletters or updates (only with explicit consent).</li>
                     <li>Sending text messages about a call you have scheduled with us, only if you agreed to receive them (see section 6).</li>
                   </ul>
@@ -240,7 +240,7 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30 mb-3">We use the following types of cookies:</p>
                   <ul className="list-disc pl-6 space-y-2 fs-15 leading-relaxed tracking-tight text-gray-30">
                     <li><strong className="text-gray-5">Essential Cookies:</strong> Necessary for the website to function correctly.</li>
-                    <li><strong className="text-gray-5">Analytics Cookies:</strong> Help us understand how visitors interact with the site.</li>
+                    <li><strong className="text-gray-5">Analytics Cookies:</strong> Help us understand how visitors interact with the site, including where they leave the form (PostHog and Google Analytics).</li>
                     <li><strong className="text-gray-5">Functional Cookies:</strong> Remember your preferences and settings.</li>
                     <li><strong className="text-gray-5">Advertising Cookies:</strong> Set by the Meta Pixel, the Google tag and the LinkedIn Insight Tag to measure whether our ads led to a booking and to show relevant ads on those platforms. Google uses these cookies to show our ads to people who visited our site, on Google and on other websites, and third-party vendors, including Google, show ads across the internet. You can opt out of personalized advertising from Google at <a href="https://adssettings.google.com" className="underline" target="_blank" rel="noopener noreferrer">adssettings.google.com</a>. Meta&apos;s and Google&apos;s cookies are used on the English version of the site only.</li>
                   </ul>

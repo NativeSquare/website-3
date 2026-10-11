@@ -36,6 +36,12 @@ import { usePathname } from "next/navigation";
    d'environnement a oublier au deploiement. Vide = le tag ne se charge pas. */
 const ID_GOOGLE = "AW-18311694805";
 
+/* Identifiant de mesure Google Analytics 4 (propriete « Nativesquare », flux
+   nativesquare.ai), lie au compte Google Ads. GA4 sert a deux choses : les
+   audiences par etape du tunnel (« a laisse son contact, n'a pas reserve »), que
+   le createur de listes de Google Ads ne sait pas faire, et le funnel du quiz. */
+const ID_GA4 = "G-4KVKSCTYXP";
+
 const PARAMETRES_GARDES = [
   "utm_source",
   "utm_medium",
@@ -94,10 +100,9 @@ export function GoogleTag({ actif }: { actif: boolean }) {
     gtag("js", new Date());
     /* La configuration envoie elle-meme le page_view de la premiere page, avec
        l'adresse propre (Google l'envoie de toute facon, meme si on le coupe). */
-    gtag("config", ID_GOOGLE, {
-      page_location: adressePropre(),
-      page_path: pathname,
-    });
+    const page = { page_location: adressePropre(), page_path: pathname };
+    gtag("config", ID_GOOGLE, page);
+    gtag("config", ID_GA4, page);
     derniere.current = pathname;
     setPret(true);
     /* Une seule initialisation par chargement de page. */
