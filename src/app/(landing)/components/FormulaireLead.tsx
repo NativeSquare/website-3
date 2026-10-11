@@ -7,6 +7,7 @@ import posthog from "posthog-js";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { lireVisiteId } from "../../lib/visite";
 import { suivreMeta } from "../../lib/meta";
+import { suivreGoogle } from "../../lib/google";
 import { parametresLead } from "../../../lib/lead-meta";
 import TelephoneInput from "./TelephoneInput";
 import {
@@ -185,6 +186,9 @@ export default function FormulaireLead({
   useEffect(() => {
     if (!restaure) return;
     posthog.capture("quiz_ecran", { source, ecran, visiteId: lireVisiteId() });
+    suivreGoogle("quiz_ecran", { source, ecran });
+    /* Premiere question repondue : la liste « a commence le quiz ». */
+    if (ecran === ECRAN.ZONE) suivreGoogle("quiz_start", { source });
   }, [restaure, ecran, source]);
 
   /* Sur un ecran plus haut que ce qui reste visible, on remonte au debut de la
@@ -292,6 +296,7 @@ export default function FormulaireLead({
       suivreMeta("Lead", parametres);
     }
     posthog.capture("formulaire_contact", { source, visiteId: lireVisiteId(), capacite });
+    suivreGoogle("generate_lead", { source });
     aller(ECRAN.ROLE);
   }
 
@@ -328,6 +333,7 @@ export default function FormulaireLead({
       }
     }
     posthog.capture("formulaire_complet", { source, visiteId: lireVisiteId() });
+    suivreGoogle("qualify_lead", { source });
     setEnvoi(false);
     onComplete({
       prenom: prenom.trim(),

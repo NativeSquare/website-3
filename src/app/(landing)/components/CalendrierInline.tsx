@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import posthog from "posthog-js";
 import { lireVisiteId } from "../../lib/visite";
+import { suivreGoogle } from "../../lib/google";
 import { parametresSchedule } from "../../../lib/lead-meta";
 
 /**
@@ -138,6 +139,8 @@ export default function CalendrierInline({
           const d = e.detail?.data;
           const uid = d?.booking?.uid ?? d?.uid;
           posthog.capture("reservation_faite", { source, visiteId, uid });
+          /* transaction_id : Google compte une seule fois un meme rendez-vous. */
+          suivreGoogle("schedule", { source, ...(uid ? { transaction_id: uid } : {}) });
           /* Le meme identifiant d'evenement que le serveur (cal-<uid>) : Meta
              garde un seul Schedule des deux. Sans uid, on laisse le serveur
              seul parler. */
