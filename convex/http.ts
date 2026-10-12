@@ -172,6 +172,8 @@ http.route({
             fuseau: invite.timeZone ?? "America/New_York",
             debut: p.startTime,
             lienVisio: lienVisio(p),
+            /* Un deplacement ne rejoue pas ce qui est deja parti. */
+            ancienCalUid: reprogramme ? p.rescheduleUid : undefined,
           });
         }
       } catch (erreur) {

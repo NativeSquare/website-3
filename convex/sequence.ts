@@ -35,6 +35,16 @@ const MARGE = 5 * 60 * 1000;
 
 type Etape = "email1" | "sms1" | "email2" | "sms2" | "email3" | "sms3";
 
+/* Quand un rendez-vous est deplace, ces etapes ne repartent pas si elles sont
+   deja parties pour l'ancien : la confirmation et le message de mi-chemin. Le
+   rappel de 30 minutes (email3, sms3) est lie a l'heure du rendez-vous : il
+   repart toujours, pour la nouvelle heure. */
+const UNE_SEULE_FOIS: Etape[] = ["email1", "sms1", "email2", "sms2"];
+
+/* Ecrit dans le journal quand une etape est sautee a cause d'un deplacement,
+   pour qu'un deuxieme deplacement sache lui aussi qu'elle est deja partie. */
+const DEJA_PARTIE = "deja partie avant le deplacement";
+
 /* ---------------------------------------------------------------- lecture */
 
 export const parCalUid = internalQuery({
@@ -70,15 +80,34 @@ type Donnees = {
   lienVisio?: string;
 };
 
+/* Les etapes de l'ancienne sequence qui sont deja parties. Un envoi compte
+   quand il est « envoye », ou quand un deplacement precedent l'a note comme
+   deja parti. Un envoi en echec ou ignore ne compte pas : il repartira. */
+async function etapesDejaParties(ctx: MutationCtx, calUid: string): Promise<Set<string>> {
+  const lignes = await ctx.db
+    .query("envois")
+    .withIndex("by_calUid", (q) => q.eq("calUid", calUid))
+    .take(100);
+  return new Set(
+    lignes
+      .filter((l) => l.etat === "envoye" || (l.etat === "ignore" && l.erreur === DEJA_PARTIE))
+      .map((l) => l.etape),
+  );
+}
+
 /**
  * Pose les etapes de la sequence dans le planificateur. Commun au depart
  * manuel (page interne) et au depart automatique (reservation du tunnel de la
  * landing). `avecSms` : les textos ne partent que si on le dit.
+ * `ancienCalUid` : le rendez-vous que celui-ci remplace, quand il a ete deplace.
+ * Ce qui est deja parti pour l'ancien ne repart pas ; la suite s'ajuste a la
+ * nouvelle heure.
  */
 async function planifier(
   ctx: MutationCtx,
   donnees: Donnees,
   avecSms: boolean,
+  ancienCalUid?: string,
 ): Promise<{ etapes: string[] }> {
   /* Une reservation rejouee ne doit pas envoyer deux fois. */
   const existante = await ctx.db
@@ -88,6 +117,10 @@ async function planifier(
   if (existante && !existante.annulee) {
     return { etapes: [] };
   }
+
+  const dejaParties = ancienCalUid
+    ? await etapesDejaParties(ctx, ancienCalUid)
+    : new Set<string>();
 
   const debut = new Date(donnees.debut).getTime();
   const maintenant = Date.now();
@@ -110,6 +143,18 @@ async function planifier(
   const etapes: string[] = [];
   for (const { etape, quand } of plan) {
     if (!avecSms && etape.startsWith("sms")) continue;
+    if (UNE_SEULE_FOIS.includes(etape) && dejaParties.has(etape)) {
+      const sms = etape.startsWith("sms");
+      await ctx.db.insert("envois", {
+        calUid: donnees.calUid,
+        etape,
+        canal: sms ? "sms" : "email",
+        destinataire: (sms ? donnees.telephone : donnees.email) ?? "(inconnu)",
+        etat: "ignore",
+        erreur: DEJA_PARTIE,
+      });
+      continue;
+    }
     if (quand > maintenant + MARGE) {
       taches.push(
         await ctx.scheduler.runAt(quand, internal.sequence.envoyer, {
@@ -195,10 +240,13 @@ export const demarrerAuto = internalMutation({
     fuseau: v.string(),
     debut: v.string(),
     lienVisio: v.optional(v.string()),
+    /* Present quand la reservation vient d'un deplacement : l'identifiant
+       Cal.com de l'ancien rendez-vous. */
+    ancienCalUid: v.optional(v.string()),
   },
   returns: v.object({ etapes: v.array(v.string()) }),
-  handler: async (ctx, { sms, ...donnees }) => {
-    return await planifier(ctx, donnees, sms && !!donnees.telephone);
+  handler: async (ctx, { sms, ancienCalUid, ...donnees }) => {
+    return await planifier(ctx, donnees, sms && !!donnees.telephone, ancienCalUid);
   },
 });
 
