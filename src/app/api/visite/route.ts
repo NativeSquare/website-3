@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 import { cookies, headers } from "next/headers";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../convex/_generated/api";
-import { COOKIE_LANDING, LANDINGS_CAMPAGNE } from "../../lib/visite";
+import {
+  COOKIE_LANDING,
+  LANDINGS_CAMPAGNE,
+  UTM_CAMPAGNE_DE_LA_LANDING,
+} from "../../lib/visite";
 
 /**
  * La capture des visites passe par notre propre domaine, pas par un script
@@ -136,11 +140,13 @@ export async function POST(requete: Request) {
 
   /* La landing de la campagne, pour que le bouton « Book a call » du reste du
      site ramene la personne a son formulaire. Pose par le serveur, seulement
-     quand l'arrivee vient d'une campagne ET tombe sur une landing connue ;
-     seule une nouvelle arrivee par une campagne la remplace. */
+     quand l'arrivee tombe sur une landing connue ET que son utm_campaign nomme
+     la campagne de cette landing ; seule une nouvelle arrivee par la campagne
+     la remplace. */
   const chemin = (corps.chemin ?? "/").split("?")[0].replace(/\/+$/, "") || "/";
   const landing = LANDINGS_CAMPAGNE.find((l) => l === chemin);
-  if (vientDUneCampagne && landing) {
+  const utmCampagne = propre(params.utm_campaign) ?? "";
+  if (landing && UTM_CAMPAGNE_DE_LA_LANDING[landing].test(utmCampagne)) {
     reponse.cookies.set(COOKIE_LANDING, landing, { ...commun, maxAge: TRENTE_JOURS });
   }
   return reponse;

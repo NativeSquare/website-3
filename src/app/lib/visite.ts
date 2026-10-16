@@ -18,6 +18,14 @@ export const COOKIE_LANDING = "ns_landing";
 export const LANDINGS_CAMPAGNE = ["/hvac"] as const;
 export type LandingCampagne = (typeof LANDINGS_CAMPAGNE)[number];
 
+/* Le cookie ne se pose que si l'arrivee porte le bon UTM : `utm_campaign` doit
+   nommer la campagne de cette landing (« HVAC leads ABO 07-10-2026 » pour
+   /hvac). Ouvrir la landing seul, ou avec un UTM d'une autre source, ne le pose
+   pas. A adapter si une campagne est renommee sans ce mot. */
+export const UTM_CAMPAGNE_DE_LA_LANDING: Record<LandingCampagne, RegExp> = {
+  "/hvac": /hvac/i,
+};
+
 function lire(nom: string): string | undefined {
   if (typeof document === "undefined") return undefined;
   const trouve = document.cookie
