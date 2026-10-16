@@ -123,7 +123,6 @@ export default function FormulaireLead({
      si elle ne veut pas de textos, et reserver n'en depend pas. */
   const [consentSms, setConsentSms] = useState(true);
   const [email, setEmail] = useState("");
-  const [fax, setFax] = useState("");
   const [lead, setLead] = useState<{ leadId?: string; jeton?: string }>({});
 
   const [role, setRole] = useState("");
@@ -269,7 +268,6 @@ export default function FormulaireLead({
         email,
         capacite,
         zone,
-        fax,
       });
       /* Une erreur de saisie (400) se corrige ; une panne du serveur ne
          retient personne. */
@@ -451,17 +449,6 @@ export default function FormulaireLead({
               </span>
             </span>
           </label>
-          {/* Piege a robots : invisible, jamais rempli par une personne. */}
-          <input
-            type="text"
-            name="fax"
-            tabIndex={-1}
-            autoComplete="off"
-            aria-hidden="true"
-            className="ld-hp"
-            value={fax}
-            onChange={(e) => setFax(e.target.value)}
-          />
           {erreur && <p className="ld-erreur" role="alert">{erreur}</p>}
           <button type="submit" className="btn btn-primary" disabled={envoi}>
             {envoi ? "One moment…" : boutonContact}

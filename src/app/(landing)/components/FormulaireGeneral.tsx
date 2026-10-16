@@ -83,9 +83,6 @@ export default function FormulaireGeneral({
      ne veut pas de textos, et reserver n'en depend pas. */
   const [consentSms, setConsentSms] = useState(true);
   const [email, setEmail] = useState("");
-  /* Piege a robots. Son nom ne dit rien d'un champ de contact : un remplissage
-     automatique ne doit pas le reconnaitre. */
-  const [piege, setPiege] = useState("");
   const [lead, setLead] = useState<{ leadId?: string; jeton?: string }>({});
 
   const [motifs, setMotifs] = useState<string[]>([]);
@@ -216,7 +213,6 @@ export default function FormulaireGeneral({
         consentSms,
         email,
         origine,
-        piege,
       });
     } catch {
       /* Traite plus bas, comme toute reponse sans lead enregistre. */
@@ -389,17 +385,6 @@ export default function FormulaireGeneral({
               </span>
             </span>
           </label>
-          {/* Piege a robots : invisible, jamais rempli par une personne. */}
-          <input
-            type="text"
-            name="ns_trap"
-            tabIndex={-1}
-            autoComplete="off"
-            aria-hidden="true"
-            className="ld-hp"
-            value={piege}
-            onChange={(e) => setPiege(e.target.value)}
-          />
           {erreur && <p className="ld-erreur" role="alert">{erreur}</p>}
           <button type="submit" className="btn btn-primary" disabled={envoi}>
             {envoi ? "One moment…" : boutonContact}

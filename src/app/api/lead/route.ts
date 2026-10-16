@@ -56,15 +56,6 @@ export async function POST(requete: Request) {
     return refuser("Invalid request.");
   }
 
-  /* Champ cache que seul un robot remplit : on repond comme si tout allait bien. */
-  if (texte(corps.fax, 100)) return NextResponse.json({ ok: true });
-  /* Le formulaire general a un piege au nom neutre : un champ appele « fax »
-     peut etre rempli par le remplissage automatique d'un navigateur, et la
-     personne passerait sans que son lead soit enregistre. Ici, on le dit. */
-  if (texte(corps.piege, 100)) {
-    return refuser("Something went wrong. Please reload the page and try again.");
-  }
-
   const convex = new ConvexHttpClient(url);
 
   try {
