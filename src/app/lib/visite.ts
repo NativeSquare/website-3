@@ -5,12 +5,32 @@
  */
 export const COOKIE_VISITE = "ns_visite";
 
-export function lireVisiteId(): string | undefined {
+/**
+ * La landing d'ou vient la personne quand elle est arrivee par une campagne.
+ * Pose par `/api/visite` seulement (jamais depuis l'URL), il suit la personne
+ * sur tout le site : le bouton « Book a call » le lit pour la ramener au
+ * formulaire de sa campagne au lieu de la laisser reserver sans coordonnees.
+ */
+export const COOKIE_LANDING = "ns_landing";
+
+/* Les landings qui ont leur propre formulaire de campagne. Une valeur hors
+   liste dans le cookie est ignoree. */
+export const LANDINGS_CAMPAGNE = ["/hvac"] as const;
+export type LandingCampagne = (typeof LANDINGS_CAMPAGNE)[number];
+
+function lire(nom: string): string | undefined {
   if (typeof document === "undefined") return undefined;
   const trouve = document.cookie
     .split("; ")
-    .find((morceau) => morceau.startsWith(`${COOKIE_VISITE}=`));
-  return trouve
-    ? decodeURIComponent(trouve.slice(COOKIE_VISITE.length + 1))
-    : undefined;
+    .find((morceau) => morceau.startsWith(`${nom}=`));
+  return trouve ? decodeURIComponent(trouve.slice(nom.length + 1)) : undefined;
+}
+
+export function lireVisiteId(): string | undefined {
+  return lire(COOKIE_VISITE);
+}
+
+export function lireLanding(): LandingCampagne | undefined {
+  const valeur = lire(COOKIE_LANDING);
+  return LANDINGS_CAMPAGNE.find((l) => l === valeur);
 }

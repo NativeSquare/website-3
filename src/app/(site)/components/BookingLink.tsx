@@ -2,11 +2,7 @@
 
 import type { AnchorHTMLAttributes, MouseEvent, ReactNode } from "react";
 import posthog from "posthog-js";
-import { lireVisiteId } from "../../lib/visite";
-import { suivreMeta } from "../../lib/meta";
-
-export const BOOKING_URL =
-  "https://cal.com/nativesquare-office-orlgbk/discovery-call";
+import { lireLanding, lireVisiteId } from "../../lib/visite";
 
 /* Conversion « reservation-appel » creee dans Campaign Manager le 21/08/2026,
    declenchement par evenement. Identifiant public, il part de toute facon dans
@@ -14,11 +10,9 @@ export const BOOKING_URL =
    variable d'environnement de moins a oublier au deploiement. */
 const LINKEDIN_CONVERSION_ID = 29592730;
 
-/* Identifiant de la question de reservation cote Cal.com, sous
-   Advanced -> Booking Questions. Cal.com preremplit un champ par son
-   identifiant passe en parametre d'URL.
-   Doc : https://cal.com/help/bookings/prefill-fields */
-const CHAMP_CAL_VISITE = "visite";
+/* Le formulaire general : coordonnees obligatoires, quelques questions, puis le
+   calendrier. Personne ne reserve sans avoir laisse de quoi le recontacter. */
+export const PAGE_RESERVATION = "/book";
 
 type BookingLinkProps = Omit<
   AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -30,11 +24,15 @@ type BookingLinkProps = Omit<
   children: ReactNode;
 };
 
-/* The one place the booking URL lives. Every click is reported to LinkedIn as a
-   conversion, which is what lets campaigns and creatives be compared.
-
-   L'identifiant de visite est accroche au moment du clic, pas au rendu : le
-   cookie est pose par `/api/visite` apres le montage de la page. */
+/* The one place every « Book a call » button sends people. It never opens the
+   calendar directly:
+     - someone who arrived through a campaign (cookie `ns_landing`, set by
+       `/api/visite`) goes back to that campaign's form, whatever pages they
+       visited since;
+     - everyone else goes to the general form, `/book`.
+   Meta no longer gets a « Lead » from the click: the lead is the form's
+   contact step, which is saved on our side and alerts Slack.
+   Every click is still reported to LinkedIn as a conversion. */
 const BookingLink: React.FC<BookingLinkProps> = ({
   source,
   children,
@@ -43,34 +41,26 @@ const BookingLink: React.FC<BookingLinkProps> = ({
 }) => {
   const handleClick = (event: MouseEvent<HTMLAnchorElement>) => {
     window.lintrk?.("track", { conversion_id: LINKEDIN_CONVERSION_ID });
-    /* Meta : le clic vers le calendrier est l'evenement standard « Lead ».
-       La reservation confirmee (Schedule) part du serveur, pas d'ici. */
-    suivreMeta("Lead", { content_name: source });
     onClick?.(event);
 
-    const visiteId = lireVisiteId();
-    /* Le maillon manquant entre l'arrivee et la reservation : qui a clique
-       sans jamais reserver. Cal.com est un autre domaine, on ne le verra pas
-       autrement. */
-    posthog.capture("reservation_clic", { source, visiteId });
-    /* Sans identifiant, ou si l'utilisateur ouvre dans un onglet a lui, on
-       laisse le lien faire son travail normalement. */
-    if (!visiteId || event.defaultPrevented || event.metaKey || event.ctrlKey) {
+    const landing = lireLanding();
+    posthog.capture("reservation_clic", {
+      source,
+      visiteId: lireVisiteId(),
+      destination: landing ?? PAGE_RESERVATION,
+    });
+    /* Sans cookie, le lien fait son travail normalement (vers /book). Un clic
+       avec une touche modificatrice ouvre un onglet a part : on le laisse. */
+    if (!landing || event.defaultPrevented || event.metaKey || event.ctrlKey) {
       return;
     }
-
-    const url = new URL(BOOKING_URL);
-    url.searchParams.set(CHAMP_CAL_VISITE, visiteId);
-    url.searchParams.set("ns_source", source);
     event.preventDefault();
-    window.open(url.toString(), "_blank", "noopener,noreferrer");
+    window.location.assign(`${landing}#book`);
   };
 
   return (
     <a
-      href={BOOKING_URL}
-      target="_blank"
-      rel="noopener noreferrer"
+      href={PAGE_RESERVATION}
       data-booking-source={source}
       onClick={handleClick}
       {...props}

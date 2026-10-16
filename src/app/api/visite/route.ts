@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies, headers } from "next/headers";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../convex/_generated/api";
+import { COOKIE_LANDING, LANDINGS_CAMPAGNE } from "../../lib/visite";
 
 /**
  * La capture des visites passe par notre propre domaine, pas par un script
@@ -15,6 +16,7 @@ const COOKIE_VISITEUR = "ns_visiteur";
 const COOKIE_VISITE = "ns_visite";
 const UN_AN = 60 * 60 * 24 * 365;
 const QUATRE_VINGT_DIX_JOURS = 60 * 60 * 24 * 90;
+const TRENTE_JOURS = 60 * 60 * 24 * 30;
 
 /* Les parametres dynamiques poses sur l'URL de destination dans Campaign
    Manager. Doc : https://www.linkedin.com/help/lms/answer/a5968064 */
@@ -64,9 +66,12 @@ export async function POST(requete: Request) {
   const visiteurId = boite.get(COOKIE_VISITEUR)?.value ?? crypto.randomUUID();
 
   const params = corps.parametres ?? {};
+  /* Un clic de pub sans UTM (lien mal monte) porte quand meme l'identifiant de
+     clic de Meta ou de Google : c'est une campagne aussi. */
   const vientDUneCampagne =
     Object.keys(CHAMPS_LINKEDIN).some((c) => propre(params[c])) ||
-    Object.keys(CHAMPS_UTM).some((c) => propre(params[c]));
+    Object.keys(CHAMPS_UTM).some((c) => propre(params[c])) ||
+    Boolean(propre(params.fbclid) || propre(params.gclid));
 
   /* Une nouvelle visite a chaque arrivee depuis une pub. Une navigation
      ordinaire garde la visite en cours. */
@@ -128,5 +133,15 @@ export async function POST(requete: Request) {
     ...commun,
     maxAge: QUATRE_VINGT_DIX_JOURS,
   });
+
+  /* La landing de la campagne, pour que le bouton « Book a call » du reste du
+     site ramene la personne a son formulaire. Pose par le serveur, seulement
+     quand l'arrivee vient d'une campagne ET tombe sur une landing connue ;
+     seule une nouvelle arrivee par une campagne la remplace. */
+  const chemin = (corps.chemin ?? "/").split("?")[0].replace(/\/+$/, "") || "/";
+  const landing = LANDINGS_CAMPAGNE.find((l) => l === chemin);
+  if (vientDUneCampagne && landing) {
+    reponse.cookies.set(COOKIE_LANDING, landing, { ...commun, maxAge: TRENTE_JOURS });
+  }
   return reponse;
 }

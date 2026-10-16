@@ -12,10 +12,12 @@ import { lireCookie } from "../lib/meta";
  *     un consentement qu'on n'affiche pas,
  *   - jamais sur les pages internes.
  *
- * Il envoie PageView a chaque page, et Lead au clic sur le calendrier (voir
- * BookingLink). La reservation elle-meme (Schedule) part du serveur, depuis le
- * webhook Cal.com, dans convex/meta.ts : Meta apprend sur des rendez-vous, pas
- * sur des clics.
+ * Il envoie PageView a chaque page. Lead part du formulaire, quand la personne
+ * laisse ses coordonnees (FormulaireLead, FormulaireGeneral), plus du bouton
+ * « Book a call » (BookingLink), qui ne fait qu'orienter vers un formulaire.
+ * La reservation elle-meme (Schedule) part du serveur, depuis le webhook
+ * Cal.com, dans convex/meta.ts : Meta apprend sur des rendez-vous, pas sur des
+ * clics.
  *
  * Chaque evenement porte un eventID unique, la cle de dedoublonnage entre
  * navigateur et serveur. Doc : https://developers.facebook.com/docs/meta-pixel/get-started
