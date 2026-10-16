@@ -58,6 +58,22 @@ export type Contenu = {
   faq: { q: string; a: string }[];
 };
 
+/* Le formulaire general (`/book`), repris par la landing des fenetres : coordonnees
+   obligatoires et quelques questions avant le calendrier, jamais de calendrier
+   direct. */
+const FORMULAIRE_GENERAL: NonNullable<Contenu["formulaire"]> = {
+  variante: "general",
+  boutonContact: "Continue",
+  boutonFinal: "See available times",
+  consentement:
+    "NativeSquare will use your name, phone number and email to contact you about this call and to book it.",
+  zoneOuverte: "Thanks, {prenom}. Three quick questions, then you pick your time.",
+  reserverTitre: "Pick a time",
+  reserverTexte:
+    "Thanks, {prenom}. Choose the slot that suits you for the thirty-minute video call.",
+  apresReservation: "/before-our-call",
+};
+
 export const contenu: Record<Niche, Contenu> = {
   windows: {
     kicker: "For Florida window & door companies",
@@ -103,6 +119,8 @@ export const contenu: Record<Niche, Contenu> = {
       },
     },
     etapesTitre: "How it works",
+    /* Plus de calendrier direct dans le hero : le formulaire general d'abord. */
+    formulaire: FORMULAIRE_GENERAL,
     demo: {
       h2: "Hear it for yourself.",
       p: "This is Emma taking a call. She picks up in under a second, answers like a person, books the job and syncs it everywhere. Ten calls at once, never sick, never off.",
@@ -191,18 +209,7 @@ export const contenu: Record<Niche, Contenu> = {
       h1: "Book a call with NativeSquare.",
       lead: "Tell us a little about your business first, so the thirty minutes are useful. Then you pick a time.",
     },
-    formulaire: {
-      variante: "general",
-      boutonContact: "Continue",
-      boutonFinal: "See available times",
-      consentement:
-        "NativeSquare will use your name, phone number and email to contact you about this call and to book it.",
-      zoneOuverte: "Thanks, {prenom}. Three quick questions, then you pick your time.",
-      reserverTitre: "Pick a time",
-      reserverTexte:
-        "Thanks, {prenom}. Choose the slot that suits you for the thirty-minute video call.",
-      apresReservation: "/before-our-call",
-    },
+    formulaire: FORMULAIRE_GENERAL,
     reserver: {
       h2: "Pick a time.",
       p: "Thirty minutes on video.",
