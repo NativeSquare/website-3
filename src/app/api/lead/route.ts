@@ -9,6 +9,8 @@ import {
   CAPACITES,
   CHIFFRES_AFFAIRES,
   DELAIS,
+  MOTIFS,
+  ORIGINES,
   ROLES,
   SOURCES_CHANTIERS,
 } from "../../(landing)/formulaire";
@@ -56,19 +58,33 @@ export async function POST(requete: Request) {
 
   /* Champ cache que seul un robot remplit : on repond comme si tout allait bien. */
   if (texte(corps.fax, 100)) return NextResponse.json({ ok: true });
+  /* Le formulaire general a un piege au nom neutre : un champ appele « fax »
+     peut etre rempli par le remplissage automatique d'un navigateur, et la
+     personne passerait sans que son lead soit enregistre. Ici, on le dit. */
+  if (texte(corps.piege, 100)) {
+    return refuser("Something went wrong. Please reload the page and try again.");
+  }
 
   const convex = new ConvexHttpClient(url);
 
   try {
     if (corps.etape === 1) {
+      /* Le formulaire general (`/book`) ne pose ni capacite ni zone : il pose
+         « comment nous avez-vous trouves ». */
+      const general = corps.variante === "general";
       const prenom = texte(corps.prenom, 60);
       const telephone = texte(corps.telephone, 30);
       const email = texte(corps.email, 120).toLowerCase();
-      const capacite = dans(CAPACITES, corps.capacite);
-      const zone = texte(corps.zone, 80);
+      const capacite = general ? undefined : dans(CAPACITES, corps.capacite);
+      const zone = general ? "" : texte(corps.zone, 80);
+      const origine = general ? dans(ORIGINES, corps.origine) : undefined;
 
-      if (!capacite) return refuser("Please answer every question.");
-      if (zone.length < 2) return refuser("Please tell us your area.");
+      if (general) {
+        if (!origine) return refuser("Please answer every question.");
+      } else {
+        if (!capacite) return refuser("Please answer every question.");
+        if (zone.length < 2) return refuser("Please tell us your area.");
+      }
       if (!prenom) return refuser("Please enter your first name.");
       /* Le formulaire envoie le numero au format international (+1305...). */
       if (!telephone.startsWith("+") || !isValidPhoneNumber(telephone)) {
@@ -88,10 +104,38 @@ export async function POST(requete: Request) {
         consentSms: corps.consentSms === true,
         email,
         capacite,
-        zone,
+        zone: general ? undefined : zone,
+        ...(general ? { variante: "general" as const, origine } : {}),
         jeton,
       });
       return NextResponse.json({ ok: true, leadId, jeton, eventId: idEvenementLead(leadId) });
+    }
+
+    if (corps.etape === 2 && corps.variante === "general") {
+      const motifs = Array.isArray(corps.motifs)
+        ? corps.motifs.map((m) => dans(MOTIFS, m)).filter((m) => m !== undefined)
+        : [];
+      const role = dans(ROLES, corps.role);
+      const activite = texte(corps.activite, 80);
+      const leadId = texte(corps.leadId, 60);
+      const jeton = texte(corps.jeton, 60);
+
+      if (!leadId || !jeton) return refuser("Invalid request.");
+      if (!motifs.length || !role || activite.length < 2) {
+        return refuser("Please answer every question.");
+      }
+
+      const eventId = await convex.mutation(api.leads.reponsesGenerales, {
+        secret,
+        leadId: leadId as Id<"leads">,
+        jeton,
+        motifs,
+        motifNote: texte(corps.motifNote, 300) || undefined,
+        role,
+        activite,
+        siteWeb: texte(corps.siteWeb, 200) || undefined,
+      });
+      return NextResponse.json({ ok: eventId !== null, eventId });
     }
 
     if (corps.etape === 2) {

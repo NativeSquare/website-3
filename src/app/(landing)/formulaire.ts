@@ -41,3 +41,25 @@ export const DELAIS = [
 ] as const;
 
 export const ROLES = ["Owner", "Partner", "Manager", "Other"] as const;
+
+/**
+ * Le formulaire general (`/book`), pour tout visiteur dont on ne sait pas
+ * d'ou il vient : comment il nous a trouves, ce qui lui donne envie de parler,
+ * son role (la liste ROLES ci-dessus) et ce que fait son entreprise.
+ */
+export const ORIGINES = [
+  "Facebook or Instagram",
+  "Google search",
+  "LinkedIn",
+  "A referral",
+  "Podcast, YouTube or newsletter",
+  "Other",
+] as const;
+
+export const MOTIFS = [
+  "I miss calls or leads",
+  "Leads go cold before we call back",
+  "I want more booked jobs",
+  "I'm curious what AI can do for my business",
+  "Something else",
+] as const;

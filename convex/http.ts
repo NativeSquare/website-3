@@ -144,6 +144,9 @@ http.route({
     /* Le role et le chiffre d'affaires du lead partent avec le Schedule. */
     let roleLead: string | undefined;
     let chiffreAffairesLead: string | undefined;
+    /* Vrai seulement quand la recherche du lead a repondu « aucun » : une panne
+       ne doit pas faire croire qu'une reservation vient d'ailleurs. */
+    let horsFormulaire = false;
 
     if (cree || reprogramme) {
       /* Le lead du formulaire passe en « reserve ». Un echec ici ne doit pas
@@ -156,6 +159,7 @@ http.route({
         });
         roleLead = lead?.role;
         chiffreAffairesLead = lead?.chiffreAffaires;
+        horsFormulaire = lead === null;
         /* Les reservations du tunnel de la landing recoivent la sequence
            (e-mails, depuis Resend) toute seule, y compris apres un
            deplacement. Celles qui ne viennent pas du formulaire (appels a
@@ -179,6 +183,17 @@ http.route({
       } catch (erreur) {
         console.error("[leads] suite de la reservation a echoue", erreur);
       }
+    }
+
+    /* Une reservation sans formulaire (lien direct, test) ne declenche aucune
+       alerte par le lead : celle-ci evite de la rater. */
+    if (cree && horsFormulaire) {
+      await ctx.scheduler.runAfter(0, internal.notifications.reservationHorsFormulaire, {
+        nom: invite?.name,
+        email: invite?.email,
+        debut: p.startTime,
+        visiteId: valeurReponse(p.responses?.visite),
+      });
     }
 
     if (cree) {

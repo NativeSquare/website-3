@@ -116,6 +116,16 @@ export default defineSchema({
     delai: v.optional(v.string()),
     role: v.optional(v.string()),
     siteWeb: v.optional(v.string()),
+    /* Le formulaire general (`/book`), pour les visiteurs qui ne viennent pas
+       d'une campagne : absent des leads HVAC, qui valent « hvac » par defaut.
+       Il remplace capacite et zone par : comment la personne nous a trouves,
+       ce qui lui donne envie de parler (plusieurs reponses possibles, plus une
+       note libre) et ce que fait son entreprise. */
+    variante: v.optional(v.union(v.literal("hvac"), v.literal("general"))),
+    origine: v.optional(v.string()),
+    motifs: v.optional(v.array(v.string())),
+    motifNote: v.optional(v.string()),
+    activite: v.optional(v.string()),
     statut: v.union(
       v.literal("partiel"),
       v.literal("complet"),

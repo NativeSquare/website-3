@@ -39,6 +39,10 @@ export const contact = mutation({
     email: v.string(),
     capacite: v.optional(v.string()),
     zone: v.optional(v.string()),
+    /* Formulaire general : sans capacite ni zone, avec la reponse a « comment
+       nous avez-vous trouves ». */
+    variante: v.optional(v.union(v.literal("hvac"), v.literal("general"))),
+    origine: v.optional(v.string()),
     jeton: v.string(),
   },
   returns: v.id("leads"),
@@ -62,6 +66,8 @@ export const contact = mutation({
         consentSmsLe: args.consentSms === true ? Date.now() : undefined,
         capacite: args.capacite,
         zone: args.zone,
+        variante: args.variante,
+        origine: args.origine,
         jeton: args.jeton,
         ...(args.visiteId ? { visiteId: args.visiteId } : {}),
       });
@@ -78,6 +84,8 @@ export const contact = mutation({
       email,
       capacite: args.capacite,
       zone: args.zone,
+      variante: args.variante,
+      origine: args.origine,
       jeton: args.jeton,
       statut: "partiel",
     });
@@ -121,6 +129,48 @@ export const reponses = mutation({
       chiffreAffaires: args.chiffreAffaires,
       delai: args.delai,
       role: args.role,
+      siteWeb: args.siteWeb,
+      statut: "complet",
+    });
+    await ctx.scheduler.runAfter(0, internal.notifications.lead, {
+      leadId: lead._id,
+      moment: "complet",
+    });
+    return idEvenementLead(lead._id);
+  },
+});
+
+/**
+ * Les questions du formulaire general (`/book`), apres le contact : ce qui lui
+ * donne envie de parler, son role, ce que fait son entreprise. Meme logique que
+ * `reponses` : renvoie l'identifiant d'evenement du Lead, ou null si le lead est
+ * inconnu ou si le jeton ne correspond pas.
+ */
+export const reponsesGenerales = mutation({
+  args: {
+    secret: v.string(),
+    leadId: v.id("leads"),
+    jeton: v.string(),
+    motifs: v.array(v.string()),
+    motifNote: v.optional(v.string()),
+    role: v.string(),
+    activite: v.string(),
+    siteWeb: v.optional(v.string()),
+  },
+  returns: v.union(v.string(), v.null()),
+  handler: async (ctx, args) => {
+    verifierSecret(args.secret);
+    const lead = await ctx.db.get("leads", args.leadId);
+    if (!lead || lead.jeton !== args.jeton) return null;
+
+    /* Un second envoi des reponses ne repart pas vers Slack. */
+    if (lead.statut !== "partiel") return idEvenementLead(lead._id);
+
+    await ctx.db.patch("leads", lead._id, {
+      motifs: args.motifs,
+      motifNote: args.motifNote,
+      role: args.role,
+      activite: args.activite,
       siteWeb: args.siteWeb,
       statut: "complet",
     });

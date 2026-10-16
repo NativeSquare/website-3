@@ -71,7 +71,7 @@ type Sauvegarde = {
   siteWeb: string;
 };
 
-function Cartes({
+export function Cartes({
   options,
   valeurs,
   multiple,

@@ -10,7 +10,7 @@
  */
 
 export type Porte = "telephone" | "leads" | "estimates";
-export type Niche = "windows" | "hvac";
+export type Niche = "windows" | "hvac" | "general";
 
 export const PORTES: Porte[] = ["telephone", "leads", "estimates"];
 
@@ -38,6 +38,9 @@ export type Contenu = {
   /* Le tunnel en une colonne (HVAC) : les questions, un ecran chacune, puis le
      calendrier. Absent des landings qui gardent le calendrier dans le hero. */
   formulaire?: {
+    /* Le formulaire a afficher : celui de la campagne HVAC (par defaut) ou le
+       formulaire general de `/book`. */
+    variante?: "hvac" | "general";
     boutonContact: string;
     boutonFinal: string;
     consentement: string;
@@ -173,5 +176,37 @@ export const contenu: Record<Niche, Contenu> = {
         a: "It depends on what we build for you. We go through your numbers on the call.",
       },
     ],
+  },
+
+  /* Le formulaire general, `/book` : la destination de tout bouton « Book a
+     call » du site pour quelqu'un qui ne vient pas d'une campagne. Contact
+     obligatoire avant le calendrier, comme sur la landing HVAC, mais sans
+     question propre a un metier. */
+  general: {
+    kicker: "Book a call",
+    metaTitle: "Book a call · NativeSquare",
+    cta: "Book a call",
+    note: "Thirty minutes on video with NativeSquare.",
+    generique: {
+      h1: "Book a call with NativeSquare.",
+      lead: "Tell us a little about your business first, so the thirty minutes are useful. Then you pick a time.",
+    },
+    formulaire: {
+      variante: "general",
+      boutonContact: "Continue",
+      boutonFinal: "See available times",
+      consentement:
+        "NativeSquare will use your name, phone number and email to contact you about this call and to book it.",
+      zoneOuverte: "Thanks, {prenom}. Three quick questions, then you pick your time.",
+      reserverTitre: "Pick a time",
+      reserverTexte:
+        "Thanks, {prenom}. Choose the slot that suits you for the thirty-minute video call.",
+      apresReservation: "/before-our-call",
+    },
+    reserver: {
+      h2: "Pick a time.",
+      p: "Thirty minutes on video.",
+    },
+    faq: [],
   },
 };

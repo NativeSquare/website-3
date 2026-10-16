@@ -123,6 +123,7 @@ export default function Landing({
             </div>
             <Entonnoir
               source={source}
+              variante={f.variante}
               boutonContact={f.boutonContact}
               boutonFinal={f.boutonFinal}
               consentement={f.consentement}

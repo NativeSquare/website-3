@@ -136,7 +136,8 @@ export const lead = internalAction({
     await envoyerEvenement({
       event_name: "Lead",
       event_id: idEvenementLead(lead._id),
-      event_source_url: ORIGINE_SITE + (visite?.chemin ?? "/hvac"),
+      event_source_url:
+        ORIGINE_SITE + (visite?.chemin ?? (lead.variante === "general" ? "/book" : "/hvac")),
       user_data: {
         em: await hacherSi(lead.email),
         ph: await hacherTelephone(lead.telephone),
@@ -149,7 +150,7 @@ export const lead = internalAction({
         fbc: visite?.fbc,
         client_user_agent: visite?.agent,
       },
-      custom_data: parametresLead(lead.capacite),
+      custom_data: parametresLead(lead.capacite, lead.variante ?? "hvac"),
     });
     return null;
   },

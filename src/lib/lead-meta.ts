@@ -27,9 +27,14 @@ export type ParametresLead = {
   jobs_capacity: string;
 };
 
-export function parametresLead(capacite: string | undefined): ParametresLead {
+/* Le formulaire general (`/book`) ne pose pas la question des chantiers : son
+   Lead porte un autre nom de contenu pour qu'on puisse le separer de HVAC. */
+export function parametresLead(
+  capacite: string | undefined,
+  variante: "hvac" | "general" = "hvac",
+): ParametresLead {
   return {
-    content_name: "hvac-application",
+    content_name: variante === "general" ? "general-application" : "hvac-application",
     jobs_capacity: capacite ?? "",
   };
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import CalendrierInline from "./CalendrierInline";
+import FormulaireGeneral from "./FormulaireGeneral";
 import FormulaireLead, { type LeadQualifie } from "./FormulaireLead";
 
 /**
@@ -16,6 +17,8 @@ import FormulaireLead, { type LeadQualifie } from "./FormulaireLead";
 
 type Props = {
   source: string;
+  /* Le formulaire de la campagne HVAC (par defaut) ou le formulaire general. */
+  variante?: "hvac" | "general";
   boutonContact: string;
   boutonFinal: string;
   consentement: string;
@@ -29,6 +32,7 @@ const CLE_CALENDRIER = "ns_cal";
 
 export default function Entonnoir({
   source,
+  variante = "hvac",
   boutonContact,
   boutonFinal,
   consentement,
@@ -77,7 +81,17 @@ export default function Entonnoir({
 
   return (
     <div className="ld-funnel">
-      {!lead && (
+      {!lead && variante === "general" && (
+        <FormulaireGeneral
+          source={source}
+          boutonContact={boutonContact}
+          boutonFinal={boutonFinal}
+          consentement={consentement}
+          ouverture={zoneOuverte}
+          onComplete={terminer}
+        />
+      )}
+      {!lead && variante !== "general" && (
         <FormulaireLead
           source={source}
           boutonContact={boutonContact}
