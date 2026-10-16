@@ -24,6 +24,8 @@ type Accroche = {
   /* Absentes de la landing HVAC : le tunnel se suffit, Angelo a retire les
      etapes sous le formulaire (09/10/2026). */
   etapes?: { h3: string; p: string }[];
+  /* Une ligne de rarete sous l'accroche : a qui on reserve les leads. */
+  rarete?: string;
 };
 
 export type Contenu = {
@@ -152,13 +154,18 @@ export const contenu: Record<Niche, Contenu> = {
      affirmation de resultats passes, la video seule les porte. Jamais le mot
      « free » : Angelo, « free doesn't make it sound premium ». */
   hvac: {
-    kicker: "For HVAC company owners",
+    kicker: "Limited offer for HVAC company owners",
     metaTitle: "50 exclusive HVAC leads a month · NativeSquare",
     cta: "Book your consultation",
     note: "Thirty minutes on video with NativeSquare.",
     generique: {
-      h1: "50 or more exclusive HVAC leads a month, or you don't pay a cent.",
-      lead: "Answer a few questions, pick a time, and we'll go through it together.",
+      /* **mot** = mis en avant par un effet de style (voir ld-mot dans globals.css). */
+      h1: "**50** or more exclusive HVAC leads a month, or you **don't pay a cent**.",
+      /* Retour d'Angelo (debrief du premier call) : promettre la verification de
+         la zone, pas une reservation. Rarete : « we only give those leads to
+         qualified owners ». */
+      lead: "Answer a few questions to see if your area is available!",
+      rarete: "We only partner with vetted owners. See if you qualify!",
     },
     formulaire: {
       boutonContact: "Check my area",

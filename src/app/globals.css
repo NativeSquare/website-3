@@ -909,6 +909,11 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 /* Le tunnel HVAC en une colonne : accroche, une question par ecran, calendrier. */
 .ld-hero.ld-c .ld-hero-inner{padding-top:72px;padding-bottom:64px}
 .ld-hero.ld-c h1{font-size:48px}
+.ld-main.ld-sans-entete{margin-top:0}
+/* La ligne de rarete sous l'accroche : a qui on reserve les leads. */
+.ld-rare{display:inline-flex;align-items:center;gap:8px;margin:20px 0 0;padding:8px 16px 8px 12px;border-radius:9999px;background:rgba(51,121,62,.09);
+  border:1px solid rgba(51,121,62,.22);color:#2A6334;font-size:14.5px;font-weight:500;letter-spacing:-.01em}
+.ld-rare svg{flex:none;display:block}
 .ld-funnel{max-width:640px;margin:36px auto 0;text-align:left}
 .ld-form{background:#fff;border:1px solid var(--gray-90);border-radius:16px;padding:28px;box-shadow:var(--shadow-tile);scroll-margin-top:80px}
 .ld-form h2{font-size:24px;line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
@@ -980,3 +985,44 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
   .ld-section{padding:56px 0}
   .ld-wrap{padding:0 20px}
 }
+
+/* ============ Landing /hvac : le design retenu (variante « Energique », 16/10/2026) ============
+   Fond blanc a petits points, un grand bloc bleu derriere le quiz, un titre plus gras, et deux
+   effets sur les mots qui portent la valeur : le chiffre (bleu) et « don't pay a cent » (surligne).
+   Esthetique seulement : le texte, le quiz et le suivi ne changent pas. Seulement /hvac. */
+.ld-hero.ld-hvac{background-color:#fff;background-image:radial-gradient(#E6E5E5 1.2px,transparent 1.2px);background-size:22px 22px;border-bottom:0}
+.ld-hvac .blob{display:none}
+.ld-hvac .pill{background:#060504;border-color:#060504;color:#fff;letter-spacing:.08em;font-weight:500}
+.ld-hero.ld-hvac h1{font-size:58px;font-weight:600;letter-spacing:-.04em;color:#060504;max-width:940px}
+.ld-hero.ld-hvac .lead{color:#353231;font-size:21px;font-weight:500}
+.ld-hvac .ld-rare{border-radius:22px;background:#E7F6EA;border-color:#6DC277;color:#1F5A2A;text-align:left;box-shadow:0 8px 18px -10px rgba(51,121,62,.6)}
+.ld-hvac .ld-form{border:0;border-radius:26px;padding:32px;box-shadow:0 40px 70px -28px rgba(0,40,110,.6),0 4px 0 0 rgba(255,255,255,.4) inset}
+.ld-hvac .ld-prog{height:8px;border-radius:4px}
+.ld-hvac .ld-prog i{background:linear-gradient(90deg,#FFB020,#FF7A2F);border-radius:4px}
+.ld-hvac .ld-form .btn{height:56px;border-radius:14px;font-size:17px;box-shadow:0 14px 26px -12px rgba(0,131,245,.8)}
+.ld-hvac .ld-carte{border-width:1.5px;border-radius:14px}
+.ld-hvac .ld-funnel{position:relative}
+.ld-hvac .ld-funnel::before{content:"";position:absolute;z-index:-1;top:150px;bottom:-64px;left:-60vw;right:-60vw;
+  background:linear-gradient(180deg,#0A84FF 0%,#0062D6 100%);border-radius:56px 56px 0 0}
+/* Les mots mis en avant dans le titre. « don't pay a cent » : un surligneur jaune qui se trace au chargement. */
+.ld-mot{padding:0 .1em;margin:0 -.04em;border-radius:.14em;-webkit-box-decoration-break:clone;box-decoration-break:clone;
+  background:linear-gradient(transparent 54%,rgba(255,214,64,.9) 54%,rgba(255,214,64,.9) 93%,transparent 93%) no-repeat 0 0/0% 100%;
+  animation:ld-surligne .8s cubic-bezier(.3,.7,.2,1) .45s forwards}
+@keyframes ld-surligne{to{background-size:100% 100%}}
+/* Le chiffre : bleu (degrade quand le navigateur sait le faire), un peu plus grand, il rebondit a l'arrivee. Il reste visible meme si l'animation ne se lance pas. */
+.ld-mot.ld-chiffre{padding:0;margin:0;font-size:1.14em;line-height:1;color:#0A84FF;display:inline-block;animation:ld-rebond .7s cubic-bezier(.34,1.5,.64,1) .2s both}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .ld-mot.ld-chiffre{background:linear-gradient(135deg,#0A84FF 10%,#00BFFF 90%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+}
+@keyframes ld-rebond{from{transform:scale(.7)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.ld-mot{animation:none;background-size:100% 100%}.ld-mot.ld-chiffre{animation:none}}
+@media (max-width:900px){
+  .ld-hero.ld-hvac h1{font-size:36px}
+  .ld-hvac .ld-funnel::before{top:110px;border-radius:36px 36px 0 0}
+}
+/* La pastille du haut de /hvac : le sablier juste avant le texte (il se retourne), et le texte peut passer sur deux lignes sur petit ecran. */
+.ld-hvac .pill{display:inline-block;max-width:100%;height:auto;min-height:30px;padding:7px 16px;line-height:1.3;text-align:center;border-radius:18px}
+.ld-sablier{display:inline-block;flex:none;vertical-align:-2px;margin-right:8px;color:#FFC83D;animation:ld-retourne 4.5s ease-in-out infinite}
+@keyframes ld-retourne{0%,55%{transform:rotate(0)}75%,100%{transform:rotate(180deg)}}
+@media (prefers-reduced-motion:reduce){.ld-sablier{animation:none}}
+@media (max-width:900px){.ld-hvac .pill{font-size:11px;letter-spacing:.04em;padding:7px 14px}}

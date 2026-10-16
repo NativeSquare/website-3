@@ -19,6 +19,24 @@ import type { Contenu, Porte } from "../contenu";
  * FAQ retiree a la demande d'Alexandre le 10/10/2026).
  */
 
+/* Un titre ou un mot entre ** ** prend l'effet de style de la landing : un chiffre
+   en bleu degrade, une phrase surlignee. */
+function Titre({ texte }: { texte: string }) {
+  return (
+    <>
+      {texte.split(/(\*\*[^*]+\*\*)/).map((m, i) =>
+        m.startsWith("**") ? (
+          <span key={i} className={/^\d/.test(m.slice(2)) ? "ld-mot ld-chiffre" : "ld-mot"}>
+            {m.slice(2, -2)}
+          </span>
+        ) : (
+          m
+        ),
+      )}
+    </>
+  );
+}
+
 function Etapes({ c, porte }: { c: Contenu; porte?: Porte }) {
   const accroche = porte && c.portes ? c.portes[porte] : c.generique;
   if (!accroche.etapes) return null;
@@ -112,14 +130,32 @@ export default function Landing({
     const f = c.formulaire;
     return (
       <>
-        <section className="ld-hero ld-c">
+        <section className={`ld-hero ld-c${f.variante !== "general" ? " ld-hvac" : ""}`}>
           <span className="blob bc-blob-amber" aria-hidden="true" />
           <span className="blob bc-blob-sky" aria-hidden="true" />
           <div className="ld-hero-inner">
             <div className="ld-copy">
-              <div className="pill">{c.kicker}</div>
-              <h1>{accroche.h1}</h1>
+              <div className="pill">
+                {f.variante !== "general" && (
+                  <svg className="ld-sablier" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M6 2h12M6 22h12M7 2c0 5 3 6 5 10M17 2c0 5-3 6-5 10M12 12c-2 4-5 5-5 10M12 12c2 4 5 5 5 10" />
+                  </svg>
+                )}
+                {c.kicker}
+              </div>
+              <h1>
+                <Titre texte={accroche.h1} />
+              </h1>
               <p className="lead">{accroche.lead}</p>
+              {accroche.rarete && (
+                <p className="ld-rare">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z" />
+                    <path d="M9 12l2 2 4-4" />
+                  </svg>
+                  {accroche.rarete}
+                </p>
+              )}
             </div>
             <Entonnoir
               source={source}

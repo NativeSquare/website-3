@@ -1,10 +1,10 @@
 import Link from "next/link";
-import NsMark from "../(site)/components/NsMark";
-import BoutonEntete from "./components/BoutonEntete";
+import CadreLanding from "./components/CadreLanding";
 
 /* Les landings de pubs : pas de menu, au plus un bouton, qui descend au
    calendrier de la page (voir BoutonEntete). Le visiteur vient d'une pub, il
-   n'a rien d'autre a faire ici que reserver. */
+   n'a rien d'autre a faire ici que reserver. Le haut de page (logo, bouton) est
+   dans CadreLanding : il disparait sur /hvac. */
 export default function LandingLayout({
   children,
 }: {
@@ -12,16 +12,7 @@ export default function LandingLayout({
 }) {
   return (
     <>
-      <header className="site-header bc-header">
-        <div className="container-nav nav">
-          <Link className="brand" href="/" aria-label="NativeSquare">
-            <NsMark className="ns-mark" />
-            <span>NativeSquare</span>
-          </Link>
-          <BoutonEntete />
-        </div>
-      </header>
-      <main className="ld-main">{children}</main>
+      <CadreLanding>{children}</CadreLanding>
       <footer className="bc-footer">
         <div className="container-nav">
           <span>© NativeSquare</span>
