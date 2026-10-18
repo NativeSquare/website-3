@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import CalendrierInline from "./CalendrierInline";
 import FormulaireGeneral from "./FormulaireGeneral";
 import FormulaireLead, { type LeadQualifie } from "./FormulaireLead";
+import { useTunnel } from "./EtatTunnel";
 
 /**
  * Le tunnel de la landing, en une colonne : les questions, un ecran chacune,
@@ -43,6 +44,7 @@ export default function Entonnoir({
 }: Props) {
   const [lead, setLead] = useState<LeadQualifie | null>(null);
   const bloc = useRef<HTMLDivElement>(null);
+  const { signaler } = useTunnel();
 
   /* Lecture du stockage de l'onglet apres l'affichage : synchronisation avec un
      systeme externe, que le rendu serveur ne peut pas faire. */
@@ -69,6 +71,12 @@ export default function Entonnoir({
   useEffect(() => {
     if (lead) bloc.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [lead]);
+
+  /* Le calendrier affiche, y compris apres un rechargement : les avis restent
+     caches. Le formulaire general (/book, /windows) n'est pas concerne. */
+  useEffect(() => {
+    if (lead && variante !== "general") signaler({ engage: true, contact: false, questions: false, calendrier: true });
+  }, [lead, variante, signaler]);
 
   function terminer(l: LeadQualifie) {
     try {
@@ -97,7 +105,6 @@ export default function Entonnoir({
           boutonContact={boutonContact}
           boutonFinal={boutonFinal}
           consentement={consentement}
-          zoneOuverte={zoneOuverte}
           onComplete={terminer}
         />
       )}

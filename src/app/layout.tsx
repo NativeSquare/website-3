@@ -49,17 +49,22 @@ export default async function RootLayout({
   const requestHeaders = await headers();
   const locale = requestHeaders.get("x-ns-locale") === "fr" ? "fr" : "en";
 
+  /* Aucun tag tiers en local (next dev) : un test sur localhost ne doit rien
+     envoyer a LinkedIn, PostHog, Meta ni Google. En production NODE_ENV vaut
+     « production » : rien ne change. */
+  const suivi = process.env.NODE_ENV === "production";
+
   return (
     <html lang={locale} className={`${figtree.variable} ${inter.variable}`}>
       <body className="antialiased">
         {children}
-        <LinkedInInsightTag />
-        <Analytique />
+        {suivi && <LinkedInInsightTag />}
+        {suivi && <Analytique />}
         <SuiviVisite />
         {/* Pages anglaises seulement : le trafic des pubs US, pas les
             visiteurs francais. */}
-        <MetaPixel actif={locale === "en"} />
-        <GoogleTag actif={locale === "en"} />
+        <MetaPixel actif={suivi && locale === "en"} />
+        <GoogleTag actif={suivi && locale === "en"} />
       </body>
     </html>
   );

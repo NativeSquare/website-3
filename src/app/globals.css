@@ -1026,3 +1026,26 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 @keyframes ld-retourne{0%,55%{transform:rotate(0)}75%,100%{transform:rotate(180deg)}}
 @media (prefers-reduced-motion:reduce){.ld-sablier{animation:none}}
 @media (max-width:900px){.ld-hvac .pill{font-size:11px;letter-spacing:.04em;padding:7px 14px}}
+/* L'annonce « votre zone est disponible », a l'ecran du contact de /hvac : une coche verte qui jaillit, une pluie de confettis une seule fois, le titre en vert. Rien ne depend de l'animation pour etre visible. */
+.ld-bravo-tete{position:relative;display:flex;justify-content:center;margin:0 0 18px}
+.ld-coche{position:relative;display:inline-flex;align-items:center;justify-content:center;width:64px;height:64px;border-radius:50%;color:#fff;
+  background:linear-gradient(135deg,#2FD06A,#15803D);box-shadow:0 14px 28px -10px rgba(21,128,61,.75);animation:ld-jaillit .65s cubic-bezier(.2,1.5,.4,1) both}
+.ld-coche::after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid #2FD06A;animation:ld-onde 1s ease-out .15s both}
+@keyframes ld-jaillit{from{transform:scale(0)}to{transform:none}}
+@keyframes ld-onde{from{transform:scale(1);opacity:.8}to{transform:scale(2.1);opacity:0}}
+.ld-fete{position:absolute;left:50%;top:32px;width:0;height:0;pointer-events:none}
+.ld-fete i{position:absolute;left:-4px;top:-6px;width:8px;height:12px;border-radius:2px;opacity:0;animation:ld-confetti 1.25s cubic-bezier(.15,.7,.3,1) .2s both}
+@keyframes ld-confetti{
+  0%{transform:translate(0,0) rotate(0) scale(.4);opacity:1}
+  65%{transform:translate(var(--dx),var(--dy)) rotate(var(--r)) scale(1);opacity:1}
+  100%{transform:translate(var(--dx),calc(var(--dy) + 70px)) rotate(calc(var(--r) * 1.4)) scale(1);opacity:0}
+}
+.ld-hero.ld-hvac h1.ld-bravo{color:#15803D;animation:ld-monte .55s cubic-bezier(.2,.9,.3,1) .1s both}
+@keyframes ld-monte{from{transform:translateY(14px)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.ld-coche,.ld-coche::after,.ld-hero.ld-hvac h1.ld-bravo{animation:none}.ld-fete{display:none}}
+/* Le sous-titre de l'annonce est un H2 : il garde la police et le poids du sous-titre ordinaire, pas ceux des titres. */
+.ld-hero .ld-copy h2.lead{font-family:inherit}
+/* Pendant les questions de qualification, la ligne seule en haut : un peu plus pres de la carte, rien d'autre ne distrait. */
+.ld-hero .ld-copy .lead.ld-seul{margin-top:0}
+/* Au calendrier de /hvac, le haut de la page est vide : il ne prend plus de place. */
+.ld-hvac .ld-copy:empty{display:none}

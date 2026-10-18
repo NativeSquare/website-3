@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Check } from "lucide-react";
 import posthog from "posthog-js";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { lireVisiteId } from "../../lib/visite";
@@ -10,6 +9,7 @@ import { suivreMeta } from "../../lib/meta";
 import { suivreGoogle } from "../../lib/google";
 import { parametresLead } from "../../../lib/lead-meta";
 import TelephoneInput from "./TelephoneInput";
+import { useTunnel } from "./EtatTunnel";
 import {
   CAPACITES,
   CHIFFRES_AFFAIRES,
@@ -23,7 +23,9 @@ import {
  * 09/10/2026) :
  *   0. combien de chantiers peut-il prendre ;
  *   1. sa zone ;
- *   2. prenom, telephone, e-mail : le lead est enregistre, c'est un lead
+ *   2. prenom, telephone, e-mail, sous l'annonce « votre zone est disponible »
+ *      (c'est la zone qui justifie de demander le contact ; l'annonce est le
+ *      titre de la page, voir CopieHero) : le lead est enregistre, c'est un lead
  *      partiel qu'on peut appeler, et c'est ce temps-la qui envoie « Lead » a
  *      Meta, du navigateur ici, du serveur depuis Convex, avec le meme eventID ;
  *   3 a 6. les questions de qualification, juste avant le calendrier.
@@ -48,8 +50,6 @@ type Props = {
   boutonContact: string;
   boutonFinal: string;
   consentement: string;
-  /* « {prenom} » et « {zone} » sont remplaces par les reponses. */
-  zoneOuverte: string;
   onComplete: (lead: LeadQualifie) => void;
 };
 
@@ -105,7 +105,6 @@ export default function FormulaireLead({
   boutonContact,
   boutonFinal,
   consentement,
-  zoneOuverte,
   onComplete,
 }: Props) {
   const [ecran, setEcran] = useState<number>(ECRAN.CAPACITE);
@@ -114,6 +113,7 @@ export default function FormulaireLead({
   const [erreur, setErreur] = useState("");
   const carte = useRef<HTMLDivElement>(null);
   const premierRendu = useRef(true);
+  const { signaler } = useTunnel();
 
   const [capacite, setCapacite] = useState("");
   const [zone, setZone] = useState("");
@@ -189,6 +189,18 @@ export default function FormulaireLead({
     /* Premiere question repondue : la liste « a commence le quiz ». */
     if (ecran === ECRAN.ZONE) suivreGoogle("quiz_start", { source });
   }, [restaure, ecran, source]);
+
+  /* La page autour du tunnel suit la progression (voir EtatTunnel) : premiere
+     question repondue (ou reprise apres un rechargement), puis ecran du contact. */
+  useEffect(() => {
+    if (!restaure) return;
+    signaler({
+      engage: ecran > ECRAN.CAPACITE,
+      contact: ecran === ECRAN.CONTACT,
+      questions: ecran >= ECRAN.ROLE,
+      zone,
+    });
+  }, [restaure, ecran, zone, signaler]);
 
   /* Sur un ecran plus haut que ce qui reste visible, on remonte au debut de la
      carte ; sinon la page ne bouge pas. */
@@ -341,7 +353,6 @@ export default function FormulaireLead({
     });
   }
 
-  const zoneAffichee = zone.trim().length <= 40 ? zone.trim() : "your area";
   const retourPossible = ecran === ECRAN.ZONE || ecran === ECRAN.CONTACT || ecran >= ECRAN.CA;
 
   return (
@@ -384,7 +395,7 @@ export default function FormulaireLead({
               autoComplete="off"
               autoFocus
               maxLength={80}
-              placeholder="Miami, FL or 33101"
+              placeholder="Write your area here..."
               value={zone}
               onChange={(e) => setZone(e.target.value)}
             />
@@ -398,7 +409,6 @@ export default function FormulaireLead({
 
       {ecran === ECRAN.CONTACT && (
         <form onSubmit={validerContact} noValidate>
-          <h2>Where can we reach you?</h2>
           <label className="ld-field">
             <span className="lab">First name</span>
             <input
@@ -464,14 +474,6 @@ export default function FormulaireLead({
 
       {ecran === ECRAN.ROLE && (
         <>
-          <p className="ld-ok">
-            <Check size={18} strokeWidth={2.25} aria-hidden="true" />
-            <span>
-              {zoneOuverte
-                .replace("{prenom}", prenom.trim())
-                .replace("{zone}", zoneAffichee || "your area")}
-            </span>
-          </p>
           <h2>What is your role in the company?</h2>
           <Cartes
             options={ROLES}

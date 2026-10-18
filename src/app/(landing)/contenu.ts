@@ -46,9 +46,19 @@ export type Contenu = {
     boutonContact: string;
     boutonFinal: string;
     consentement: string;
-    /* Affiche sur le premier ecran de qualification, apres le contact.
-       « {prenom} » et « {zone} » sont remplaces par les reponses. */
+    /* L'annonce de l'ecran de contact, juste apres la zone : c'est parce que la
+       zone est servie qu'on demande le contact. « {zone} » est remplace par la
+       reponse, ** ** met un mot en avant. HVAC : c'est le H1 de la page. Formulaire
+       general : un bandeau, avec aussi « {prenom} ». */
     zoneOuverte: string;
+    /* A l'ecran du contact (HVAC), l'accroche du haut change : `zoneOuverte`
+       devient le H1 de la page, avec l'effet de recompense (coche, confettis), et
+       `contactSousTitre` son sous-titre ; ils remplacent le titre, le sous-titre,
+       la pastille et la rarete. Absent : rien ne change. */
+    contactSousTitre?: string;
+    /* Sur les ecrans de qualification, apres le contact, le haut de la page ne
+       garde que cette ligne : plus de titre, de pastille ni de rarete. */
+    questionsSousTitre?: string;
     /* « {prenom} » est remplace par le prenom saisi. */
     reserverTitre: string;
     reserverTexte: string;
@@ -168,12 +178,14 @@ export const contenu: Record<Niche, Contenu> = {
       rarete: "We only partner with vetted owners. See if you qualify!",
     },
     formulaire: {
-      boutonContact: "Check my area",
+      boutonContact: "Schedule my consultation",
       boutonFinal: "See available times",
       consentement:
         "NativeSquare will use your name, phone number and email to contact you by phone or email about this offer and to book your call.",
-      zoneOuverte:
-        "Good news, {prenom}. We're taking on HVAC companies in {zone}. Four quick questions, then you pick your time.",
+      zoneOuverte: "Congratulations, {zone} is **still available**!",
+      contactSousTitre:
+        "Congratulations, you qualify for this offer. Schedule a consultation with our experts to start getting more jobs.",
+      questionsSousTitre: "Answer those few questions to schedule your consultation.",
       reserverTitre: "Pick a time",
       reserverTexte:
         "Thanks, {prenom}. Choose the slot that suits you for the thirty-minute video consultation.",
