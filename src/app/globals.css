@@ -1059,3 +1059,20 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
   .ld-hvac .ld-funnel::before{top:60px}
   .ld-hvac .ld-form{padding:22px 18px}
 }
+/* Fenetres basses : PostHog du 21/10/2026, 47 % des sessions sur telephone (surtout des iPhone dans Safari) ont moins de 450 px de hauteur visible, des fenetres a mi-hauteur comme 390x411, 646x330 ou 578x280, et 0 reponse sur 521. Ici le haut de page se reduit a un titre court : la premiere reponse doit tenir dans la fenetre. Esthetique seulement. */
+@media (max-width:700px) and (max-height:460px){
+  .ld-hero.ld-hvac .ld-hero-inner{padding:10px 16px 20px}
+  .ld-hvac .ld-copy .pill{display:none}
+  .ld-hero.ld-hvac h1{font-size:22px;line-height:1.1}
+  .ld-hvac .ld-copy > p.lead:not(.ld-seul),.ld-hvac .ld-copy > .ld-rare{display:none}
+  .ld-hvac .ld-funnel{margin-top:10px}
+  .ld-hvac .ld-funnel::before{top:30px}
+  .ld-hvac .ld-form{padding:14px 16px}
+  .ld-hvac .ld-prog{height:6px;margin-bottom:12px}
+  .ld-hvac .ld-form h2{font-size:19px}
+  .ld-hvac .ld-cartes{margin-top:12px;gap:8px}
+  .ld-hvac .ld-carte{min-height:48px;padding:10px 16px;font-size:16px}
+}
+/* « We only partner with vetted owners » : une ligne de texte avec son bouclier, plus un cadre arrondi avec fond et ombre qui ressemblait a un bouton (demande d'Alexandre, 21/10/2026 ; des visiteurs tapaient dessus). */
+.ld-hvac .ld-rare{padding:0;border:0;border-radius:0;background:none;box-shadow:none;margin-top:16px;font-size:16px;text-align:center;cursor:default}
+
