@@ -1049,3 +1049,13 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-hero .ld-copy .lead.ld-seul{margin-top:0}
 /* Au calendrier de /hvac, le haut de la page est vide : il ne prend plus de place. */
 .ld-hvac .ld-copy:empty{display:none}
+/* Sur telephone, la premiere question doit etre visible des l'arrivee. Mesure PostHog du 21/10/2026 : 65 % des telephones ont moins de 600 px de hauteur visible, la premiere reponse commencait a 607 px (iPhone) ou 660 px (Android), et 9 visiteurs sur 10 ne defilent pas. Le haut de page se resserre : moins de marge, titre plus petit, la phrase sous le titre et la barre « vetted owners » ne s'affichent pas a la premiere question. Les ecrans suivants gardent leur haut de page (annonce, ligne unique). Esthetique seulement. */
+@media (max-width:640px){
+  .ld-hero.ld-hvac .ld-hero-inner{padding:20px 20px 40px}
+  .ld-hero.ld-hvac h1{font-size:31px;line-height:1.06}
+  .ld-hvac .ld-copy .pill{margin-bottom:14px}
+  .ld-hvac .ld-copy > p.lead:not(.ld-seul),.ld-hvac .ld-copy > .ld-rare{display:none}
+  .ld-hvac .ld-funnel{margin-top:18px}
+  .ld-hvac .ld-funnel::before{top:60px}
+  .ld-hvac .ld-form{padding:22px 18px}
+}
