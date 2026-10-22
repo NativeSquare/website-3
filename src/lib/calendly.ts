@@ -160,9 +160,13 @@ export function lireInvite(evenement: EvenementCalendly): Invite | null {
   )?.answer;
   const telephone = telephoneInternational(reponseTel ?? p.text_reminder_number ?? "");
 
-  const accordSms = !!p.questions_and_answers?.some(
-    (q) => /agree.*(text message|sms)/i.test(q.question ?? "") && (q.answer ?? "").trim() !== "",
-  );
+  /* Pour une case a cocher, Calendly donne le titre de la question (« SMS
+     reminders ») et, comme reponse, le texte de la case cochee (« I agree to
+     receive text messages... »). On lit les deux ensemble. */
+  const accordSms = !!p.questions_and_answers?.some((q) => {
+    const reponse = (q.answer ?? "").trim();
+    return reponse !== "" && /agree.*(text message|sms)/i.test(`${q.question ?? ""} ${reponse}`);
+  });
 
   const lien = p.scheduled_event?.location?.join_url;
   return {
