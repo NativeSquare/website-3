@@ -959,6 +959,9 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-calbloc{scroll-margin-top:80px}
 .ld-calbloc h2{font-size:28px;line-height:1.1;letter-spacing:-.025em}
 .ld-calbloc>p{margin:8px 0 16px;font-size:16px;line-height:1.45;color:var(--gray-40)}
+/* /hvac/call : le calendrier seul, centre, sans le grand espace d'une section. */
+.ld-section.ld-reserver{padding:32px 0 56px}
+.ld-reserver .ld-wrap{max-width:760px}
 /* Les avis clients et leurs etoiles. */
 .av-rot{display:grid}
 .av-page{grid-area:1/1;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
