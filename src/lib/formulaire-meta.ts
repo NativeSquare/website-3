@@ -43,14 +43,6 @@ function premier(brut: Record<string, unknown>, cles: string[]): string | undefi
   return undefined;
 }
 
-/* L'accord aux SMS : seulement une reponse positive claire. Une case non cochee
-   arrive vide, ou « no », ou absente : dans le doute, pas d'accord. */
-function accord(valeur: unknown): boolean {
-  if (valeur === true) return true;
-  const t = texte(valeur);
-  return !!t && /^(true|yes|y|1|on|checked|agreed?|i agree)\b/i.test(t);
-}
-
 export function lireLeadMeta(brut: unknown): LeadMeta | null {
   if (!brut || typeof brut !== "object" || Array.isArray(brut)) return null;
   const b = brut as Record<string, unknown>;
@@ -71,7 +63,8 @@ export function lireLeadMeta(brut: unknown): LeadMeta | null {
 
   /* Les exports de Meta ecrivent les numeros « p:+13055550147 ». */
   const saisi = (premier(b, ["phone", "phone_number", "telephone"]) ?? "").replace(/^p:/i, "");
-  const telephone = telephoneInternational(saisi) ?? (saisi || "(none)");
+  const international = telephoneInternational(saisi);
+  const telephone = international ?? (saisi || "(none)");
 
   const annonce = premier(b, ["ad_name", "annonce"]);
   const formulaire = premier(b, ["form_name", "formulaire"]);
@@ -88,7 +81,9 @@ export function lireLeadMeta(brut: unknown): LeadMeta | null {
     nom,
     email,
     telephone,
-    consentSms: accord(b.sms_consent ?? b.consent_sms),
+    /* Les rappels partent par texto des qu'un numero utilisable est donne
+       (decision d'Alexandre du 22/10 : l'avertissement est dans le formulaire Meta). */
+    consentSms: international !== undefined,
     capacite: premier(b, ["jobs_per_month", "capacite"]),
     zone: premier(b, ["area", "zip_code", "zone"]),
     origine,
