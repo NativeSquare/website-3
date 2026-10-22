@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { internalMutation, internalQuery, mutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { idEvenementLead } from "../src/lib/lead-meta";
+import { ORIGINE_META } from "../src/lib/formulaire-meta";
 
 /**
  * Le formulaire de la landing des pubs, en deux temps (retour d'Angelo du
@@ -95,6 +96,68 @@ export const contact = mutation({
       moment: "contact",
     });
     return leadId;
+  },
+});
+
+/**
+ * Un lead du formulaire instantane de Meta (parcours du 22/10/2026). Meta le
+ * garde chez lui : un pont (Zapier ou Make) l'envoie a la route `/meta/lead`, qui
+ * appelle cette mutation. La fiche va dans la meme table que les leads du site :
+ * la reservation Cal.com la retrouve par son e-mail, et c'est elle qui donne le
+ * telephone et l'accord aux SMS a la sequence. Pas de `meta.lead` ici : Meta
+ * compte deja le Lead de son propre formulaire.
+ */
+const UNE_HEURE = 60 * 60 * 1000;
+
+export const depuisMeta = internalMutation({
+  args: {
+    prenom: v.string(),
+    nom: v.optional(v.string()),
+    email: v.string(),
+    telephone: v.string(),
+    consentSms: v.boolean(),
+    capacite: v.optional(v.string()),
+    zone: v.optional(v.string()),
+    origine: v.string(),
+    jeton: v.string(),
+  },
+  returns: v.object({ leadId: v.id("leads"), nouveau: v.boolean() }),
+  handler: async (ctx, args) => {
+    const email = args.email.trim().toLowerCase();
+
+    /* Un pont qui rejoue le meme lead (nouvel essai apres une erreur) ne cree ni
+       seconde fiche ni seconde alerte. */
+    const dernier = await ctx.db
+      .query("leads")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .order("desc")
+      .first();
+    if (
+      dernier?.origine?.startsWith(ORIGINE_META) &&
+      Date.now() - dernier._creationTime < UNE_HEURE
+    ) {
+      return { leadId: dernier._id, nouveau: false };
+    }
+
+    const leadId = await ctx.db.insert("leads", {
+      prenom: args.prenom,
+      nom: args.nom,
+      telephone: args.telephone,
+      consentSms: args.consentSms,
+      consentSmsLe: args.consentSms ? Date.now() : undefined,
+      email,
+      capacite: args.capacite,
+      zone: args.zone,
+      variante: "hvac",
+      origine: args.origine,
+      jeton: args.jeton,
+      statut: "complet",
+    });
+    await ctx.scheduler.runAfter(0, internal.notifications.lead, {
+      leadId,
+      moment: "contact",
+    });
+    return { leadId, nouveau: true };
   },
 });
 

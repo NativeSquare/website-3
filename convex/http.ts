@@ -7,6 +7,7 @@ import {
   telephoneInternational,
   type EvenementCalendly,
 } from "../src/lib/calendly";
+import { lireLeadMeta } from "../src/lib/formulaire-meta";
 
 /**
  * Cal.com signe le corps brut en HMAC-SHA256 avec le secret du webhook et pose
@@ -320,6 +321,58 @@ http.route({
     });
 
     return new Response("ok", { status: 200 });
+  }),
+});
+
+/* Comparaison a temps constant de deux textes (le secret du pont). */
+function memeTexte(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let ecart = 0;
+  for (let i = 0; i < a.length; i++) {
+    ecart |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return ecart === 0;
+}
+
+/**
+ * Les leads du formulaire instantane de Meta. Meta ne pousse rien chez nous tout
+ * seul : un pont (Zapier ou Make) declenche a chaque lead et envoie ici un JSON
+ * (`full_name`, `email`, `phone`, `jobs_per_month`, `area`, `sms_consent`,
+ * `ad_name`, `form_name`). La fiche rejoint la table `leads` et l'alerte Slack
+ * part : on appelle sans attendre une reservation. Quand la personne reserve sur
+ * Cal.com avec le meme e-mail, la route `/cal/booking` retrouve la fiche et
+ * demarre la sequence, textos compris si l'accord a ete donne dans le formulaire.
+ *
+ * Le secret du pont est dans l'en-tete `x-lead-secret` (META_LEAD_SECRET).
+ */
+http.route({
+  path: "/meta/lead",
+  method: "POST",
+  handler: httpAction(async (ctx, requete) => {
+    const secret = process.env.META_LEAD_SECRET;
+    if (!secret) {
+      return new Response("META_LEAD_SECRET absent de l'environnement Convex", { status: 503 });
+    }
+    if (!memeTexte(requete.headers.get("x-lead-secret") ?? "", secret)) {
+      return new Response("secret invalide", { status: 401 });
+    }
+
+    let brut: unknown;
+    try {
+      brut = await requete.json();
+    } catch {
+      return new Response("json invalide", { status: 400 });
+    }
+    const lead = lireLeadMeta(brut);
+    if (!lead) {
+      return new Response("e-mail ou prenom absent", { status: 400 });
+    }
+
+    const { leadId, nouveau } = await ctx.runMutation(internal.leads.depuisMeta, {
+      ...lead,
+      jeton: crypto.randomUUID(),
+    });
+    return Response.json({ ok: true, leadId, nouveau });
   }),
 });
 

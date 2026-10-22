@@ -111,8 +111,10 @@ export const lead = internalAction({
     if (args.moment === "reserve" && args.debut) {
       lignes.push(`Call at ${echapper(args.debut)}`);
     }
+    /* Un lead du formulaire Meta n'a pas de visite : sa pub est dans `origine`. */
+    const pub = !general && lead.origine ? echapper(lead.origine) : origineDeLaVisite(visite);
     lignes.push(
-      `From ad: ${origineDeLaVisite(visite)}` +
+      `From ad: ${pub}` +
         (visite?.chemin ? ` | Landing: ${echapper(visite.chemin)}` : ""),
     );
 
