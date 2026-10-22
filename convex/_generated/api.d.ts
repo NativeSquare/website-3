@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as calendly from "../calendly.js";
 import type * as http from "../http.js";
 import type * as leads from "../leads.js";
 import type * as meta from "../meta.js";
@@ -24,6 +25,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  calendly: typeof calendly;
   http: typeof http;
   leads: typeof leads;
   meta: typeof meta;
