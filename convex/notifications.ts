@@ -202,7 +202,7 @@ export const reservationCalendly = internalAction({
           : "Video call link: in Calendly's confirmation email",
       );
       lignes.push(
-        `Sequence: confirmation now, reminder halfway, reminder 30 minutes before. Emails: on. Texts: ${args.sms ? "on" : "off (no phone number)"}.`,
+        `Sequence: confirmation now, reminder halfway, reminder 30 minutes before. Emails: on. Texts: ${args.sms ? "on" : args.telephone ? "off (SMS consent box not ticked)" : "off (no phone number)"}.`,
       );
     }
     if (args.pub) lignes.push(`From ad: ${echapper(args.pub)}`);

@@ -221,9 +221,9 @@ http.route({
  * d'e-mails (confirmation, mi-chemin, 30 minutes avant) est posee, une annulation
  * ou un report retire ce qui n'est pas parti, une alerte Slack tombe. Differences :
  * il n'y a pas de fiche dans `leads` (le lead est chez Meta), donc le prenom,
- * l'e-mail et le telephone viennent de Calendly ; et les textos partent des qu'un
- * numero est donne, l'accord se donnant dans le formulaire Meta. L'evenement
- * Schedule pour Meta n'est pas envoye.
+ * l'e-mail et le telephone viennent de Calendly ; et les textos partent quand un
+ * numero est donne et que la case d'accord aux SMS de l'evenement est cochee.
+ * L'evenement Schedule pour Meta n'est pas envoye.
  */
 http.route({
   path: "/calendly/booking",
@@ -292,10 +292,11 @@ http.route({
           nom: invite.nom,
           email: invite.email,
           telephone: invite.telephone,
-          /* Les textos partent des qu'un numero est donne : le formulaire Meta et
-             l'evenement Calendly exigent le numero, et l'accord aux SMS se donne
-             dans le formulaire Meta (Alexandre, 22/10/2026). */
-          sms: !!invite.telephone,
+          /* Les textos partent quand un numero est donne ET que la case d'accord
+             aux SMS de l'evenement Calendly est cochee : elle est obligatoire dans
+             l'evenement, donc elle couvre tous les chemins de reservation
+             (decision d'Alexandre, 22/10/2026). */
+          sms: !!invite.telephone && invite.accordSms,
           fuseau: invite.fuseau,
           debut: invite.debut,
           lienVisio: invite.lienVisio,
@@ -314,7 +315,7 @@ http.route({
       debut: invite.debut,
       fuseau: invite.fuseau,
       lienVisio: invite.lienVisio,
-      sms: !!invite.telephone,
+      sms: !!invite.telephone && invite.accordSms,
       pub: invite.pub,
     });
 

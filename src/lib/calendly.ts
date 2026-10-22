@@ -107,6 +107,10 @@ export type Invite = {
   nomComplet?: string;
   email: string;
   telephone?: string;
+  /* La case d'accord aux SMS de l'evenement Calendly est cochee : une question
+     « I agree to receive text messages... » avec une reponse. Sans elle, aucun
+     texto, quel que soit le chemin par lequel la personne a reserve. */
+  accordSms: boolean;
   fuseau: string;
   /* ISO UTC. */
   debut?: string;
@@ -156,6 +160,10 @@ export function lireInvite(evenement: EvenementCalendly): Invite | null {
   )?.answer;
   const telephone = telephoneInternational(reponseTel ?? p.text_reminder_number ?? "");
 
+  const accordSms = !!p.questions_and_answers?.some(
+    (q) => /agree.*(text message|sms)/i.test(q.question ?? "") && (q.answer ?? "").trim() !== "",
+  );
+
   const lien = p.scheduled_event?.location?.join_url;
   return {
     uid,
@@ -168,6 +176,7 @@ export function lireInvite(evenement: EvenementCalendly): Invite | null {
     nomComplet,
     email,
     telephone,
+    accordSms,
     fuseau: p.timezone || "America/New_York",
     debut: iso(p.scheduled_event?.start_time),
     lienVisio: typeof lien === "string" && lien.startsWith("http") ? lien : undefined,
