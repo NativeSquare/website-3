@@ -158,6 +158,7 @@ export default function Landing({
               source={source}
               variante={f.variante}
               boutonContact={f.boutonContact}
+              boutonContactPret={f.boutonContactPret}
               boutonFinal={f.boutonFinal}
               consentement={f.consentement}
               zoneOuverte={f.zoneOuverte}

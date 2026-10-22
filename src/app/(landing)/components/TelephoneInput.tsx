@@ -22,9 +22,12 @@ const PAYS = ["US", "CA", "GB", "AU", "FR"] as const;
 export default function TelephoneInput({
   value,
   onChange,
+  onBlur,
 }: {
   value: string;
   onChange: (e164: string) => void;
+  /* Quand la personne quitte le champ : le formulaire montre alors l'erreur. */
+  onBlur?: () => void;
 }) {
   return (
     <PhoneInput
@@ -40,6 +43,7 @@ export default function TelephoneInput({
       inputMode="tel"
       value={value || undefined}
       onChange={(v) => onChange(v ?? "")}
+      onBlur={onBlur}
     />
   );
 }

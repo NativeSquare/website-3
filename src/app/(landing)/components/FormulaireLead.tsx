@@ -48,6 +48,8 @@ export type LeadQualifie = {
 type Props = {
   source: string;
   boutonContact: string;
+  /* Le libelle du bouton du contact une fois les trois champs valides. */
+  boutonContactPret?: string;
   boutonFinal: string;
   consentement: string;
   onComplete: (lead: LeadQualifie) => void;
@@ -103,6 +105,7 @@ export function Cartes({
 export default function FormulaireLead({
   source,
   boutonContact,
+  boutonContactPret,
   boutonFinal,
   consentement,
   onComplete,
@@ -130,6 +133,32 @@ export default function FormulaireLead({
   const [delai, setDelai] = useState("");
   const [sources, setSources] = useState<string[]>([]);
   const [siteWeb, setSiteWeb] = useState("");
+
+  /* Ecran du contact : l'erreur de chaque champ s'affiche sur le champ, en rouge
+     gras, des que la personne le quitte ou tente d'envoyer. Le bouton a l'air
+     inactif tant que les trois champs ne sont pas valides ; un appui dessus
+     n'envoie rien mais montre toutes les erreurs (sinon un bouton grise ne dit
+     pas pourquoi). Les sessions du 20/10/2026 montraient un visiteur qui
+     appuyait sur le bouton sans rien remplir, croyant reserver. */
+  const [touche, setTouche] = useState({ prenom: false, telephone: false, email: false });
+  const [tenteEnvoi, setTenteEnvoi] = useState(false);
+  const erreursContact = {
+    prenom: prenom.trim() ? "" : "Enter your first name.",
+    /* Le numero doit etre valide pour son pays : un mauvais indicatif ferait
+       echouer les appels et les textos. */
+    telephone:
+      telephone && isValidPhoneNumber(telephone)
+        ? ""
+        : "Enter a valid mobile number for the country selected.",
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+      ? ""
+      : "Enter a valid email, like name@company.com.",
+  };
+  const contactValide = !erreursContact.prenom && !erreursContact.telephone && !erreursContact.email;
+  const erreurChamp = (c: "prenom" | "telephone" | "email") =>
+    touche[c] || tenteEnvoi ? erreursContact[c] : "";
+  const quitte = (c: "prenom" | "telephone" | "email") => () =>
+    setTouche((t) => ({ ...t, [c]: true }));
 
   /* Reprise apres un rechargement : le stockage n'existe pas cote serveur, on
      le lit apres l'affichage pour que les deux rendus restent identiques. C'est
@@ -254,18 +283,12 @@ export default function FormulaireLead({
     e.preventDefault();
     if (envoi) return;
     setErreur("");
-    if (!prenom.trim()) {
-      setErreur("Please enter your first name.");
-      return;
-    }
-    /* Le numero doit etre valide pour son pays : un mauvais indicatif ferait
-       echouer les appels et les textos. */
-    if (!telephone || !isValidPhoneNumber(telephone)) {
-      setErreur("Please enter a valid mobile number for the country selected.");
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setErreur("Please enter a valid email.");
+    if (!contactValide) {
+      setTenteEnvoi(true);
+      /* Le premier champ en erreur prend le curseur, une fois l'erreur affichee. */
+      window.requestAnimationFrame(() => {
+        document.querySelector<HTMLElement>(".ld-form .ld-invalide input")?.focus();
+      });
       return;
     }
     setEnvoi(true);
@@ -409,7 +432,7 @@ export default function FormulaireLead({
 
       {ecran === ECRAN.CONTACT && (
         <form onSubmit={validerContact} noValidate>
-          <label className="ld-field">
+          <label className={`ld-field${erreurChamp("prenom") ? " ld-invalide" : ""}`}>
             <span className="lab">First name</span>
             <input
               type="text"
@@ -417,14 +440,31 @@ export default function FormulaireLead({
               autoComplete="given-name"
               value={prenom}
               onChange={(e) => setPrenom(e.target.value)}
+              onBlur={quitte("prenom")}
+              aria-invalid={erreurChamp("prenom") ? true : undefined}
+              aria-describedby={erreurChamp("prenom") ? "err-prenom" : undefined}
               required
             />
+            {erreurChamp("prenom") && (
+              <span id="err-prenom" className="ld-champ-err" role="alert">
+                {erreurChamp("prenom")}
+              </span>
+            )}
           </label>
-          <div className="ld-field">
+          <div className={`ld-field${erreurChamp("telephone") ? " ld-invalide" : ""}`}>
             <span className="lab">Mobile phone</span>
-            <TelephoneInput value={telephone} onChange={setTelephone} />
+            <TelephoneInput
+              value={telephone}
+              onChange={setTelephone}
+              onBlur={quitte("telephone")}
+            />
+            {erreurChamp("telephone") && (
+              <span id="err-telephone" className="ld-champ-err" role="alert">
+                {erreurChamp("telephone")}
+              </span>
+            )}
           </div>
-          <label className="ld-field">
+          <label className={`ld-field${erreurChamp("email") ? " ld-invalide" : ""}`}>
             <span className="lab">Email</span>
             <input
               type="email"
@@ -433,8 +473,16 @@ export default function FormulaireLead({
               inputMode="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              onBlur={quitte("email")}
+              aria-invalid={erreurChamp("email") ? true : undefined}
+              aria-describedby={erreurChamp("email") ? "err-email" : undefined}
               required
             />
+            {erreurChamp("email") && (
+              <span id="err-email" className="ld-champ-err" role="alert">
+                {erreurChamp("email")}
+              </span>
+            )}
           </label>
           <label className="ld-opt ld-sms">
             <input
@@ -460,8 +508,13 @@ export default function FormulaireLead({
             </span>
           </label>
           {erreur && <p className="ld-erreur" role="alert">{erreur}</p>}
-          <button type="submit" className="btn btn-primary" disabled={envoi}>
-            {envoi ? "One moment…" : boutonContact}
+          <button
+            type="submit"
+            className={`btn btn-primary${contactValide ? "" : " ld-inactif"}`}
+            aria-disabled={!contactValide}
+            disabled={envoi}
+          >
+            {envoi ? "One moment…" : contactValide && boutonContactPret ? boutonContactPret : boutonContact}
           </button>
           <p className="ld-consent">
             {consentement}{" "}

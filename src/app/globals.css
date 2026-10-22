@@ -1075,4 +1075,12 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 }
 /* « We only partner with vetted owners » : une ligne de texte avec son bouclier, plus un cadre arrondi avec fond et ombre qui ressemblait a un bouton (demande d'Alexandre, 21/10/2026 ; des visiteurs tapaient dessus). */
 .ld-hvac .ld-rare{padding:0;border:0;border-radius:0;background:none;box-shadow:none;margin-top:16px;font-size:16px;text-align:center;cursor:default}
+/* Ecran du contact de /hvac (22/10/2026) : l'erreur d'un champ s'affiche sur le champ, en rouge gras, et le bouton a l'air inactif tant que les trois champs ne sont pas valides (un appui dessus n'envoie rien mais montre les erreurs). */
+.ld-champ-err{display:block;margin:2px 0 0;font-size:14px;font-weight:700;line-height:1.3;color:#C62828}
+.ld-field.ld-invalide input[type=text],.ld-field.ld-invalide input[type=tel],.ld-field.ld-invalide input[type=email],.ld-field.ld-invalide .PhoneInput{border-color:#C62828;box-shadow:0 0 0 1px #C62828}
+.ld-field.ld-invalide .PhoneInput .PhoneInputInput{border:0;box-shadow:none}
+.ld-hvac .ld-form .btn.ld-inactif,.ld-hvac .ld-form .btn.ld-inactif:hover{background:#B7BEC8;box-shadow:none;cursor:not-allowed}
+.ld-hvac .ld-erreur{font-weight:700;color:#C62828}
+
+
 

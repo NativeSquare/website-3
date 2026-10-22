@@ -44,12 +44,17 @@ export type Contenu = {
        formulaire general de `/book`. */
     variante?: "hvac" | "general";
     boutonContact: string;
+    /* HVAC : le libelle du bouton du contact une fois les trois champs valides.
+       Tant que le formulaire est incomplet (bouton grise), c'est `boutonContact`. */
+    boutonContactPret?: string;
     boutonFinal: string;
     consentement: string;
     /* L'annonce de l'ecran de contact, juste apres la zone : c'est parce que la
        zone est servie qu'on demande le contact. « {zone} » est remplace par la
-       reponse, ** ** met un mot en avant. HVAC : c'est le H1 de la page. Formulaire
-       general : un bandeau, avec aussi « {prenom} ». */
+       reponse, ** ** met un mot en avant. HVAC : c'est le H1 de la page, et il ne
+       reprend plus la zone saisie (« Nbbn » ou « 6225 » donnaient « Congratulations,
+       Nbbn is still available! », 22/10/2026). Formulaire general : un bandeau,
+       avec aussi « {prenom} ». */
     zoneOuverte: string;
     /* A l'ecran du contact (HVAC), l'accroche du haut change : `zoneOuverte`
        devient le H1 de la page, avec l'effet de recompense (coche, confettis), et
@@ -178,11 +183,12 @@ export const contenu: Record<Niche, Contenu> = {
       rarete: "We only partner with vetted owners. See if you qualify!",
     },
     formulaire: {
-      boutonContact: "Schedule my consultation",
+      boutonContact: "Drop your info to get your leads",
+      boutonContactPret: "Get my leads",
       boutonFinal: "See available times",
       consentement:
         "NativeSquare will use your name, phone number and email to contact you by phone or email about this offer and to book your call.",
-      zoneOuverte: "Congratulations, {zone} is **still available**!",
+      zoneOuverte: "Congratulations, your area is **still available**!",
       contactSousTitre:
         "Congratulations, you qualify for this offer. Schedule a consultation with our experts to start getting more jobs.",
       questionsSousTitre: "Answer those few questions to schedule your consultation.",

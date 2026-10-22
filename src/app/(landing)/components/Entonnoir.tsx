@@ -21,6 +21,7 @@ type Props = {
   /* Le formulaire de la campagne HVAC (par defaut) ou le formulaire general. */
   variante?: "hvac" | "general";
   boutonContact: string;
+  boutonContactPret?: string;
   boutonFinal: string;
   consentement: string;
   zoneOuverte: string;
@@ -35,6 +36,7 @@ export default function Entonnoir({
   source,
   variante = "hvac",
   boutonContact,
+  boutonContactPret,
   boutonFinal,
   consentement,
   zoneOuverte,
@@ -103,6 +105,7 @@ export default function Entonnoir({
         <FormulaireLead
           source={source}
           boutonContact={boutonContact}
+          boutonContactPret={boutonContactPret}
           boutonFinal={boutonFinal}
           consentement={consentement}
           onComplete={terminer}
