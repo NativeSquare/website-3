@@ -337,7 +337,7 @@ function memeTexte(a: string, b: string): boolean {
 /**
  * Les leads du formulaire instantane de Meta. Meta ne pousse rien chez nous tout
  * seul : un pont (Zapier ou Make) declenche a chaque lead et envoie ici un JSON
- * (`full_name`, `email`, `phone`, `jobs_per_month`, `area`, `sms_consent`,
+ * ou un formulaire (`full_name`, `email`, `phone`, `jobs_per_month`, `area`,
  * `ad_name`, `form_name`). La fiche rejoint la table `leads` et l'alerte Slack
  * part : on appelle sans attendre une reservation. Quand la personne reserve sur
  * Cal.com avec le meme e-mail, la route `/cal/booking` retrouve la fiche et
@@ -357,11 +357,17 @@ http.route({
       return new Response("secret invalide", { status: 401 });
     }
 
+    /* JSON, ou un formulaire (cle=valeur) : dans Make, un nom qui contient un
+       guillemet casse un JSON compose a la main et le lead serait perdu, alors
+       que les champs d'un formulaire sont encodes pour nous. */
     let brut: unknown;
     try {
-      brut = await requete.json();
+      const type = requete.headers.get("content-type") ?? "";
+      brut = type.includes("application/x-www-form-urlencoded")
+        ? Object.fromEntries(new URLSearchParams(await requete.text()))
+        : await requete.json();
     } catch {
-      return new Response("json invalide", { status: 400 });
+      return new Response("corps illisible (json ou formulaire attendu)", { status: 400 });
     }
     const lead = lireLeadMeta(brut);
     if (!lead) {
