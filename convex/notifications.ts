@@ -170,6 +170,7 @@ export const reservationCalendly = internalAction({
     debut: v.optional(v.string()),
     fuseau: v.optional(v.string()),
     lienVisio: v.optional(v.string()),
+    sms: v.optional(v.boolean()),
     pub: v.optional(v.string()),
   },
   returns: v.null(),
@@ -200,7 +201,9 @@ export const reservationCalendly = internalAction({
           ? `Video call: ${echapper(args.lienVisio)}`
           : "Video call link: in Calendly's confirmation email",
       );
-      lignes.push("Emails: confirmation now, reminder halfway, reminder 30 minutes before. Texts: off.");
+      lignes.push(
+        `Sequence: confirmation now, reminder halfway, reminder 30 minutes before. Emails: on. Texts: ${args.sms ? "on" : "off (no phone number)"}.`,
+      );
     }
     if (args.pub) lignes.push(`From ad: ${echapper(args.pub)}`);
 
