@@ -1,6 +1,12 @@
 import { httpRouter } from "convex/server";
 import { httpAction } from "./_generated/server";
 import { internal } from "./_generated/api";
+import {
+  lireInvite,
+  signatureCalendlyValide,
+  telephoneInternational,
+  type EvenementCalendly,
+} from "../src/lib/calendly";
 
 /**
  * Cal.com signe le corps brut en HMAC-SHA256 avec le secret du webhook et pose
@@ -55,16 +61,6 @@ function valeurReponse(reponse: unknown): string | undefined {
     const valeur = (reponse as { value: unknown }).value;
     return typeof valeur === "string" && valeur ? valeur : undefined;
   }
-  return undefined;
-}
-
-/* Le telephone saisi dans le formulaire, au format que Quo attend (+1...). Un
-   numero a dix chiffres est americain. */
-function telephoneInternational(saisi: string): string | undefined {
-  const chiffres = saisi.replace(/\D/g, "");
-  if (saisi.trim().startsWith("+") && chiffres.length >= 10) return `+${chiffres}`;
-  if (chiffres.length === 10) return `+1${chiffres}`;
-  if (chiffres.length === 11 && chiffres.startsWith("1")) return `+${chiffres}`;
   return undefined;
 }
 
@@ -210,6 +206,112 @@ http.route({
         revenue: chiffreAffairesLead,
       });
     }
+
+    return new Response("ok", { status: 200 });
+  }),
+});
+
+/**
+ * Les reservations Calendly, celles du parcours « formulaire Meta » : la
+ * personne remplit le formulaire chez Meta, puis reserve dans le calendrier de
+ * l'ecran de fin. Calendly appelle cette adresse a chaque reservation et chaque
+ * annulation (abonnement cree par `calendly:creerAbonnement`).
+ *
+ * Meme effet que le webhook Cal.com : le rendez-vous est enregistre, la sequence
+ * d'e-mails (confirmation, mi-chemin, 30 minutes avant) est posee, une annulation
+ * ou un report retire ce qui n'est pas parti, une alerte Slack tombe. Differences :
+ * il n'y a pas de fiche dans `leads` (le lead est chez Meta), donc le prenom,
+ * l'e-mail et le telephone viennent de Calendly ; et aucun texto ne part, faute
+ * d'accord aux SMS connu ici. L'evenement Schedule pour Meta n'est pas envoye.
+ */
+http.route({
+  path: "/calendly/booking",
+  method: "POST",
+  handler: httpAction(async (ctx, requete) => {
+    const cle = process.env.CALENDLY_SIGNING_KEY;
+    if (!cle) {
+      throw new Error("CALENDLY_SIGNING_KEY absent de l'environnement Convex");
+    }
+    const corps = await requete.text();
+    if (
+      !(await signatureCalendlyValide(corps, requete.headers.get("calendly-webhook-signature"), cle))
+    ) {
+      return new Response("signature invalide", { status: 401 });
+    }
+
+    const invite = lireInvite(JSON.parse(corps) as EvenementCalendly);
+    if (!invite) {
+      return new Response("ignore", { status: 200 });
+    }
+
+    await ctx.runMutation(internal.rendezvous.creer, {
+      calUid: invite.uid,
+      titre: invite.titre,
+      nom: invite.nomComplet,
+      email: invite.email,
+      debut: invite.debut,
+      statut: invite.annule ? "cancelled" : "created",
+    });
+
+    if (invite.annule) {
+      await ctx.runMutation(internal.sequence.annuler, { calUid: invite.uid });
+      /* Une annulation qui fait partie d'un report : l'alerte vient avec la
+         nouvelle reservation. */
+      if (!invite.reprogrammation) {
+        await ctx.scheduler.runAfter(0, internal.notifications.reservationCalendly, {
+          moment: "annule",
+          nom: invite.nomComplet,
+          email: invite.email,
+          telephone: invite.telephone,
+          debut: invite.debut,
+          fuseau: invite.fuseau,
+          pub: invite.pub,
+        });
+      }
+      return new Response("ok", { status: 200 });
+    }
+
+    /* Calendly rejoue un message qui n'a pas recu de reponse : une reservation
+       dont la sequence existe deja ne renvoie ni e-mail ni alerte. */
+    const existante = await ctx.runQuery(internal.sequence.parCalUid, { calUid: invite.uid });
+    if (existante && !existante.annulee) {
+      return new Response("deja traite", { status: 200 });
+    }
+
+    /* Un echec ici ne doit pas faire rejouer le message : le rendez-vous est
+       deja enregistre. */
+    if (invite.debut) {
+      try {
+        if (invite.ancienUid) {
+          await ctx.runMutation(internal.sequence.annuler, { calUid: invite.ancienUid });
+        }
+        await ctx.runMutation(internal.sequence.demarrerAuto, {
+          calUid: invite.uid,
+          prenom: invite.prenom,
+          nom: invite.nom,
+          email: invite.email,
+          telephone: invite.telephone,
+          sms: false,
+          fuseau: invite.fuseau,
+          debut: invite.debut,
+          lienVisio: invite.lienVisio,
+          ancienCalUid: invite.ancienUid,
+        });
+      } catch (erreur) {
+        console.error("[calendly] sequence non posee", erreur);
+      }
+    }
+
+    await ctx.scheduler.runAfter(0, internal.notifications.reservationCalendly, {
+      moment: invite.ancienUid ? "reprogramme" : "reserve",
+      nom: invite.nomComplet,
+      email: invite.email,
+      telephone: invite.telephone,
+      debut: invite.debut,
+      fuseau: invite.fuseau,
+      lienVisio: invite.lienVisio,
+      pub: invite.pub,
+    });
 
     return new Response("ok", { status: 200 });
   }),

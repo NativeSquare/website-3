@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
+import { heure, heureParis, jour } from "../src/lib/sequence-messages";
 
 /**
  * L'alerte Slack de chaque lead : quand il laisse ses coordonnees, quand il a
@@ -149,6 +150,59 @@ export const reservationHorsFormulaire = internalAction({
     ];
     if (args.debut) lignes.push(`Call at ${echapper(args.debut)}`);
     lignes.push(`From ad: ${origineDeLaVisite(visite)}`);
+
+    await poster(webhook, lignes);
+    return null;
+  },
+});
+
+/**
+ * Une reservation Calendly (parcours « formulaire Meta ») : reservee, deplacee
+ * ou annulee. Le lead a deja eu son alerte quand il a envoye le formulaire chez
+ * Meta ; celle-ci dit qu'il a pris un creneau, et pour quand.
+ */
+export const reservationCalendly = internalAction({
+  args: {
+    moment: v.union(v.literal("reserve"), v.literal("reprogramme"), v.literal("annule")),
+    nom: v.optional(v.string()),
+    email: v.string(),
+    telephone: v.optional(v.string()),
+    debut: v.optional(v.string()),
+    fuseau: v.optional(v.string()),
+    lienVisio: v.optional(v.string()),
+    pub: v.optional(v.string()),
+  },
+  returns: v.null(),
+  handler: async (_ctx, args) => {
+    const webhook = process.env.SLACK_LEADS_WEBHOOK;
+    if (!webhook) {
+      console.log("[slack] SLACK_LEADS_WEBHOOK absent : alerte non envoyee");
+      return null;
+    }
+    const titres = {
+      reserve: "Call booked (Calendly)",
+      reprogramme: "Call moved (Calendly)",
+      annule: "Call canceled (Calendly)",
+    };
+    const lignes = [
+      `*${titres[args.moment]}*`,
+      `${echapper(args.nom ?? "?")} | ${echapper(args.telephone ?? "no phone")} | ${echapper(args.email)}`,
+    ];
+    if (args.debut) {
+      const fuseau = args.fuseau ?? "America/New_York";
+      lignes.push(
+        `Call at ${echapper(`${jour({ debut: args.debut, fuseau })}, ${heure(args.debut, fuseau)}`)} | Paris: ${echapper(heureParis(args.debut))}`,
+      );
+    }
+    if (args.moment !== "annule") {
+      lignes.push(
+        args.lienVisio
+          ? `Video call: ${echapper(args.lienVisio)}`
+          : "Video call link: in Calendly's confirmation email",
+      );
+      lignes.push("Emails: confirmation now, reminder halfway, reminder 30 minutes before. Texts: off.");
+    }
+    if (args.pub) lignes.push(`From ad: ${echapper(args.pub)}`);
 
     await poster(webhook, lignes);
     return null;
