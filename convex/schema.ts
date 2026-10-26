@@ -166,4 +166,23 @@ export default defineSchema({
     etat: v.union(v.literal("envoye"), v.literal("echec"), v.literal("ignore")),
     erreur: v.optional(v.string()),
   }).index("by_calUid", ["calUid"]),
+
+  /**
+   * La relance d'un lead qui a envoye un formulaire sans prendre rendez-vous
+   * (convex/relance.ts). Une ligne par lead. « en_attente » : Alexandre est
+   * disponible, il a une heure pour l'appeler. « en_cours » : les six envois
+   * sont poses. « stoppee » : il a reserve ou Alexandre a dit stop.
+   */
+  relances: defineTable({
+    leadId: v.id("leads"),
+    etat: v.union(
+      v.literal("en_attente"),
+      v.literal("en_cours"),
+      v.literal("stoppee"),
+    ),
+    mode: v.optional(v.union(v.literal("auto"), v.literal("manuel"))),
+    lancee: v.optional(v.number()),
+    motif: v.optional(v.string()),
+    taches: v.array(v.id("_scheduled_functions")),
+  }).index("by_leadId", ["leadId"]),
 });

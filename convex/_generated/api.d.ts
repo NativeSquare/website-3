@@ -9,11 +9,13 @@
  */
 
 import type * as calendly from "../calendly.js";
+import type * as envoi from "../envoi.js";
 import type * as http from "../http.js";
 import type * as leads from "../leads.js";
 import type * as meta from "../meta.js";
 import type * as notifications from "../notifications.js";
 import type * as quo from "../quo.js";
+import type * as relance from "../relance.js";
 import type * as rendezvous from "../rendezvous.js";
 import type * as sequence from "../sequence.js";
 import type * as visites from "../visites.js";
@@ -26,11 +28,13 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   calendly: typeof calendly;
+  envoi: typeof envoi;
   http: typeof http;
   leads: typeof leads;
   meta: typeof meta;
   notifications: typeof notifications;
   quo: typeof quo;
+  relance: typeof relance;
   rendezvous: typeof rendezvous;
   sequence: typeof sequence;
   visites: typeof visites;

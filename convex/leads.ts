@@ -3,6 +3,7 @@ import { internalMutation, internalQuery, mutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { idEvenementLead } from "../src/lib/lead-meta";
 import { ORIGINE_META } from "../src/lib/formulaire-meta";
+import { DELAI_VERIFICATION } from "../src/lib/relance";
 
 /**
  * Le formulaire de la landing des pubs, en deux temps (retour d'Angelo du
@@ -95,6 +96,11 @@ export const contact = mutation({
       leadId,
       moment: "contact",
     });
+    /* 5 minutes plus tard : s'il n'a pas reserve, la relance se decide
+       (convex/relance.ts). Le formulaire general n'en a pas. */
+    if (args.variante !== "general") {
+      await ctx.scheduler.runAfter(DELAI_VERIFICATION, internal.relance.verifier, { leadId });
+    }
     return leadId;
   },
 });
@@ -157,6 +163,7 @@ export const depuisMeta = internalMutation({
       leadId,
       moment: "contact",
     });
+    await ctx.scheduler.runAfter(DELAI_VERIFICATION, internal.relance.verifier, { leadId });
     return { leadId, nouveau: true };
   },
 });
@@ -290,6 +297,8 @@ export const marquerReserve = internalMutation({
     if (lead.calUid === args.calUid) return retour;
 
     await ctx.db.patch("leads", lead._id, { statut: "reserve", calUid: args.calUid });
+    /* Il a reserve : la relance qui n'est pas partie est retiree. */
+    await ctx.scheduler.runAfter(0, internal.relance.arreter, { leadId: lead._id, motif: "reserve" });
     await ctx.scheduler.runAfter(0, internal.notifications.lead, {
       leadId: lead._id,
       moment: "reserve",
