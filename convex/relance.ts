@@ -68,7 +68,11 @@ export const contexte = internalQuery({
       .query("relances")
       .withIndex("by_leadId", (q) => q.eq("leadId", leadId))
       .unique();
-    return { lead, relance };
+    const journal = await ctx.db
+      .query("envois")
+      .withIndex("by_calUid", (q) => q.eq("calUid", cleJournal(leadId)))
+      .take(50);
+    return { lead, relance, deja: journal.filter((l) => l.etat === "envoye").map((l) => l.etape) };
   },
 });
 
@@ -120,10 +124,20 @@ export const etat = internalQuery({
       .query("envois")
       .withIndex("by_calUid", (q) => q.eq("calUid", cleJournal(lead._id)))
       .take(20);
+    const programmes: string[] = [];
+    for (const id of relance?.taches ?? []) {
+      const job = await ctx.db.system.get(id);
+      const etape = (job?.args?.[0] as { etape?: string } | undefined)?.etape;
+      if (job && job.state.kind === "pending" && etape) {
+        programmes.push(`${etape} ${new Date(job.scheduledTime).toISOString()}`);
+      }
+    }
+    programmes.sort();
     return {
       lead: { prenom: lead.prenom, statut: lead.statut },
       relance: relance ? { etat: relance.etat, mode: relance.mode, motif: relance.motif } : null,
       envois: envois.map((e) => `${e.etape} ${e.canal} ${e.etat}${e.erreur ? " : " + e.erreur : ""}`),
+      programmes,
     };
   },
 });
@@ -272,14 +286,69 @@ export const arreter = internalMutation({
   },
 });
 
+/* Deplace, annule ou avance des etapes d'une relance en cours. Pour chaque
+   etape citee, ce qui est programme est retire ; si `quand` est donne, elle est
+   reprogrammee a cet instant (`forcer` : un texto part sans attendre la plage
+   horaire). Sans `quand`, l'etape est seulement annulee. */
+export const replanifier = internalMutation({
+  args: {
+    email: v.string(),
+    changements: v.array(
+      v.object({ etape: v.string(), quand: v.optional(v.number()), forcer: v.optional(v.boolean()) }),
+    ),
+  },
+  returns: v.string(),
+  handler: async (ctx, { email, changements }): Promise<string> => {
+    const lead = await leadParEmail(ctx, email);
+    if (!lead) return "lead inconnu";
+    const relance = await relanceDe(ctx, lead._id);
+    if (!relance || relance.etat !== "en_cours") return "rien : pas de relance en cours";
+
+    const visees = new Set(changements.map((c) => c.etape));
+    const gardees: Id<"_scheduled_functions">[] = [];
+    const annulees: string[] = [];
+    for (const id of relance.taches) {
+      const job = await ctx.db.system.get(id);
+      const etape = (job?.args?.[0] as { etape?: string } | undefined)?.etape;
+      if (job && job.state.kind === "pending" && etape && visees.has(etape)) {
+        await ctx.scheduler.cancel(id);
+        annulees.push(etape);
+      } else {
+        gardees.push(id);
+      }
+    }
+    const posees: string[] = [];
+    for (const c of changements) {
+      if (c.quand === undefined) continue;
+      gardees.push(
+        await ctx.scheduler.runAt(c.quand, internal.relance.envoyer, {
+          leadId: lead._id,
+          etape: c.etape,
+          ...(c.forcer ? { forcer: true } : {}),
+        }),
+      );
+      posees.push(`${c.etape} -> ${new Date(c.quand).toISOString()}`);
+    }
+    await ctx.db.patch(relance._id, { taches: gardees });
+    return `annulees : ${annulees.join(", ") || "aucune"} | posees : ${posees.join(", ") || "aucune"}`;
+  },
+});
+
 /* ------------------------------------------------------------------- envoi */
 
 export const envoyer = internalAction({
-  args: { leadId: v.id("leads"), etape: v.string() },
+  args: {
+    leadId: v.id("leads"),
+    etape: v.string(),
+    /* Texto : part tout de suite, sans attendre la plage 8 h a 18 h Pacifique. */
+    forcer: v.optional(v.boolean()),
+  },
   returns: v.null(),
-  handler: async (ctx, { leadId, etape }) => {
-    const { lead, relance } = await ctx.runQuery(internal.relance.contexte, { leadId });
+  handler: async (ctx, { leadId, etape, forcer }) => {
+    const { lead, relance, deja } = await ctx.runQuery(internal.relance.contexte, { leadId });
     if (!lead || !relance || relance.etat !== "en_cours") return null;
+    /* Une etape deja partie ne repart jamais, quoi qu'on ait replanifie. */
+    if (deja.includes(etape)) return null;
     if (lead.statut === "reserve") {
       await ctx.runMutation(internal.relance.arreter, { leadId, motif: "reserve" });
       return null;
@@ -297,7 +366,7 @@ export const envoyer = internalAction({
     /* Un texto hors plage attend la prochaine : c'est la meme etape, repoussee. */
     if (canal === "sms") {
       const ouverture = fenetreSms(Date.now());
-      if (ouverture > Date.now() + 60_000) {
+      if (!forcer && ouverture > Date.now() + 60_000) {
         await ctx.scheduler.runAt(ouverture, internal.relance.envoyer, { leadId, etape });
         return null;
       }
