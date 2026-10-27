@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { internalAction, internalMutation, internalQuery, mutation } from "./_generated/server";
+import { internalAction, internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
@@ -404,6 +404,21 @@ export const envoyer = internalAction({
       await journal("echec", destinataire, erreur instanceof Error ? erreur.message : String(erreur));
     }
     return null;
+  },
+});
+
+/* Le prenom et l'e-mail du lead derriere un lien de relance (`?r=`), pour
+   pre-remplir le calendrier : il n'a rien a retaper. Appelee par la page
+   /hvac/call cote serveur (le secret ne quitte pas le serveur). L'identifiant
+   Convex est introuvable par hasard, et le lien n'est envoye qu'a la personne. */
+export const pourReservation = query({
+  args: { secret: v.string(), r: v.string() },
+  returns: v.union(v.null(), v.object({ prenom: v.string(), email: v.string() })),
+  handler: async (ctx, { secret, r }) => {
+    if (secret !== process.env.MOTEUR_SECRET) return null;
+    const leadId = ctx.db.normalizeId("leads", r);
+    const lead = leadId ? await ctx.db.get(leadId) : null;
+    return lead ? { prenom: lead.prenom, email: lead.email } : null;
   },
 });
 
