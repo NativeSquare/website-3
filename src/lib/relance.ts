@@ -159,12 +159,18 @@ export type MessageRelance = { objet?: string; texte: string };
 
 const prenomPropre = (p: string) => p.trim().charAt(0).toUpperCase() + p.trim().slice(1);
 
+/* Quand on ne connait pas le prenom (le champ nom d'un formulaire a parfois
+   recu le nom de l'entreprise), Alexandre passe « there » : « Hey there, », et
+   les objets et les phrases d'accroche perdent leur prenom. */
+const estAnonyme = (p: string) => p.trim() === "" || /^there$/i.test(p.trim());
+
 export function messageRelance(
   etape: EtapeRelance,
   canal: Canal,
   c: { prenom: string; quand: string; mode: ModeRelance },
 ): MessageRelance {
-  const prenom = prenomPropre(c.prenom);
+  const anonyme = estAnonyme(c.prenom);
+  const prenom = anonyme ? "there" : prenomPropre(c.prenom);
   const lien = lienRelance(etape, canal);
 
   if (etape === "r1" && canal === "sms") {
@@ -184,7 +190,7 @@ export function messageRelance(
         ? "If that's easier for you, you can just reply with a time and I'll set it up."
         : "If that's easier, just reply with a time and I'll set it up.";
     return {
-      objet: `${prenom}, Let's get you more HVAC jobs`,
+      objet: anonyme ? "Let's get you more HVAC jobs" : `${prenom}, Let's get you more HVAC jobs`,
       texte: [
         `Hey ${prenom},`,
         `Alex here. You filled out a form ${c.quand} about getting more HVAC jobs. I see you forgot to book a slot so we can get you started. ${verbe}: ${lien}`,
@@ -202,7 +208,7 @@ export function messageRelance(
 
   if (etape === "r2") {
     return {
-      objet: `${prenom}, still want more HVAC jobs?`,
+      objet: anonyme ? "Still want more HVAC jobs?" : `${prenom}, still want more HVAC jobs?`,
       texte: [
         `Hey ${prenom},`,
         "Alex again. You filled out a form about getting more HVAC jobs. I see you forgot to book a slot so we can get you started.",
@@ -214,12 +220,12 @@ export function messageRelance(
 
   if (canal === "sms") {
     return {
-      texte: `${prenom}, last one from me. I see you forgot to book a slot so we can get you started. If you still want more HVAC jobs, here's the link: ${lien} If not, no worries.\nReply STOP to opt out.`,
+      texte: `${anonyme ? "Last one from me." : `${prenom}, last one from me.`} I see you forgot to book a slot so we can get you started. If you still want more HVAC jobs, here's the link: ${lien} If not, no worries.\nReply STOP to opt out.`,
     };
   }
 
   return {
-    objet: `Closing the loop, ${prenom}`,
+    objet: anonyme ? "Closing the loop" : `Closing the loop, ${prenom}`,
     texte: [
       `Hey ${prenom},`,
       "This is the last message I'll send about it. I see you forgot to book a slot so we can get you started. If the timing isn't right, no worries at all.",

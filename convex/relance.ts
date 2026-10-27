@@ -40,6 +40,7 @@ import {
  * A la main, depuis le dossier du site :
  *   npx convex run relance:apercu '{"email":"x@y.com","mode":"manuel"}'   (rien n'est envoye)
  *   npx convex run relance:lancerManuel '{"email":"x@y.com"}'             (il n'a pas decroche)
+ *   ... avec '"prenom":"there"' quand le prenom de la fiche est faux (nom d'entreprise)
  *   npx convex run relance:arreter '{"email":"x@y.com"}'                  (stop)
  *   npx convex run relance:etat '{"email":"x@y.com"}'                     (ce qui est parti)
  */
@@ -81,8 +82,12 @@ async function leadParEmail(ctx: { db: QueryCtx["db"] }, email: string) {
 
 /* Les six messages tels qu'ils partiraient, sans rien envoyer. */
 export const apercu = internalQuery({
-  args: { email: v.string(), mode: v.optional(v.union(v.literal("auto"), v.literal("manuel"))) },
-  handler: async (ctx, { email, mode }) => {
+  args: {
+    email: v.string(),
+    mode: v.optional(v.union(v.literal("auto"), v.literal("manuel"))),
+    prenom: v.optional(v.string()),
+  },
+  handler: async (ctx, { email, mode, prenom }) => {
     const lead = await leadParEmail(ctx, email);
     if (!lead) return "lead inconnu";
     const m: ModeRelance = mode ?? "auto";
@@ -90,8 +95,8 @@ export const apercu = internalQuery({
     const plan = planRelances(Date.now());
     const blocs: string[] = [`Lead : ${lead.prenom} | ${lead.email} | ${telephoneUS(lead.telephone) ?? "(pas de texto : numero absent ou invalide)"} | mode ${m}`];
     for (const etape of ["r1", "r2", "r3"] as EtapeRelance[]) {
-      const e = messageRelance(etape, "email", { prenom: lead.prenom, quand: q, mode: m });
-      const s = messageRelance(etape, "sms", { prenom: lead.prenom, quand: q, mode: m });
+      const e = messageRelance(etape, "email", { prenom: prenom ?? lead.prenom, quand: q, mode: m });
+      const s = messageRelance(etape, "sms", { prenom: prenom ?? lead.prenom, quand: q, mode: m });
       blocs.push(
         `── ${etape.toUpperCase()} · e-mail, ${new Date(plan[`${etape}_email` as Etape]).toISOString()} ──\nObjet : ${e.objet}\n${e.texte}`,
         `── ${etape.toUpperCase()} · texto, ${new Date(plan[`${etape}_sms` as Etape]).toISOString()} ──\n${s.texte}`,
@@ -137,7 +142,12 @@ async function prevenir(ctx: MutationCtx, texte: string) {
 }
 
 /* Pose les six envois dans le planificateur et note la relance « en cours ». */
-async function lancer(ctx: MutationCtx, leadId: Id<"leads">, mode: ModeRelance): Promise<string> {
+async function lancer(
+  ctx: MutationCtx,
+  leadId: Id<"leads">,
+  mode: ModeRelance,
+  prenomMessage?: string,
+): Promise<string> {
   const existante = await relanceDe(ctx, leadId);
   if (existante && existante.etat !== "en_attente") {
     return `rien lance : relance deja ${existante.etat}`;
@@ -147,7 +157,13 @@ async function lancer(ctx: MutationCtx, leadId: Id<"leads">, mode: ModeRelance):
   for (const etape of ETAPES) {
     taches.push(await ctx.scheduler.runAt(plan[etape], internal.relance.envoyer, { leadId, etape }));
   }
-  const champs = { etat: "en_cours" as const, mode, lancee: Date.now(), taches };
+  const champs = {
+    etat: "en_cours" as const,
+    mode,
+    lancee: Date.now(),
+    taches,
+    ...(prenomMessage ? { prenomMessage } : {}),
+  };
   if (existante) await ctx.db.patch(existante._id, champs);
   else await ctx.db.insert("relances", { leadId, ...champs });
   return "relance lancee";
@@ -230,13 +246,13 @@ export const repliAuto = internalMutation({
 
 /* Alexandre l'a appele sans succes : il dit de lancer. */
 export const lancerManuel = internalMutation({
-  args: { email: v.string() },
+  args: { email: v.string(), prenom: v.optional(v.string()) },
   returns: v.string(),
-  handler: async (ctx, { email }): Promise<string> => {
+  handler: async (ctx, { email, prenom }): Promise<string> => {
     const lead = await leadParEmail(ctx, email);
     if (!lead) return "lead inconnu";
     if (lead.statut === "reserve") return "rien lance : il a deja reserve";
-    const resultat = await lancer(ctx, lead._id, "manuel");
+    const resultat = await lancer(ctx, lead._id, "manuel", prenom);
     if (resultat === "relance lancee") {
       await prevenir(ctx, `*Follow-up launched by hand* for ${lead.prenom}: email now, text in the window, then tomorrow and in 3 days.`);
     }
@@ -298,7 +314,7 @@ export const envoyer = internalAction({
     }
 
     const message = messageRelance(e, canal, {
-      prenom: lead.prenom,
+      prenom: relance.prenomMessage ?? lead.prenom,
       quand: quand(lead._creationTime, Date.now()),
       mode,
     });

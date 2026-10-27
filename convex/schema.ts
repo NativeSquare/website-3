@@ -181,6 +181,8 @@ export default defineSchema({
       v.literal("stoppee"),
     ),
     mode: v.optional(v.union(v.literal("auto"), v.literal("manuel"))),
+    /* Le prenom a mettre dans les messages quand celui de la fiche est faux. */
+    prenomMessage: v.optional(v.string()),
     lancee: v.optional(v.number()),
     motif: v.optional(v.string()),
     taches: v.array(v.id("_scheduled_functions")),
