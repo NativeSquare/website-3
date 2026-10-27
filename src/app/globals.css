@@ -962,6 +962,20 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 /* /hvac/call : le calendrier seul, centre, sans le grand espace d'une section. */
 .ld-section.ld-reserver{padding:32px 0 56px}
 .ld-reserver .ld-wrap{max-width:760px}
+/* /hvac/guide : le cadeau des messages de relance, une page de lecture. */
+.ld-guide h1{font-size:34px;line-height:1.1;letter-spacing:-.03em;text-wrap:balance}
+.ld-guide-intro{margin:14px 0 28px;font-size:17px;line-height:1.5;color:var(--gray-40)}
+.ld-guide-liste{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
+.ld-guide-liste li{background:#fff;border:1px solid var(--gray-90);border-radius:16px;padding:22px 24px;box-shadow:var(--shadow-tile)}
+.ld-guide-liste h2{display:flex;align-items:flex-start;gap:12px;font-size:20px;line-height:1.25;letter-spacing:-.02em}
+.ld-guide-liste h2 span{flex:none;display:inline-flex;width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;align-items:center;justify-content:center;font-size:14px;font-weight:500;font-variant-numeric:tabular-nums}
+.ld-guide-liste p{margin-top:10px;font-size:16px;line-height:1.5;color:var(--gray-40)}
+.ld-guide-liste .ld-guide-verif{padding-top:10px;border-top:1px dashed var(--gray-80);color:#353231}
+.ld-guide-cta{margin-top:28px;padding:26px;border-radius:16px;background:#060504;color:#fff;text-align:center}
+.ld-guide-cta h2{font-size:24px;line-height:1.15;letter-spacing:-.025em;text-wrap:balance}
+.ld-guide-cta p{margin:8px 0 18px;color:#cfcdcc;font-size:16px}
+.ld-guide-sources{margin-top:22px;font-size:13px;line-height:1.5;color:var(--gray-40)}
+.ld-guide-sources a{text-decoration:underline}
 /* Les avis clients et leurs etoiles. */
 .av-rot{display:grid}
 .av-page{grid-area:1/1;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}

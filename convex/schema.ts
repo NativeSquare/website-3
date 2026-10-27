@@ -187,4 +187,14 @@ export default defineSchema({
     motif: v.optional(v.string()),
     taches: v.array(v.id("_scheduled_functions")),
   }).index("by_leadId", ["leadId"]),
+
+  /**
+   * Une page ouverte depuis un lien de relance (`?r=<identifiant du lead>`) :
+   * le guide, ou la page de reservation. Une ligne par ouverture ; l'alerte
+   * Slack ne part qu'a la premiere ouverture de chaque page par lead.
+   */
+  vues: defineTable({
+    leadId: v.id("leads"),
+    page: v.union(v.literal("guide"), v.literal("reservation")),
+  }).index("by_lead_page", ["leadId", "page"]),
 });

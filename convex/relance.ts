@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { internalAction, internalMutation, internalQuery } from "./_generated/server";
+import { internalAction, internalMutation, internalQuery, mutation } from "./_generated/server";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import type { Id } from "./_generated/dataModel";
@@ -99,8 +99,8 @@ export const apercu = internalQuery({
     const plan = planRelances(Date.now());
     const blocs: string[] = [`Lead : ${lead.prenom} | ${lead.email} | ${telephoneUS(lead.telephone) ?? "(pas de texto : numero absent ou invalide)"} | mode ${m}`];
     for (const etape of ["r1", "r2", "r3"] as EtapeRelance[]) {
-      const e = messageRelance(etape, "email", { prenom: prenom ?? lead.prenom, quand: q, mode: m });
-      const s = messageRelance(etape, "sms", { prenom: prenom ?? lead.prenom, quand: q, mode: m });
+      const e = messageRelance(etape, "email", { prenom: prenom ?? lead.prenom, quand: q, mode: m, leadId: lead._id });
+      const s = messageRelance(etape, "sms", { prenom: prenom ?? lead.prenom, quand: q, mode: m, leadId: lead._id });
       blocs.push(
         `── ${etape.toUpperCase()} · e-mail, ${new Date(plan[`${etape}_email` as Etape]).toISOString()} ──\nObjet : ${e.objet}\n${e.texte}`,
         `── ${etape.toUpperCase()} · texto, ${new Date(plan[`${etape}_sms` as Etape]).toISOString()} ──\n${s.texte}`,
@@ -133,8 +133,13 @@ export const etat = internalQuery({
       }
     }
     programmes.sort();
+    const vues = await ctx.db
+      .query("vues")
+      .withIndex("by_lead_page", (q) => q.eq("leadId", lead._id))
+      .take(50);
     return {
       lead: { prenom: lead.prenom, statut: lead.statut },
+      vues: vues.map((x) => `${x.page} ${new Date(x._creationTime).toISOString()}`),
       relance: relance ? { etat: relance.etat, mode: relance.mode, motif: relance.motif } : null,
       envois: envois.map((e) => `${e.etape} ${e.canal} ${e.etat}${e.erreur ? " : " + e.erreur : ""}`),
       programmes,
@@ -386,6 +391,7 @@ export const envoyer = internalAction({
       prenom: relance.prenomMessage ?? lead.prenom,
       quand: quand(lead._creationTime, Date.now()),
       mode,
+      leadId,
     });
     try {
       if (canal === "email") await envoyerEmail(destinataire, message.objet ?? "", message.texte);
@@ -397,6 +403,42 @@ export const envoyer = internalAction({
     } catch (erreur) {
       await journal("echec", destinataire, erreur instanceof Error ? erreur.message : String(erreur));
     }
+    return null;
+  },
+});
+
+/* Une page ouverte depuis un lien de relance. Appelee par la route Next
+   `/api/relance/vue` (le secret reste cote serveur). Chaque ouverture est
+   gardee ; la premiere de chaque page, pour un lead qui n'a pas reserve, previent
+   Alexandre sur Slack : c'est le moment de l'appeler. */
+export const vue = mutation({
+  args: {
+    secret: v.string(),
+    r: v.string(),
+    page: v.union(v.literal("guide"), v.literal("reservation")),
+  },
+  returns: v.null(),
+  handler: async (ctx, { secret, r, page }) => {
+    if (secret !== process.env.MOTEUR_SECRET) throw new Error("secret invalide");
+    const leadId = ctx.db.normalizeId("leads", r);
+    if (!leadId) return null;
+    const lead = await ctx.db.get(leadId);
+    if (!lead) return null;
+
+    const deja = await ctx.db
+      .query("vues")
+      .withIndex("by_lead_page", (q) => q.eq("leadId", leadId).eq("page", page))
+      .first();
+    await ctx.db.insert("vues", { leadId, page });
+    if (deja || lead.statut === "reserve" || leadDeTest(lead)) return null;
+
+    const quoi =
+      page === "guide"
+        ? `*${lead.prenom} just opened the guide.* Good moment to call.`
+        : `*${lead.prenom} is looking at the booking calendar* and hasn't booked yet.`;
+    await ctx.scheduler.runAfter(0, internal.relance.slack, {
+      texte: `${quoi}\n${lead.telephone ?? "no phone"} | ${lead.email}`,
+    });
     return null;
   },
 });

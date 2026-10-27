@@ -150,9 +150,21 @@ export function quand(creeLe: number, maintenant: number): string {
 
 /* ----------------------------------------------------------------- messages */
 
-export function lienRelance(etape: EtapeRelance, canal: Canal): string {
+export const LIEN_GUIDE = "https://nativesquare.ai/hvac/guide";
+
+/* Le suivi d'un lien : la campagne, le canal, l'etape, et l'identifiant du lead
+   (`r`, opaque : ni e-mail ni nom). C'est ce qui dit, sur la page, QUI a clique. */
+function suivi(canal: Canal, contenu: string, leadId?: string): string {
+  return `utm_source=meta&utm_medium=${canal}&utm_campaign=${CAMPAGNE}&utm_content=${contenu}${leadId ? `&r=${leadId}` : ""}`;
+}
+
+export function lienRelance(etape: EtapeRelance, canal: Canal, leadId?: string): string {
   const contenu = etape === "r1" ? "call-lead" : etape === "r2" ? "relance-2" : "relance-3";
-  return `${LIEN_RESERVATION}?utm_source=meta&utm_medium=${canal}&utm_campaign=${CAMPAGNE}&utm_content=${contenu}`;
+  return `${LIEN_RESERVATION}?${suivi(canal, contenu, leadId)}`;
+}
+
+export function lienGuide(etape: EtapeRelance, canal: Canal, leadId?: string): string {
+  return `${LIEN_GUIDE}?${suivi(canal, `guide-${etape}`, leadId)}`;
 }
 
 export type MessageRelance = { objet?: string; texte: string };
@@ -167,34 +179,35 @@ const estAnonyme = (p: string) => p.trim() === "" || /^there$/i.test(p.trim());
 export function messageRelance(
   etape: EtapeRelance,
   canal: Canal,
-  c: { prenom: string; quand: string; mode: ModeRelance },
+  c: { prenom: string; quand: string; mode: ModeRelance; leadId?: string },
 ): MessageRelance {
   const anonyme = estAnonyme(c.prenom);
   const prenom = anonyme ? "there" : prenomPropre(c.prenom);
-  const lien = lienRelance(etape, canal);
+  const lien = lienRelance(etape, canal, c.leadId);
+  const guide = lienGuide(etape, canal, c.leadId);
+  const FIXE = "I see you forgot to book a slot so we can get you started";
 
   if (etape === "r1" && canal === "sms") {
     const ouverture =
       c.mode === "manuel"
-        ? "I just tried calling you about the form you filled out for more HVAC jobs."
-        : `You filled out the form for more HVAC jobs ${c.quand}.`;
+        ? "I just tried calling you about your application for more HVAC jobs. Congrats on getting it in."
+        : `Congrats, your application for more HVAC jobs came in ${c.quand}.`;
     return {
-      texte: `Hey ${prenom}, it's Alex. ${ouverture} I see you forgot to book a slot so we can get you started. You can do it with this link or text me back: ${lien}\nTalk soon,\nAlex\nReply STOP to opt out.`,
+      texte: `Hey ${prenom}, it's Alex. ${ouverture} ${FIXE}: ${lien}
+In the meantime, here's a free guide we put together: 5 ways to get more jobs as an HVAC company: ${guide}
+Talk soon,
+Alex`,
     };
   }
 
   if (etape === "r1") {
-    const verbe = c.mode === "manuel" ? "Make sure you secure your spot here" : "Secure your spot here";
-    const repli =
-      c.mode === "manuel"
-        ? "If that's easier for you, you can just reply with a time and I'll set it up."
-        : "If that's easier, just reply with a time and I'll set it up.";
     return {
-      objet: anonyme ? "Let's get you more HVAC jobs" : `${prenom}, Let's get you more HVAC jobs`,
+      objet: anonyme ? "Congrats, your application is in" : `Congrats ${prenom}, your application is in`,
       texte: [
         `Hey ${prenom},`,
-        `Alex here. You filled out a form ${c.quand} about getting more HVAC jobs. I see you forgot to book a slot so we can get you started. ${verbe}: ${lien}`,
-        repli,
+        `Alex here. Congrats, your application for more HVAC jobs came in ${c.quand}. ${FIXE}. Pick a time here: ${lien}`,
+        `In the meantime, here's a free guide we put together. In our experience, these are the five things that bring an HVAC company more jobs, and it takes five minutes to read: ${guide}`,
+        "If that's easier, just reply with a time and I'll set it up.",
         "Talk soon,\nAlex",
       ].join("\n\n"),
     };
@@ -202,7 +215,8 @@ export function messageRelance(
 
   if (etape === "r2" && canal === "sms") {
     return {
-      texte: `Hey ${prenom}, Alex again. I see you forgot to book a slot so we can get you started. Pick a time here: ${lien}`,
+      texte: `Hey ${prenom}, Alex again. ${FIXE}. Pick a time here: ${lien}
+Tip #1 from the guide: call back every missed call within minutes. ${guide}`,
     };
   }
 
@@ -211,7 +225,8 @@ export function messageRelance(
       objet: anonyme ? "Still want more HVAC jobs?" : `${prenom}, still want more HVAC jobs?`,
       texte: [
         `Hey ${prenom},`,
-        "Alex again. You filled out a form about getting more HVAC jobs. I see you forgot to book a slot so we can get you started.",
+        `Alex again. ${FIXE}.`,
+        `One idea from the guide: when a customer leaves a voicemail, they are usually calling the next shop on the list. The shop that calls back first gets the chance at the job. The other four ideas are here: ${guide}`,
         `The next step is a 30-minute video call. We look at how you handle new customers today, and I tell you straight how we are going to set this up for your business. Pick a time here: ${lien}`,
         "Alex",
       ].join("\n\n"),
@@ -220,7 +235,7 @@ export function messageRelance(
 
   if (canal === "sms") {
     return {
-      texte: `${anonyme ? "Last one from me." : `${prenom}, last one from me.`} I see you forgot to book a slot so we can get you started. If you still want more HVAC jobs, here's the link: ${lien} If not, no worries.\nReply STOP to opt out.`,
+      texte: `${anonyme ? "Last one from me." : `${prenom}, last one from me.`} ${FIXE}. If you still want more HVAC jobs, here's the link: ${lien} The guide is yours to keep: ${guide}`,
     };
   }
 
@@ -228,7 +243,7 @@ export function messageRelance(
     objet: anonyme ? "Closing the loop" : `Closing the loop, ${prenom}`,
     texte: [
       `Hey ${prenom},`,
-      "This is the last message I'll send about it. I see you forgot to book a slot so we can get you started. If the timing isn't right, no worries at all.",
+      `This is the last message I'll send about it. ${FIXE}. If the timing isn't right, no worries at all, the guide is yours to keep: ${guide}`,
       `If you want to pick this back up, you can grab a time here: ${lien}`,
       "Alex",
     ].join("\n\n"),

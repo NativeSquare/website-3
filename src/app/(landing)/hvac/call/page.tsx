@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import CalendrierInline from "../../components/CalendrierInline";
+import SuiviRelance from "../../components/SuiviRelance";
 
 /* L'ecran de fin du formulaire instantane Meta renvoie ici : le calendrier
    Cal.com dans notre page, et non le lien Cal.com nu. C'est ce qui permet de
@@ -36,6 +38,10 @@ export default function ReserverPage() {
           />
         </div>
       </div>
+      {/* `?r=` : l'identifiant du lead, pose par les messages de relance et par le guide. */}
+      <Suspense fallback={null}>
+        <SuiviRelance page="reservation" />
+      </Suspense>
     </section>
   );
 }
