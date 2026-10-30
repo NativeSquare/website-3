@@ -8,35 +8,67 @@ import {
 } from "./_generated/server";
 import type { MutationCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
-import type { Id } from "./_generated/dataModel";
+import type { Doc, Id } from "./_generated/dataModel";
 import {
   EMAIL_1,
   EMAIL_2,
   EMAIL_3,
   EMAIL_ABSENT,
+  EMAIL_B1,
+  EMAIL_B2,
   SMS_1,
   SMS_2,
   SMS_3,
   SMS_ABSENT,
+  SMS_B1,
+  SMS_B2,
+  heure,
+  jour,
   type Contact,
+  type Lien,
 } from "../src/lib/sequence-messages";
-import { lienAbsent } from "../src/lib/relance";
+import { fenetreSms, lienAbsent, lienSuivi } from "../src/lib/relance";
 
 /**
- * La sequence post-booking : trois emails, trois textos au prospect, et un
- * rappel a Alexandre deux heures avant pour qu'il passe son coup de fil.
+ * La sequence post-booking, depuis le 30/10/2026 :
+ *   B1  a la reservation : « reply YES to confirm » (e-mail + texto).
+ *   B2  « no show risk » : ni YES ni signal d'Alexandre 3 h apres la reservation
+ *       (ou quand il le dit) : e-mail + texto avec le guide.
+ *   B3  la confirmation (`email1`, `sms1`), posee quand le rendez-vous passe en
+ *       « confirme », avec la suite : mi-chemin (`email2`, `sms2`) et 30
+ *       minutes avant (`email3`, `sms3`).
+ * Un rendez-vous pris au telephone pendant l'appel (page interne) est confirme
+ * d'emblee. Les sequences d'avant (sans `confirmation`) comptent comme confirmees.
  *
- * Tout est pose a la reservation par le planificateur Convex, donc rien ne
- * depend d'un serveur qui tourne ni d'un abonnement Cal.com payant.
+ * Tout est pose par le planificateur Convex, donc rien ne depend d'un serveur
+ * qui tourne ni d'un abonnement Cal.com payant.
  *
- * Source des textes : atlas/agence/mentorat-angelo/assets-precall/sequence-post-booking.md
+ * A la main, depuis le dossier du site :
+ *   npx convex run sequence:confirmer '{"email":"x@y.com"}'     (il est confirme)
+ *   npx convex run sequence:noShowRisk '{"email":"x@y.com"}'    (pas joint, relance)
+ * ... ou avec '{"calUid":"..."}'.
+ *
+ * Source des textes : atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v5-2026-10-30.md
  */
 
 const TRENTE_MIN = 30 * 60 * 1000;
 /* En dessous, une etape tomberait trop pres de la precedente : on la saute. */
 const MARGE = 5 * 60 * 1000;
+/* Sans YES ni signal d'Alexandre apres ce delai, le rendez-vous passe en
+   « no show risk » (dans la plage des textos, 8 h a 18 h Pacifique). */
+const DELAI_NO_SHOW = 3 * 60 * 60 * 1000;
 
-type Etape = "email1" | "sms1" | "email2" | "sms2" | "email3" | "sms3";
+type Etape =
+  | "b1_email"
+  | "b1_sms"
+  | "b2_email"
+  | "b2_sms"
+  | "email1"
+  | "sms1"
+  | "email2"
+  | "sms2"
+  | "email3"
+  | "sms3";
 
 /* Quand un rendez-vous est deplace, ces etapes ne repartent pas si elles sont
    deja parties pour l'ancien : la confirmation et le message de mi-chemin. Le
@@ -99,41 +131,34 @@ async function etapesDejaParties(ctx: MutationCtx, calUid: string): Promise<Set<
 }
 
 /**
- * Pose les etapes de la sequence dans le planificateur. Commun au depart
- * manuel (page interne) et au depart automatique (reservation du tunnel de la
- * landing). `avecSms` : les textos ne partent que si on le dit.
- * `ancienCalUid` : le rendez-vous que celui-ci remplace, quand il a ete deplace.
- * Ce qui est deja parti pour l'ancien ne repart pas ; la suite s'ajuste a la
- * nouvelle heure.
+ * Pose la suite d'un rendez-vous confirme : la confirmation (B3) tout de suite,
+ * le message de mi-chemin entre la reservation (`creation`) et l'appel, et le
+ * rappel 30 minutes avant. Une etape deja depassee est sautee : un rendez-vous
+ * confirme dans l'heure ne recoit que l'immediat. Ce qui est deja parti pour
+ * l'ancien rendez-vous (`ancienCalUid`, quand celui-ci a ete deplace) ne repart
+ * pas.
  */
-async function planifier(
+async function poserSuite(
   ctx: MutationCtx,
-  donnees: Donnees,
-  avecSms: boolean,
-  ancienCalUid?: string,
-): Promise<{ etapes: string[] }> {
-  /* Une reservation rejouee ne doit pas envoyer deux fois. */
-  const existante = await ctx.db
-    .query("sequences")
-    .withIndex("by_calUid", (q) => q.eq("calUid", donnees.calUid))
-    .unique();
-  if (existante && !existante.annulee) {
-    return { etapes: [] };
-  }
-
-  const dejaParties = ancienCalUid
-    ? await etapesDejaParties(ctx, ancienCalUid)
+  s: {
+    calUid: string;
+    email: string;
+    telephone?: string;
+    debut: string;
+    avecSms: boolean;
+    ancienCalUid?: string;
+  },
+  creation: number,
+): Promise<{ taches: Id<"_scheduled_functions">[]; etapes: string[] }> {
+  const dejaParties = s.ancienCalUid
+    ? await etapesDejaParties(ctx, s.ancienCalUid)
     : new Set<string>();
 
-  const debut = new Date(donnees.debut).getTime();
+  const debut = new Date(s.debut).getTime();
   const maintenant = Date.now();
-  const milieu = maintenant + (debut - maintenant) / 2;
+  const milieu = creation + (debut - creation) / 2;
 
-  /* Chaque etape a son moment. Une etape deja depassee est simplement
-     sautee : un rendez-vous cale dans l'heure ne recoit que l'immediat. */
   const plan: Array<{ etape: Etape; quand: number }> = [
-    /* Tout de suite, pour le depart manuel comme pour le tunnel : Alexandre
-       est encore au telephone avec le patron quand le message arrive. */
     { etape: "email1", quand: maintenant },
     { etape: "sms1", quand: maintenant },
     { etape: "email2", quand: milieu },
@@ -145,14 +170,14 @@ async function planifier(
   const taches: Id<"_scheduled_functions">[] = [];
   const etapes: string[] = [];
   for (const { etape, quand } of plan) {
-    if (!avecSms && etape.startsWith("sms")) continue;
+    if (!s.avecSms && etape.startsWith("sms")) continue;
     if (UNE_SEULE_FOIS.includes(etape) && dejaParties.has(etape)) {
       const sms = etape.startsWith("sms");
       await ctx.db.insert("envois", {
-        calUid: donnees.calUid,
+        calUid: s.calUid,
         etape,
         canal: sms ? "sms" : "email",
-        destinataire: (sms ? donnees.telephone : donnees.email) ?? "(inconnu)",
+        destinataire: (sms ? s.telephone : s.email) ?? "(inconnu)",
         etat: "ignore",
         erreur: DEJA_PARTIE,
       });
@@ -160,13 +185,68 @@ async function planifier(
     }
     if (quand > maintenant + MARGE) {
       taches.push(
-        await ctx.scheduler.runAt(quand, internal.sequence.envoyer, {
-          calUid: donnees.calUid,
-          etape,
-        }),
+        await ctx.scheduler.runAt(quand, internal.sequence.envoyer, { calUid: s.calUid, etape }),
       );
       etapes.push(etape);
-    } else if (quand <= maintenant + MARGE && quand >= maintenant - MARGE) {
+    } else if (quand >= maintenant - MARGE) {
+      taches.push(
+        await ctx.scheduler.runAfter(0, internal.sequence.envoyer, { calUid: s.calUid, etape }),
+      );
+      etapes.push(etape);
+    }
+  }
+  return { taches, etapes };
+}
+
+/**
+ * Pose les etapes de la sequence dans le planificateur. Commun au depart
+ * manuel (page interne, rendez-vous pris au telephone : confirme d'emblee) et
+ * au depart automatique (reservation du tunnel de la landing ou de Calendly :
+ * « a_confirmer », B1 tout de suite et passage en no show risk apres 3 h).
+ * `avecSms` : les textos ne partent que si on le dit.
+ * `ancienCalUid` : le rendez-vous que celui-ci remplace, quand il a ete deplace.
+ * Un rendez-vous deja confirme le reste ; ce qui est deja parti ne repart pas ;
+ * la suite s'ajuste a la nouvelle heure.
+ */
+async function planifier(
+  ctx: MutationCtx,
+  donnees: Donnees,
+  avecSms: boolean,
+  ancienCalUid: string | undefined,
+  confirme: boolean,
+): Promise<{ etapes: string[] }> {
+  /* Une reservation rejouee ne doit pas envoyer deux fois. */
+  const existante = await ctx.db
+    .query("sequences")
+    .withIndex("by_calUid", (q) => q.eq("calUid", donnees.calUid))
+    .unique();
+  if (existante && !existante.annulee) {
+    return { etapes: [] };
+  }
+
+  /* Un report garde la confirmation de l'ancien rendez-vous. */
+  let confirmation: "a_confirmer" | "confirme" = confirme ? "confirme" : "a_confirmer";
+  if (ancienCalUid && !confirme) {
+    const ancienne = await ctx.db
+      .query("sequences")
+      .withIndex("by_calUid", (q) => q.eq("calUid", ancienCalUid))
+      .unique();
+    if (ancienne && (ancienne.confirmation ?? "confirme") === "confirme") {
+      confirmation = "confirme";
+    }
+  }
+
+  const maintenant = Date.now();
+  const taches: Id<"_scheduled_functions">[] = [];
+  const etapes: string[] = [];
+
+  if (confirmation === "confirme") {
+    const suite = await poserSuite(ctx, { ...donnees, avecSms, ancienCalUid }, maintenant);
+    taches.push(...suite.taches);
+    etapes.push(...suite.etapes);
+  } else {
+    for (const etape of ["b1_email", "b1_sms"] as const) {
+      if (etape === "b1_sms" && !avecSms) continue;
       taches.push(
         await ctx.scheduler.runAfter(0, internal.sequence.envoyer, {
           calUid: donnees.calUid,
@@ -175,14 +255,53 @@ async function planifier(
       );
       etapes.push(etape);
     }
+    /* Sans YES ni signal d'Alexandre : no show risk, dans la plage des textos,
+       et seulement si l'appel est assez loin pour que ca serve. */
+    const declenchement = fenetreSms(maintenant + DELAI_NO_SHOW);
+    if (declenchement < new Date(donnees.debut).getTime() - TRENTE_MIN) {
+      taches.push(
+        await ctx.scheduler.runAt(declenchement, internal.sequence.noShowRisk, {
+          calUid: donnees.calUid,
+          auto: true,
+        }),
+      );
+      etapes.push("no_show_risk");
+    }
   }
 
+  const champs = { ...donnees, taches, annulee: false, confirmation, avecSms, ancienCalUid };
   if (existante) {
-    await ctx.db.patch("sequences", existante._id, { ...donnees, taches, annulee: false });
+    await ctx.db.patch("sequences", existante._id, champs);
   } else {
-    await ctx.db.insert("sequences", { ...donnees, taches, annulee: false });
+    await ctx.db.insert("sequences", champs);
   }
   return { etapes };
+}
+
+/* La sequence d'un rendez-vous, par identifiant Cal.com ou par e-mail (la plus
+   recente qui n'est pas annulee). */
+async function trouver(
+  ctx: MutationCtx,
+  calUid?: string,
+  email?: string,
+): Promise<Doc<"sequences"> | null> {
+  if (calUid) {
+    return await ctx.db
+      .query("sequences")
+      .withIndex("by_calUid", (q) => q.eq("calUid", calUid))
+      .unique();
+  }
+  if (!email) return null;
+  for (const adresse of new Set([email.trim().toLowerCase(), email.trim()])) {
+    const lignes = await ctx.db
+      .query("sequences")
+      .withIndex("by_email", (q) => q.eq("email", adresse))
+      .order("desc")
+      .take(10);
+    const active = lignes.find((l) => !l.annulee);
+    if (active) return active;
+  }
+  return null;
 }
 
 export const demarrer = mutation({
@@ -221,15 +340,19 @@ export const demarrer = mutation({
         lienVisio: args.lienVisio,
       },
       true,
+      undefined,
+      /* Pris au telephone, pendant l'appel : confirme d'emblee. */
+      true,
     );
   },
 });
 
 /**
  * Depart automatique, appele par le webhook Cal.com quand quelqu'un qui est
- * passe par le formulaire de la landing reserve. Les e-mails partent toujours ;
- * les textos seulement si la personne a coche la case d'accord aux SMS du
- * formulaire et a donne un numero valide.
+ * passe par le formulaire de la landing reserve (et par la route Calendly). Le
+ * rendez-vous est « a confirmer » : B1 part tout de suite. Les e-mails partent
+ * toujours ; les textos seulement si la personne a coche la case d'accord aux
+ * SMS et a donne un numero valide.
  */
 export const demarrerAuto = internalMutation({
   args: {
@@ -249,7 +372,85 @@ export const demarrerAuto = internalMutation({
   },
   returns: v.object({ etapes: v.array(v.string()) }),
   handler: async (ctx, { sms, ancienCalUid, ...donnees }) => {
-    return await planifier(ctx, donnees, sms && !!donnees.telephone, ancienCalUid);
+    return await planifier(ctx, donnees, sms && !!donnees.telephone, ancienCalUid, false);
+  },
+});
+
+/* ------------------------------------------------------------ confirmation */
+
+const libelle = (c: "a_confirmer" | "no_show_risk" | "confirme" | undefined) =>
+  c === "no_show_risk" ? "en no show risk" : c === "a_confirmer" ? "a confirmer" : "confirme";
+
+async function prevenir(ctx: MutationCtx, texte: string) {
+  await ctx.scheduler.runAfter(0, internal.relance.slack, { texte });
+}
+
+/**
+ * « No show risk » : le lead n'a ni repondu YES ni ete joint. Part tout seul 3 h
+ * apres la reservation (`auto`), ou quand Alexandre dit « je ne l'ai pas
+ * joint ». Envoie B2 : e-mail, et texto si les textos sont permis.
+ */
+export const noShowRisk = internalMutation({
+  args: {
+    calUid: v.optional(v.string()),
+    email: v.optional(v.string()),
+    auto: v.optional(v.boolean()),
+  },
+  returns: v.string(),
+  handler: async (ctx, { calUid, email, auto }): Promise<string> => {
+    const s = await trouver(ctx, calUid, email);
+    if (!s || s.annulee) return "rien : rendez-vous inconnu ou annule";
+    const etat = s.confirmation ?? "confirme";
+    if (etat !== "a_confirmer") return `rien : deja ${libelle(etat)}`;
+    if (new Date(s.debut).getTime() <= Date.now()) return "rien : le rendez-vous est passe";
+
+    const taches = [...s.taches];
+    const etapes: Etape[] = s.avecSms ? ["b2_email", "b2_sms"] : ["b2_email"];
+    for (const etape of etapes) {
+      taches.push(
+        await ctx.scheduler.runAfter(0, internal.sequence.envoyer, { calUid: s.calUid, etape }),
+      );
+    }
+    await ctx.db.patch("sequences", s._id, { confirmation: "no_show_risk", taches });
+    await prevenir(
+      ctx,
+      `*No show risk.* ${s.prenom} hasn't confirmed ${jour(s)} at ${heure(s.debut, s.fuseau)}${auto ? " (3 h after booking)" : ""}. Reminder sent by email${s.avecSms ? " and text" : ""}.\n${s.telephone ?? "no phone"} | ${s.email}`,
+    );
+    return `no show risk : ${etapes.join(", ")}`;
+  },
+});
+
+/**
+ * « Confirme » : le lead a repondu YES, ou Alexandre le dit. Envoie B3, puis pose
+ * le message de mi-chemin et le rappel de 30 minutes. Un message dont l'heure
+ * est deja passee ne part pas.
+ */
+export const confirmer = internalMutation({
+  args: { calUid: v.optional(v.string()), email: v.optional(v.string()) },
+  returns: v.string(),
+  handler: async (ctx, { calUid, email }): Promise<string> => {
+    const s = await trouver(ctx, calUid, email);
+    if (!s || s.annulee) return "rien : rendez-vous inconnu ou annule";
+    if ((s.confirmation ?? "confirme") === "confirme") return "rien : deja confirme";
+    if (new Date(s.debut).getTime() <= Date.now()) return "rien : le rendez-vous est passe";
+
+    const suite = await poserSuite(
+      ctx,
+      {
+        calUid: s.calUid,
+        email: s.email,
+        telephone: s.telephone,
+        debut: s.debut,
+        avecSms: s.avecSms ?? false,
+        ancienCalUid: s.ancienCalUid,
+      },
+      s._creationTime,
+    );
+    await ctx.db.patch("sequences", s._id, {
+      confirmation: "confirme",
+      taches: [...s.taches, ...suite.taches],
+    });
+    return `confirme : ${suite.etapes.join(", ") || "rien a programmer"}`;
   },
 });
 
@@ -289,12 +490,39 @@ export const journaliser = internalMutation({
   },
 });
 
+/* La sequence et, si on la retrouve par son e-mail, la fiche lead : son
+   identifiant (`r`) va dans les liens, ce qui dit QUI ouvre chaque page. */
+export const contexteEnvoi = internalQuery({
+  args: { calUid: v.string() },
+  handler: async (ctx, { calUid }) => {
+    const sequence = await ctx.db
+      .query("sequences")
+      .withIndex("by_calUid", (q) => q.eq("calUid", calUid))
+      .unique();
+    if (!sequence) return null;
+    const lead = await ctx.db
+      .query("leads")
+      .withIndex("by_email", (q) => q.eq("email", sequence.email.trim().toLowerCase()))
+      .order("desc")
+      .first();
+    return { sequence, leadId: lead?._id };
+  },
+});
+
 export const envoyer = internalAction({
   args: { calUid: v.string(), etape: v.string() },
   returns: v.null(),
   handler: async (ctx, { calUid, etape }) => {
-    const sequence = await ctx.runQuery(internal.sequence.parCalUid, { calUid });
-    if (!sequence || sequence.annulee) return null;
+    const contexte = await ctx.runQuery(internal.sequence.contexteEnvoi, { calUid });
+    if (!contexte || contexte.sequence.annulee) return null;
+    const { sequence, leadId } = contexte;
+
+    /* B1 ne part pas si le lead est deja confirme ; B2 seulement en no show
+       risk ; la confirmation et la suite seulement une fois confirme. */
+    const etat = sequence.confirmation ?? "confirme";
+    if (etape.startsWith("b1") && etat === "confirme") return null;
+    if (etape.startsWith("b2") && etat !== "no_show_risk") return null;
+    if (!etape.startsWith("b") && etat !== "confirme") return null;
 
     const contact: Contact = {
       prenom: sequence.prenom,
@@ -306,15 +534,32 @@ export const envoyer = internalAction({
       calUid: sequence.calUid,
     };
 
-    const canal: "email" | "sms" = etape.startsWith("email") ? "email" : "sms";
+    const canal: "email" | "sms" = etape.includes("sms") ? "sms" : "email";
+
+    /* Chaque lien porte la campagne, le canal, le message (« b2-guide »,
+       « b3-video », « midway-roofing », « rappel-video ») et `r`. Seuls les liens
+       d'autres sites (visio, Google Agenda) n'ont pas de suivi. */
+    const prefixe = etape.startsWith("b2")
+      ? "b2"
+      : etape.endsWith("1")
+        ? "b3"
+        : etape.endsWith("2")
+          ? "midway"
+          : "rappel";
+    const lien: Lien = (page, contenu) =>
+      lienSuivi(page, canal, contenu ?? `${prefixe}-${page}`, leadId);
 
     const message =
-      etape === "email1" ? EMAIL_1(contact)
-      : etape === "email2" ? EMAIL_2(contact)
-      : etape === "email3" ? EMAIL_3(contact)
-      : etape === "sms1" ? SMS_1(contact)
-      : etape === "sms2" ? SMS_2(contact)
-      : SMS_3(contact);
+      etape === "b1_email" ? EMAIL_B1(contact)
+      : etape === "b1_sms" ? SMS_B1(contact)
+      : etape === "b2_email" ? EMAIL_B2(contact, lien)
+      : etape === "b2_sms" ? SMS_B2(contact, lien)
+      : etape === "email1" ? EMAIL_1(contact, lien)
+      : etape === "email2" ? EMAIL_2(contact, lien)
+      : etape === "email3" ? EMAIL_3(contact, lien)
+      : etape === "sms1" ? SMS_1(contact, lien)
+      : etape === "sms2" ? SMS_2(contact, lien)
+      : SMS_3(contact, lien);
 
     const destinataire = canal === "email" ? sequence.email : (sequence.telephone ?? "");
 

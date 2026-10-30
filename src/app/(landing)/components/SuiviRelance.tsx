@@ -9,7 +9,11 @@ import { useSearchParams } from "next/navigation";
  * L'envoi attend 2,5 secondes et une page visible : un filtre de securite qui
  * ouvre le lien tout seul ne reste pas assez longtemps pour compter.
  */
-export default function SuiviRelance({ page }: { page: "guide" | "reservation" }) {
+export default function SuiviRelance({
+  page,
+}: {
+  page: "guide" | "reservation" | "video" | "cas_roofing" | "cas_septic";
+}) {
   const r = useSearchParams().get("r");
 
   useEffect(() => {

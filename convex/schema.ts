@@ -155,7 +155,21 @@ export default defineSchema({
     lienVisio: v.optional(v.string()),
     taches: v.array(v.id("_scheduled_functions")),
     annulee: v.optional(v.boolean()),
-  }).index("by_calUid", ["calUid"]),
+    /* Ou en est la confirmation du rendez-vous (depuis le 30/10/2026) :
+       « a_confirmer » a la reservation, « no_show_risk » quand ni YES ni signal
+       d'Alexandre ne sont venus, « confirme » ensuite. Absent des sequences
+       d'avant : elles comptent comme confirmees. */
+    confirmation: v.optional(
+      v.union(v.literal("a_confirmer"), v.literal("no_show_risk"), v.literal("confirme")),
+    ),
+    /* Les textos sont permis (accord du formulaire et numero valide) : retenu
+       pour les etapes posees plus tard, a la confirmation ou au no show risk. */
+    avecSms: v.optional(v.boolean()),
+    /* Le rendez-vous que celui-ci remplace, quand il a ete deplace. */
+    ancienCalUid: v.optional(v.string()),
+  })
+    .index("by_calUid", ["calUid"])
+    .index("by_email", ["email"]),
 
   /** Ce qui est parti, ce qui a echoue. Un envoi par ligne. */
   envois: defineTable({
@@ -190,12 +204,19 @@ export default defineSchema({
 
   /**
    * Une page ouverte depuis un lien de relance (`?r=<identifiant du lead>`) :
-   * le guide, ou la page de reservation. Une ligne par ouverture ; l'alerte
-   * Slack ne part qu'a la premiere ouverture de chaque page par lead.
+   * le guide, la page de reservation, la page pre-appel (video) ou l'un des deux
+   * one-pagers. Une ligne par ouverture ; l'alerte Slack ne part qu'a la
+   * premiere ouverture de chaque page par lead.
    */
   vues: defineTable({
     leadId: v.id("leads"),
-    page: v.union(v.literal("guide"), v.literal("reservation")),
+    page: v.union(
+      v.literal("guide"),
+      v.literal("reservation"),
+      v.literal("video"),
+      v.literal("cas_roofing"),
+      v.literal("cas_septic"),
+    ),
     /* Le canal du lien (« email » ou « sms ») et le message qui le portait
        (« guide-r2 », « absent-guide »...), retrouves dans la visite notee a
        l'arrivee. Absents des ouvertures d'avant le 30/10/2026. */

@@ -48,6 +48,17 @@ import {
 const ETAPES = ["r1_email", "r1_sms", "r2_email", "r2_sms", "r3_email", "r3_sms"] as const;
 type Etape = (typeof ETAPES)[number];
 
+/* Les pages dont une ouverture est notee dans `vues` (le meme ensemble que le
+   champ `page` du schema). */
+const pageVue = v.union(
+  v.literal("guide"),
+  v.literal("reservation"),
+  v.literal("video"),
+  v.literal("cas_roofing"),
+  v.literal("cas_septic"),
+);
+type PageVue = "guide" | "reservation" | "video" | "cas_roofing" | "cas_septic";
+
 /* Le journal `envois` est range par calUid : une relance y prend sa propre cle. */
 const cleJournal = (leadId: Id<"leads">) => `relance-${leadId}`;
 
@@ -430,12 +441,20 @@ export const pourReservation = query({
    les UTM du lien (medium = email ou sms, content = le message) et l'identifiant
    du lead (`r`) dans ses parametres : on la retrouve parmi les plus recentes.
    Rien a changer cote page : l'ouverture se rattache apres coup. */
+const CHEMINS: Record<PageVue, string> = {
+  guide: "/hvac/guide",
+  reservation: "/hvac/call",
+  video: "/before-our-call",
+  cas_roofing: "/cases/roofing",
+  cas_septic: "/cases/septic",
+};
+
 async function canalDeLaVue(
   ctx: { db: QueryCtx["db"] },
   r: string,
-  page: "guide" | "reservation",
+  page: PageVue,
 ): Promise<{ canal?: string; message?: string }> {
-  const chemin = page === "guide" ? "/hvac/guide" : "/hvac/call";
+  const chemin = CHEMINS[page];
   const recentes = await ctx.db.query("visites").order("desc").take(80);
   const visite = recentes.find((x) => x.parametres?.r === r && x.chemin.startsWith(chemin));
   return { canal: visite?.utmMedium, message: visite?.utmContent };
@@ -444,7 +463,7 @@ async function canalDeLaVue(
 /* Pour verifier un lien sans rien ecrire :
    npx convex run relance:canalVue '{"r":"<identifiant du lead>","page":"guide"}' */
 export const canalVue = internalQuery({
-  args: { r: v.string(), page: v.union(v.literal("guide"), v.literal("reservation")) },
+  args: { r: v.string(), page: pageVue },
   returns: v.object({ canal: v.optional(v.string()), message: v.optional(v.string()) }),
   handler: async (ctx, { r, page }) => await canalDeLaVue(ctx, r, page),
 });
@@ -453,7 +472,7 @@ export const vue = mutation({
   args: {
     secret: v.string(),
     r: v.string(),
-    page: v.union(v.literal("guide"), v.literal("reservation")),
+    page: pageVue,
   },
   returns: v.null(),
   handler: async (ctx, { secret, r, page }) => {
@@ -479,16 +498,26 @@ export const vue = mutation({
           .unique()
       : null;
     const absent = rendezvous?.issue === "absent";
-    if (deja || (lead.statut === "reserve" && !absent) || leadDeTest(lead)) return null;
+    /* Le guide et le calendrier ne previennent que pour un lead qui n'a pas
+       reserve (c'est le moment de l'appeler). La page pre-appel et les
+       one-pagers sont faits pour ceux qui ont reserve : eux previennent
+       toujours. */
+    const pourReserves = page === "video" || page === "cas_roofing" || page === "cas_septic";
+    if (deja || leadDeTest(lead)) return null;
+    if (!pourReserves && lead.statut === "reserve" && !absent) return null;
 
     const qui = absent ? `${lead.prenom} (missed the call)` : lead.prenom;
     const via = canal === "email" ? " (email link)" : canal === "sms" ? " (text link)" : "";
     const quoi =
       page === "guide"
         ? `*${qui} just opened the guide*${via}. Good moment to call.`
-        : absent
-          ? `*${qui} is looking at the booking calendar*${via} to pick a new time.`
-          : `*${lead.prenom} is looking at the booking calendar*${via} and hasn't booked yet.`;
+        : page === "video"
+          ? `*${qui} just opened the pre-call page*${via}.`
+          : page === "cas_roofing" || page === "cas_septic"
+            ? `*${qui} just opened the ${page === "cas_roofing" ? "roofing" : "septic"} one-pager*${via}.`
+            : absent
+              ? `*${qui} is looking at the booking calendar*${via} to pick a new time.`
+              : `*${lead.prenom} is looking at the booking calendar*${via} and hasn't booked yet.`;
     await ctx.scheduler.runAfter(0, internal.relance.slack, {
       texte: `${quoi}\n${lead.telephone ?? "no phone"} | ${lead.email}${message ? ` | link: ${message}` : ""}`,
     });

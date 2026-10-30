@@ -4,7 +4,8 @@
  * textes, les plages horaires et le calendrier des envois, pour que les memes
  * fonctions tournent dans Convex et dans les tests.
  *
- * Source des textes : atlas/agence/mentorat-angelo/assets-precall/sequence-relance-formulaire.md
+ * Source des textes (P1, P2, P3 depuis le 30/10/2026) :
+ * atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v5-2026-10-30.md
  */
 
 export const LIEN_RESERVATION = "https://nativesquare.ai/hvac/call";
@@ -151,11 +152,39 @@ export function quand(creeLe: number, maintenant: number): string {
 /* ----------------------------------------------------------------- messages */
 
 export const LIEN_GUIDE = "https://nativesquare.ai/hvac/guide";
+/* La page pre-appel (video) et les deux one-pagers en HTML. */
+export const LIEN_VIDEO = "https://nativesquare.ai/before-our-call";
+export const LIEN_CAS = "https://nativesquare.ai/cases";
 
 /* Le suivi d'un lien : la campagne, le canal, l'etape, et l'identifiant du lead
-   (`r`, opaque : ni e-mail ni nom). C'est ce qui dit, sur la page, QUI a clique. */
-function suivi(canal: Canal, contenu: string, leadId?: string): string {
-  return `utm_source=meta&utm_medium=${canal}&utm_campaign=${CAMPAGNE}&utm_content=${contenu}${leadId ? `&r=${leadId}` : ""}`;
+   (`r`, opaque : ni e-mail ni nom). C'est ce qui dit, sur la page, QUI a clique.
+   `source` : « meta » pour les leads du tunnel ; la sequence post-booking passe
+   « sequence » quand elle ne retrouve aucune fiche lead. */
+function suivi(canal: Canal, contenu: string, leadId?: string, source = "meta"): string {
+  return `utm_source=${source}&utm_medium=${canal}&utm_campaign=${CAMPAGNE}&utm_content=${contenu}${leadId ? `&r=${leadId}` : ""}`;
+}
+
+/* Les pages qu'un message de la sequence peut montrer. Chaque lien porte la
+   campagne, le canal, le message (`contenu`) et `r` quand le lead est connu. */
+export type PageSuivie = "guide" | "video" | "roofing" | "septic";
+
+export function lienSuivi(
+  page: PageSuivie,
+  canal: Canal,
+  contenu: string,
+  leadId?: string,
+): string {
+  const base =
+    page === "guide" ? LIEN_GUIDE : page === "video" ? LIEN_VIDEO : `${LIEN_CAS}/${page}`;
+  return `${base}?${suivi(canal, contenu, leadId, leadId ? "meta" : "sequence")}`;
+}
+
+/* « tomorrow », ou « Monday » quand demain tombe un samedi ou un dimanche : le
+   « next business day » de P1, lu au Pacifique comme les plages de texto. */
+export function prochainJourOuvre(ts: number): string {
+  const demain = jourPlus(ts, PACIFIQUE, 1);
+  const semaine = new Date(Date.UTC(demain.annee, demain.mois - 1, demain.jour)).getUTCDay();
+  return semaine === 0 || semaine === 6 ? "Monday" : "tomorrow";
 }
 
 export function lienRelance(etape: EtapeRelance, canal: Canal, leadId?: string): string {
@@ -184,66 +213,69 @@ const prenomPropre = (p: string) => p.trim().charAt(0).toUpperCase() + p.trim().
    les objets et les phrases d'accroche perdent leur prenom. */
 const estAnonyme = (p: string) => p.trim() === "" || /^there$/i.test(p.trim());
 
+/* Les trois relances d'un lead qui a laisse ses coordonnees sans reserver (P1,
+   P2, P3). Textes de la V5 du 30/10/2026 :
+   atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v5-2026-10-30.md
+   `quand` et `mode` ne servent plus aux textes ; ils restent dans le type pour
+   que l'apercu et l'envoi n'aient pas a changer. `maintenant` donne le « next
+   business day » de P1. */
 export function messageRelance(
   etape: EtapeRelance,
   canal: Canal,
-  c: { prenom: string; quand: string; mode: ModeRelance; leadId?: string },
+  c: {
+    prenom: string;
+    quand: string;
+    mode: ModeRelance;
+    leadId?: string;
+    maintenant?: number;
+  },
 ): MessageRelance {
   const anonyme = estAnonyme(c.prenom);
   const prenom = anonyme ? "there" : prenomPropre(c.prenom);
   const lien = lienRelance(etape, canal, c.leadId);
   const guide = lienGuide(etape, canal, c.leadId);
+  const prochain = prochainJourOuvre(c.maintenant ?? Date.now());
   const FIXE = "I see you forgot to book a slot so we can get you started";
 
   if (etape === "r1" && canal === "sms") {
-    const ouverture =
-      c.mode === "manuel"
-        ? "I just tried calling you about your application for more HVAC jobs. Congrats on getting it in."
-        : `Congrats, your application for more HVAC jobs came in ${c.quand}.`;
     return {
-      texte: `Hey ${prenom}, it's Alex. ${ouverture} ${FIXE}: ${lien}
-In the meantime, here's a free guide we put together: 5 ways to get more jobs as an HVAC company: ${guide}
-Talk soon,
-Alex`,
+      texte: `Hey ${prenom}, it's Alex. You left your info to get more HVAC jobs, but your call is not booked yet. Make sure to book it here: ${lien} or just text me a time and I'll book it for you. Does today or ${prochain} work for you?`,
     };
   }
 
   if (etape === "r1") {
     return {
-      objet: anonyme ? "Congrats, your application is in" : `Congrats ${prenom}, your application is in`,
+      objet: anonyme ? "Book your call" : `Book your call, ${prenom}`,
       texte: [
         `Hey ${prenom},`,
-        `Alex here. Congrats, your application for more HVAC jobs came in ${c.quand}. ${FIXE}. Pick a time here: ${lien}`,
-        `In the meantime, here's a free guide we put together. In our experience, these are the five things that bring an HVAC company more jobs, and it takes five minutes to read: ${guide}`,
-        "If that's easier, just reply with a time and I'll set it up.",
-        "Talk soon,\nAlex",
+        `Alex here. You left your info to get more HVAC jobs, but your call is not booked yet. Make sure to book it here: ${lien} or just reply with a time and I'll book it for you. Does today or ${prochain} work for you?`,
+        "Alex",
       ].join("\n\n"),
     };
   }
 
   if (etape === "r2" && canal === "sms") {
     return {
-      texte: `Hey ${prenom}, Alex again. ${FIXE}. Pick a time here: ${lien}
-Tip #1 from the guide: call back every missed call within minutes. ${guide}`,
+      texte: `${anonyme ? "I" : `${prenom}, I`} still don't see a booking from you. Pick a time here: ${lien} Or reply with a time that works and I'll book it for you. In the meantime, here's a guide with some hard learned knowledge on how to get more HVAC jobs. It shows 8 ways to get more HVAC jobs: ${guide}`,
     };
   }
 
   if (etape === "r2") {
     return {
-      objet: anonyme ? "Still want more HVAC jobs?" : `${prenom}, still want more HVAC jobs?`,
+      objet: anonyme ? "Your call isn't booked yet" : `Your call isn't booked yet, ${prenom}`,
       texte: [
         `Hey ${prenom},`,
-        `Alex again. ${FIXE}.`,
-        `One idea from the guide: when a customer leaves a voicemail, they are usually calling the next shop on the list. The shop that calls back first gets the chance at the job. The other four ideas are here: ${guide}`,
-        `The next step is a 30-minute video call. We look at how you handle new customers today, and I tell you straight how we are going to set this up for your business. Pick a time here: ${lien}`,
-        "Alex",
+        `Alex here. You left your info to get more HVAC jobs and I don't see a booking yet. Pick a time here: ${lien}`,
+        "We can't get you the leads until we know about your business, and the call is where we learn it. It's 30 minutes on video. If you'd rather not deal with a calendar, reply with a time that works and I'll book it for you.",
+        `In the meantime, here's a guide with some hard learned knowledge on how to get more HVAC jobs. It shows 8 ways to get more HVAC jobs, each with a check you can run in 10 minutes in your own shop. At the end, a calculator takes your numbers and shows what you lose in a year: ${guide}`,
+        "Talk soon,\nAlex",
       ].join("\n\n"),
     };
   }
 
   if (canal === "sms") {
     return {
-      texte: `${anonyme ? "Last one from me." : `${prenom}, last one from me.`} ${FIXE}. If you still want more HVAC jobs, here's the link: ${lien} The guide is yours to keep: ${guide}`,
+      texte: `${anonyme ? "Last one from me." : `${prenom}, last one from me.`} Should I close your file? If you still want more HVAC jobs, book here: ${lien} The guide is yours to keep, with some hard learned knowledge on 8 ways to get more HVAC jobs: ${guide}`,
     };
   }
 
@@ -251,7 +283,7 @@ Tip #1 from the guide: call back every missed call within minutes. ${guide}`,
     objet: anonyme ? "Closing the loop" : `Closing the loop, ${prenom}`,
     texte: [
       `Hey ${prenom},`,
-      `This is the last message I'll send about it. ${FIXE}. If the timing isn't right, no worries at all, the guide is yours to keep: ${guide}`,
+      `This is the last message I'll send about it. ${FIXE}. If the timing isn't right, no worries at all, the guide is yours to keep. It's hard learned knowledge on 8 ways to get more HVAC jobs, with a 10-minute check for each: ${guide}`,
       `If you want to pick this back up, you can grab a time here: ${lien}`,
       "Alex",
     ].join("\n\n"),

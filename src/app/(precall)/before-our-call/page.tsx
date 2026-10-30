@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Mail } from "lucide-react";
 import PrecallVideo from "../components/PrecallVideo";
 import SansParametres from "../components/SansParametres";
+import SuiviRelance from "../../(landing)/components/SuiviRelance";
 import CasClients from "../../components/CasClients";
 
 /* La page que le prospect voit juste apres avoir reserve son appel : la video
@@ -53,6 +55,9 @@ export default function BeforeOurCallPage() {
   return (
     <>
       <SansParametres />
+      <Suspense fallback={null}>
+        <SuiviRelance page="video" />
+      </Suspense>
 
       <section className="bc-hero">
         <span className="blob bc-blob-amber" aria-hidden="true" />

@@ -2,12 +2,16 @@ import { NextResponse } from "next/server";
 import { ConvexHttpClient } from "convex/browser";
 import { api } from "../../../../../convex/_generated/api";
 
+/* Les pages qui previennent la base quand un lead les ouvre. */
+const PAGES = ["guide", "reservation", "video", "cas_roofing", "cas_septic"] as const;
+type Page = (typeof PAGES)[number];
+
 /**
- * Une page ouverte depuis un lien de relance : le guide, ou la page de
- * reservation, avec `?r=<identifiant du lead>` dans l'adresse. Le navigateur
- * parle a cette route, pas a Convex : le secret partage reste cote serveur,
- * comme pour `/api/lead` et `/api/visite`. Une base qui ne repond pas ne gene
- * jamais la page.
+ * Une page ouverte depuis un lien de la sequence : le guide, la page de
+ * reservation, la page pre-appel ou l'un des one-pagers, avec
+ * `?r=<identifiant du lead>` dans l'adresse. Le navigateur parle a cette route,
+ * pas a Convex : le secret partage reste cote serveur, comme pour `/api/lead` et
+ * `/api/visite`. Une base qui ne repond pas ne gene jamais la page.
  */
 export async function POST(requete: Request) {
   const url = process.env.NEXT_PUBLIC_CONVEX_URL;
@@ -21,7 +25,7 @@ export async function POST(requete: Request) {
     return NextResponse.json({ ok: false }, { status: 400 });
   }
   const r = typeof corps.r === "string" ? corps.r.trim().slice(0, 64) : "";
-  const page = corps.page === "guide" || corps.page === "reservation" ? corps.page : null;
+  const page: Page | null = PAGES.find((p) => p === corps.page) ?? null;
   if (!r || !page) return NextResponse.json({ ok: false }, { status: 400 });
 
   try {
