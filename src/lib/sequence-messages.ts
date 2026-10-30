@@ -28,7 +28,9 @@ function dateAgenda(date: Date): string {
   return date.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 }
 
-const TITRE_AGENDA = "Consultation with NativeSquare";
+/* Le meme titre que l'evenement Calendly et l'evenement Cal.com, pour que la
+   personne n'ait pas deux titres dans son agenda (choisi par Alexandre, 22/10/2026). */
+const TITRE_AGENDA = "Growth Consultation with NativeSquare";
 const DUREE_APPEL = 30 * 60 * 1000;
 
 function detailsAgenda(c: Contact): string {
@@ -213,4 +215,35 @@ export const EMAIL_3 = (c: Contact): Message => ({
 
 export const SMS_3 = (c: Contact): Message => ({
   texte: `Hey ${c.prenom}, we're on in 30. Call link is in your email. If you haven't had a chance to watch the video yet, no worries. If you can watch it now, it'll make our conversation a lot more productive: ${PAGE_PRECALL}`,
+});
+
+/* La relance d'un absent : un e-mail et un texto, une seule fois, avec le lien
+   pour reprendre rendez-vous. Le calendrier public de Cal.com, sans rien dans
+   l'adresse : un clic, un creneau. */
+export const LIEN_REBOOK = "https://cal.com/nativesquare-office-orlgbk/discovery-call";
+
+/* Les prenoms arrivent tels que saisis, parfois en minuscules. */
+const prenomPropre = (p: string) => p.charAt(0).toUpperCase() + p.slice(1);
+
+/* Les deux liens de la relance, avec le suivi : le calendrier (nom et e-mail
+   deja remplis) et le guide (on sait qui l'ouvre). Ils viennent de
+   `lienAbsent` dans relance.ts, avec l'identifiant du lead. */
+export type LiensAbsent = { call: string; guide: string };
+
+/* Textes d'Alexandre du 29/10/2026 (coquilles corrigees). */
+export const EMAIL_ABSENT = (c: Contact, liens: LiensAbsent): Message => ({
+  objet: "We missed each other",
+  texte: [
+    `Hey ${prenomPropre(c.prenom)},`,
+    `We had a call set for ${jour(c)} at ${heure(c.debut, c.fuseau)} and I didn't see you on. It happens.`,
+    `I know from experience you will find a ton of ideas to get more HVAC jobs on this call, so it's really worth your time. Schedule another time here: ${liens.call}`,
+    `In the meantime, here is a free guide that compacts some hard learned knowledge on how to get more jobs. It's only a fraction of what we would cover during the call, but at least you get an idea. Check it here: ${liens.guide}`,
+    "Talk soon\nAlex",
+  ].join("\n\n"),
+});
+
+export const SMS_ABSENT = (c: Contact, liens: LiensAbsent): Message => ({
+  texte: `Hey ${prenomPropre(c.prenom)}, it's Alex from NativeSquare. We had a call set for ${heure(c.debut, c.fuseau)} and I didn't see you on, it happens. I know from experience you'll find a ton of ideas to get more HVAC jobs on that call, so it's worth your time. Schedule another time here: ${liens.call}
+
+In the meantime, here's a free guide with some hard learned knowledge. It's only a fraction of what we'd cover on the call: ${liens.guide}`,
 });

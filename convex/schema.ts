@@ -196,5 +196,10 @@ export default defineSchema({
   vues: defineTable({
     leadId: v.id("leads"),
     page: v.union(v.literal("guide"), v.literal("reservation")),
+    /* Le canal du lien (« email » ou « sms ») et le message qui le portait
+       (« guide-r2 », « absent-guide »...), retrouves dans la visite notee a
+       l'arrivee. Absents des ouvertures d'avant le 30/10/2026. */
+    canal: v.optional(v.string()),
+    message: v.optional(v.string()),
   }).index("by_lead_page", ["leadId", "page"]),
 });

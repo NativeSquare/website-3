@@ -426,6 +426,29 @@ export const pourReservation = query({
    `/api/relance/vue` (le secret reste cote serveur). Chaque ouverture est
    gardee ; la premiere de chaque page, pour un lead qui n'a pas reserve, previent
    Alexandre sur Slack : c'est le moment de l'appeler. */
+/* Le canal d'une ouverture. La visite a ete notee a l'arrivee sur la page, avec
+   les UTM du lien (medium = email ou sms, content = le message) et l'identifiant
+   du lead (`r`) dans ses parametres : on la retrouve parmi les plus recentes.
+   Rien a changer cote page : l'ouverture se rattache apres coup. */
+async function canalDeLaVue(
+  ctx: { db: QueryCtx["db"] },
+  r: string,
+  page: "guide" | "reservation",
+): Promise<{ canal?: string; message?: string }> {
+  const chemin = page === "guide" ? "/hvac/guide" : "/hvac/call";
+  const recentes = await ctx.db.query("visites").order("desc").take(80);
+  const visite = recentes.find((x) => x.parametres?.r === r && x.chemin.startsWith(chemin));
+  return { canal: visite?.utmMedium, message: visite?.utmContent };
+}
+
+/* Pour verifier un lien sans rien ecrire :
+   npx convex run relance:canalVue '{"r":"<identifiant du lead>","page":"guide"}' */
+export const canalVue = internalQuery({
+  args: { r: v.string(), page: v.union(v.literal("guide"), v.literal("reservation")) },
+  returns: v.object({ canal: v.optional(v.string()), message: v.optional(v.string()) }),
+  handler: async (ctx, { r, page }) => await canalDeLaVue(ctx, r, page),
+});
+
 export const vue = mutation({
   args: {
     secret: v.string(),
@@ -444,15 +467,30 @@ export const vue = mutation({
       .query("vues")
       .withIndex("by_lead_page", (q) => q.eq("leadId", leadId).eq("page", page))
       .first();
-    await ctx.db.insert("vues", { leadId, page });
-    if (deja || lead.statut === "reserve" || leadDeTest(lead)) return null;
+    const { canal, message } = await canalDeLaVue(ctx, r, page);
+    await ctx.db.insert("vues", { leadId, page, ...(canal ? { canal } : {}), ...(message ? { message } : {}) });
 
+    /* Un lead qui a reserve ne declenche rien, sauf s'il etait absent a son
+       rendez-vous : c'est la relance d'absent qui lui a donne ce lien. */
+    const rendezvous = lead.calUid
+      ? await ctx.db
+          .query("rendezvous")
+          .withIndex("by_calUid", (q) => q.eq("calUid", lead.calUid!))
+          .unique()
+      : null;
+    const absent = rendezvous?.issue === "absent";
+    if (deja || (lead.statut === "reserve" && !absent) || leadDeTest(lead)) return null;
+
+    const qui = absent ? `${lead.prenom} (missed the call)` : lead.prenom;
+    const via = canal === "email" ? " (email link)" : canal === "sms" ? " (text link)" : "";
     const quoi =
       page === "guide"
-        ? `*${lead.prenom} just opened the guide.* Good moment to call.`
-        : `*${lead.prenom} is looking at the booking calendar* and hasn't booked yet.`;
+        ? `*${qui} just opened the guide*${via}. Good moment to call.`
+        : absent
+          ? `*${qui} is looking at the booking calendar*${via} to pick a new time.`
+          : `*${lead.prenom} is looking at the booking calendar*${via} and hasn't booked yet.`;
     await ctx.scheduler.runAfter(0, internal.relance.slack, {
-      texte: `${quoi}\n${lead.telephone ?? "no phone"} | ${lead.email}`,
+      texte: `${quoi}\n${lead.telephone ?? "no phone"} | ${lead.email}${message ? ` | link: ${message}` : ""}`,
     });
     return null;
   },

@@ -13,11 +13,14 @@ import {
   EMAIL_1,
   EMAIL_2,
   EMAIL_3,
+  EMAIL_ABSENT,
   SMS_1,
   SMS_2,
   SMS_3,
+  SMS_ABSENT,
   type Contact,
 } from "../src/lib/sequence-messages";
+import { lienAbsent } from "../src/lib/relance";
 
 /**
  * La sequence post-booking : trois emails, trois textos au prospect, et un
@@ -345,6 +348,161 @@ export const envoyer = internalAction({
       });
     }
     return null;
+  },
+});
+
+/* ----------------------------------------------------------------- absent */
+
+/* Tout ce qu'il faut pour decider d'une relance : le rendez-vous, sa sequence,
+   le lead (accord aux SMS) et ce qui est deja parti. */
+export const contexteAbsent = internalQuery({
+  args: { calUid: v.string() },
+  handler: async (ctx, { calUid }) => {
+    const sequence = await ctx.db
+      .query("sequences")
+      .withIndex("by_calUid", (q) => q.eq("calUid", calUid))
+      .unique();
+    const rendezvous = await ctx.db
+      .query("rendezvous")
+      .withIndex("by_calUid", (q) => q.eq("calUid", calUid))
+      .unique();
+    const email = (sequence?.email ?? rendezvous?.email)?.trim().toLowerCase();
+    const lead = email
+      ? await ctx.db
+          .query("leads")
+          .withIndex("by_email", (q) => q.eq("email", email))
+          .order("desc")
+          .first()
+      : null;
+    const journal = await ctx.db
+      .query("envois")
+      .withIndex("by_calUid", (q) => q.eq("calUid", calUid))
+      .take(100);
+    return { sequence, rendezvous, lead, journal };
+  },
+});
+
+/* L'issue « absent » dans le tableau de bord, sans ecraser une issue deja notee. */
+export const marquerAbsent = internalMutation({
+  args: { calUid: v.string() },
+  returns: v.null(),
+  handler: async (ctx, { calUid }) => {
+    const rendezvous = await ctx.db
+      .query("rendezvous")
+      .withIndex("by_calUid", (q) => q.eq("calUid", calUid))
+      .unique();
+    if (rendezvous && !rendezvous.issue) {
+      await ctx.db.patch(rendezvous._id, { issue: "absent" });
+    }
+    return null;
+  },
+});
+
+/**
+ * La relance d'un absent : un e-mail et un texto, envoyes ensemble, avec le
+ * lien pour reprendre rendez-vous. Une seule fois, pas de seconde relance.
+ *
+ * Jamais automatique : elle ne part que quand Alexandre dit « il n'etait pas la,
+ * envoie-lui la sequence » (rien ne l'appelle, ni le webhook Cal.com ni le
+ * planificateur). A la main :
+ *   npx convex run sequence:relancerAbsent '{"calUid":"..."}'
+ * Avec "apercu":true, rend les deux textes sans rien envoyer.
+ *
+ * Ne part pas si : le rendez-vous n'a pas encore eu lieu, il a ete annule ou
+ * deplace, une issue est deja notee, ou la personne a deja repris rendez-vous.
+ * Le texto ne part qu'avec l'accord donne dans le formulaire.
+ */
+export const relancerAbsent = internalAction({
+  args: { calUid: v.string(), apercu: v.optional(v.boolean()) },
+  returns: v.string(),
+  handler: async (ctx, { calUid, apercu }): Promise<string> => {
+    const { sequence, rendezvous, lead, journal } = await ctx.runQuery(
+      internal.sequence.contexteAbsent,
+      { calUid },
+    );
+
+    const email = sequence?.email ?? rendezvous?.email;
+    const debut = sequence?.debut ?? rendezvous?.debut;
+    if (!email || !debut) return "rien envoye : rendez-vous inconnu";
+    if (sequence?.annulee) return "rien envoye : rendez-vous annule ou deplace";
+    if (new Date(debut).getTime() > Date.now()) {
+      return "rien envoye : le rendez-vous n'a pas encore eu lieu";
+    }
+    if (rendezvous?.issue && rendezvous.issue !== "absent") {
+      return `rien envoye : issue deja notee (${rendezvous.issue})`;
+    }
+    if (lead?.calUid && lead.calUid !== calUid) {
+      return "rien envoye : une autre reservation existe deja pour cette personne";
+    }
+
+    const contact: Contact = {
+      prenom: sequence?.prenom ?? lead?.prenom ?? rendezvous?.nom?.split(" ")[0] ?? "there",
+      debut,
+      fuseau: sequence?.fuseau ?? "America/New_York",
+      calUid,
+    };
+    /* Les liens portent l'identifiant du lead : calendrier prerempli, et on sait
+       qui ouvre le guide. Sans fiche lead, les liens restent mais sans `r`. */
+    const mail = EMAIL_ABSENT(contact, {
+      call: lienAbsent("call", "email", lead?._id),
+      guide: lienAbsent("guide", "email", lead?._id),
+    });
+    const texto = SMS_ABSENT(contact, {
+      call: lienAbsent("call", "sms", lead?._id),
+      guide: lienAbsent("guide", "sms", lead?._id),
+    });
+    /* Le texto exige l'accord du formulaire ET un numero. */
+    const telephone = lead?.consentSms === true ? sequence?.telephone : undefined;
+
+    if (apercu) {
+      return [
+        `A : ${email}  |  objet : ${mail.objet}`,
+        mail.texte,
+        `A : ${telephone ?? "(pas de texto : pas d'accord ou pas de numero)"}`,
+        texto.texte,
+      ].join("\n\n");
+    }
+
+    const lignes: string[] = [];
+    const etape = async (
+      nom: string,
+      canal: "email" | "sms",
+      destinataire: string | undefined,
+      envoi: () => Promise<void>,
+    ) => {
+      if (journal.some((l) => l.etape === nom && l.etat === "envoye")) {
+        lignes.push(`${nom} : deja parti`);
+        return;
+      }
+      if (!destinataire) {
+        await ctx.runMutation(internal.sequence.journaliser, {
+          calUid, etape: nom, canal, destinataire: "(inconnu)", etat: "ignore",
+          erreur: canal === "sms" ? "pas de numero ou pas d'accord aux SMS" : "pas d'email",
+        });
+        lignes.push(`${nom} : ignore`);
+        return;
+      }
+      try {
+        await envoi();
+        await ctx.runMutation(internal.sequence.journaliser, {
+          calUid, etape: nom, canal, destinataire, etat: "envoye",
+        });
+        lignes.push(`${nom} : envoye`);
+      } catch (erreur) {
+        const message = erreur instanceof Error ? erreur.message : String(erreur);
+        await ctx.runMutation(internal.sequence.journaliser, {
+          calUid, etape: nom, canal, destinataire, etat: "echec", erreur: message,
+        });
+        lignes.push(`${nom} : echec (${message})`);
+      }
+    };
+
+    await etape("email_absent", "email", email, () =>
+      envoyerEmail(email, mail.objet ?? "", mail.texte),
+    );
+    await etape("sms_absent", "sms", telephone, () => envoyerSms(telephone!, texto.texte));
+    await ctx.runMutation(internal.sequence.marquerAbsent, { calUid });
+    return lignes.join(", ");
   },
 });
 

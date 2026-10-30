@@ -167,6 +167,14 @@ export function lienGuide(etape: EtapeRelance, canal: Canal, leadId?: string): s
   return `${LIEN_GUIDE}?${suivi(canal, `guide-${etape}`, leadId)}`;
 }
 
+/* Les liens de la relance d'un absent : le calendrier (nom et e-mail deja
+   remplis grace a `r`) et le guide (`r` dit qui l'ouvre). Sans fiche lead, pas
+   de `r` : les liens marchent, mais sans prefill ni suivi nominatif. */
+export function lienAbsent(page: "call" | "guide", canal: Canal, leadId?: string): string {
+  const base = page === "call" ? LIEN_RESERVATION : LIEN_GUIDE;
+  return `${base}?${suivi(canal, page === "call" ? "absent-call" : "absent-guide", leadId)}`;
+}
+
 export type MessageRelance = { objet?: string; texte: string };
 
 const prenomPropre = (p: string) => p.trim().charAt(0).toUpperCase() + p.trim().slice(1);
