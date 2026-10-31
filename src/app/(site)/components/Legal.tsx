@@ -108,6 +108,7 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                       <li><strong className="text-gray-5">Trade name:</strong> NativeSquare (NativeSquare SAS does business as NativeSquare)</li>
                       <li><strong className="text-gray-5">Head Office:</strong> 60 rue François Ier, 75008 Paris, France</li>
                       <li><strong className="text-gray-5">Email:</strong> office@nativesquare.fr</li>
+                      <li><strong className="text-gray-5">Phone:</strong> <a href="tel:+12187724594">+1 218-772-4594</a></li>
                       <li><strong className="text-gray-5">SIREN:</strong> 995 089 851</li>
                       <li><strong className="text-gray-5">SIRET (head office):</strong> 995 089 851 00019</li>
                       <li><strong className="text-gray-5">VAT:</strong> FR87995089851</li>

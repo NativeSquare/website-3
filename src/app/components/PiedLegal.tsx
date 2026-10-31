@@ -13,7 +13,8 @@ export default function PiedLegal() {
       <div className="container-nav">
         <span>
           © NativeSquare SAS, doing business as NativeSquare · 60 rue François Ier,
-          75008 Paris, France · office@nativesquare.fr
+          75008 Paris, France · office@nativesquare.fr ·{" "}
+          <a href="tel:+12187724594">+1 218-772-4594</a>
         </span>
         <span className="bc-footer-liens">
           <Link href="/legal?section=privacy">Privacy Policy</Link>

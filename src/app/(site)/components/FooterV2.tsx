@@ -24,7 +24,8 @@ export default function FooterV2({ t }: { t: Dict }) {
         <div className="footer-bottom">
           <p>
             © NativeSquare SAS, doing business as NativeSquare · 60 rue François Ier,
-            75008 Paris, France · office@nativesquare.fr
+            75008 Paris, France · office@nativesquare.fr ·{" "}
+            <a href="tel:+12187724594">+1 218-772-4594</a>
           </p>
           <div className="footer-links">
             <Link href="/legal?section=privacy">{t.footer.privacy}</Link>
