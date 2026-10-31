@@ -22,10 +22,13 @@ export default function FooterV2({ t }: { t: Dict }) {
           </Link>
         </div>
         <div className="footer-bottom">
-          <p>© NativeSquare</p>
+          <p>
+            © NativeSquare SAS, doing business as NativeSquare · 60 rue François Ier,
+            75008 Paris, France · office@nativesquare.fr
+          </p>
           <div className="footer-links">
-            <Link href="/legal">{t.footer.privacy}</Link>
-            <Link href="/legal">{t.footer.terms}</Link>
+            <Link href="/legal?section=privacy">{t.footer.privacy}</Link>
+            <Link href="/legal?section=terms">{t.footer.terms}</Link>
           </div>
         </div>
       </div>

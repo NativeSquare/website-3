@@ -386,8 +386,11 @@ export const envoyer = internalAction({
         await ctx.scheduler.runAt(ouverture, internal.relance.envoyer, { leadId, etape });
         return null;
       }
-      if (lead.consentSms !== true) {
-        await journal("ignore", lead.telephone, "pas d'accord aux SMS");
+      /* Les relances sont des messages marketing : elles demandent la case
+         « marketing ». Un lead d'avant (ou du formulaire Meta) n'a que
+         `consentSms` : il garde la regle d'avant. */
+      if ((lead.consentSmsMarketing ?? lead.consentSms) !== true) {
+        await journal("ignore", lead.telephone, "pas d'accord aux SMS de relance");
         return null;
       }
     }

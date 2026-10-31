@@ -99,9 +99,16 @@ export default defineSchema({
        leads d'avant peuvent avoir un numero saisi a la main. */
     telephone: v.string(),
     /* Accord aux SMS donne en cochant la case du formulaire, avec l'heure : c'est
-       la preuve a garder si un operateur la demande. */
+       la preuve a garder si un operateur la demande. Depuis le 31/10/2026 (A2P),
+       c'est la case « non-marketing » : confirmation, rappels et preparation de
+       l'appel. Les leads d'avant n'avaient qu'une case, cochee d'emblee. */
     consentSms: v.optional(v.boolean()),
     consentSmsLe: v.optional(v.number()),
+    /* La seconde case, « marketing » : les relances de celui qui n'a pas reserve.
+       Absente des leads d'avant et de ceux du formulaire Meta : la relance retombe
+       alors sur `consentSms`, comme avant. */
+    consentSmsMarketing: v.optional(v.boolean()),
+    consentSmsMarketingLe: v.optional(v.number()),
     /* En minuscules : la reservation Cal.com retrouve le lead par son e-mail. */
     email: v.string(),
     /* Preuve que l'appel des questions de qualification vient du meme navigateur. */

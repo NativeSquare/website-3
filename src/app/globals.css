@@ -725,7 +725,8 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .bc-sign a{margin-left:10px;font-size:14.5px;color:var(--blue);text-decoration:none}
 
 .bc-footer{border-top:1px solid var(--gray-90);background:var(--footer-bg);padding:22px 0;font-size:13.5px;color:var(--gray-50)}
-.bc-footer .container-nav{display:flex;justify-content:space-between;align-items:center}
+.bc-footer .container-nav{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px 24px}
+.bc-footer-liens{display:flex;flex-wrap:wrap;gap:6px 18px}
 .bc-footer a{color:var(--gray-40);text-decoration:none}
 
 @media (max-width:1023px){
@@ -943,7 +944,9 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-field .PhoneInput:focus-within{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
 .ld-field .PhoneInput .PhoneInputInput{flex:1;min-width:0;width:auto;height:100%;padding:0;border:0;background:transparent;font:inherit;font-size:16px;color:var(--ink)}
 .ld-field .PhoneInput .PhoneInputInput:focus{outline:0;border:0}
-.ld-opt.ld-sms{margin-top:18px;padding:14px;border:1px solid rgba(0,131,245,.35);border-radius:12px;background:rgba(0,131,245,.05);font-size:13px;line-height:1.45;color:var(--gray-40)}
+.ld-sms-groupe{margin:8px 0 0;padding:0;border:0;min-width:0}
+.ld-sms-note{margin:10px 2px 0;font-size:12.5px;line-height:1.45;color:var(--gray-50)}
+.ld-opt.ld-sms{margin-top:10px;padding:14px;border:1px solid rgba(0,131,245,.35);border-radius:12px;background:rgba(0,131,245,.05);font-size:13px;line-height:1.45;color:var(--gray-40)}
 .ld-opt.ld-sms input{margin-top:3px}
 .ld-sms-titre{display:block;margin-bottom:4px;font-size:15px;font-weight:500;letter-spacing:-.01em;color:var(--ink)}
 .ld-sms-detail{display:block}

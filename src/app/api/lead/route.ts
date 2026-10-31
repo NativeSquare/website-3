@@ -93,6 +93,7 @@ export async function POST(requete: Request) {
         prenom,
         telephone,
         consentSms: corps.consentSms === true,
+        consentSmsMarketing: corps.consentSmsMarketing === true,
         email,
         capacite,
         zone: general ? undefined : zone,

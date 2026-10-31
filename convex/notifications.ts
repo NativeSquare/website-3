@@ -74,7 +74,7 @@ export const lead = internalAction({
     const lignes = [
       `*${titres[args.moment]}*`,
       `${echapper([lead.prenom, lead.nom].filter(Boolean).join(" "))} | ${echapper(lead.telephone)} | ${echapper(lead.email)}`,
-      `Texts OK: ${lead.consentSms ? "yes" : "no"}`,
+      `Texts OK: call ${lead.consentSms ? "yes" : "no"} | follow-ups ${(lead.consentSmsMarketing ?? lead.consentSms) ? "yes" : "no"}`,
     ];
     if (general) {
       if (lead.origine) lignes.push(`Found us via: ${echapper(lead.origine)}`);

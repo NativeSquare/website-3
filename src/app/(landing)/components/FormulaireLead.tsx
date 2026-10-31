@@ -9,6 +9,7 @@ import { suivreMeta } from "../../lib/meta";
 import { suivreGoogle } from "../../lib/google";
 import { parametresLead } from "../../../lib/lead-meta";
 import TelephoneInput from "./TelephoneInput";
+import ConsentementsSms from "./ConsentementsSms";
 import { useTunnel } from "./EtatTunnel";
 import {
   CAPACITES,
@@ -122,9 +123,11 @@ export default function FormulaireLead({
   const [zone, setZone] = useState("");
   const [prenom, setPrenom] = useState("");
   const [telephone, setTelephone] = useState("");
-  /* Cochee d'emblée (demande d'Alexandre, 09/10/2026) : la personne la decoche
-     si elle ne veut pas de textos, et reserver n'en depend pas. */
-  const [consentSms, setConsentSms] = useState(true);
+  /* Deux cases, decochees d'emblee, facultatives (enregistrement A2P du
+     31/10/2026 : HighLevel interdit les cases pre-cochees). Reserver n'en depend
+     pas. */
+  const [consentSms, setConsentSms] = useState(false);
+  const [consentSmsMarketing, setConsentSmsMarketing] = useState(false);
   const [email, setEmail] = useState("");
   const [lead, setLead] = useState<{ leadId?: string; jeton?: string }>({});
 
@@ -300,6 +303,7 @@ export default function FormulaireLead({
         prenom,
         telephone,
         consentSms,
+        consentSmsMarketing,
         email,
         capacite,
         zone,
@@ -484,29 +488,12 @@ export default function FormulaireLead({
               </span>
             )}
           </label>
-          <label className="ld-opt ld-sms">
-            <input
-              type="checkbox"
-              name="consentSms"
-              checked={consentSms}
-              onChange={(e) => setConsentSms(e.target.checked)}
-            />
-            <span>
-              <b className="ld-sms-titre">
-                Recommended: text me the call link and reminders
-              </b>
-              <span className="ld-sms-detail">
-                No spam. We only text you about our appointment, so you don&apos;t
-                miss it. By leaving this box checked I agree to receive text
-                messages from NativeSquare about my call. Message frequency
-                varies, message and data rates may apply, reply STOP to opt out.
-                Agreeing is not required to book.{" "}
-                <Link href="/legal?section=privacy" target="_blank">
-                  Privacy policy
-                </Link>
-              </span>
-            </span>
-          </label>
+          <ConsentementsSms
+            nonMarketing={consentSms}
+            marketing={consentSmsMarketing}
+            onNonMarketing={setConsentSms}
+            onMarketing={setConsentSmsMarketing}
+          />
           {erreur && <p className="ld-erreur" role="alert">{erreur}</p>}
           <button
             type="submit"
@@ -518,8 +505,12 @@ export default function FormulaireLead({
           </button>
           <p className="ld-consent">
             {consentement}{" "}
-            <Link href="/legal" target="_blank">
-              Privacy policy
+            <Link href="/legal?section=privacy" target="_blank">
+              Privacy Policy
+            </Link>{" "}
+            |{" "}
+            <Link href="/legal?section=terms" target="_blank">
+              Terms of Service
             </Link>
           </p>
         </form>

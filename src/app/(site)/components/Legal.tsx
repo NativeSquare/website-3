@@ -105,7 +105,9 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                     </h4>
                     <ul className="space-y-2 text-[14px] leading-relaxed text-gray-30">
                       <li><strong className="text-gray-5">Company:</strong> NativeSquare SAS</li>
+                      <li><strong className="text-gray-5">Trade name:</strong> NativeSquare (NativeSquare SAS does business as NativeSquare)</li>
                       <li><strong className="text-gray-5">Head Office:</strong> 60 rue François Ier, 75008 Paris, France</li>
+                      <li><strong className="text-gray-5">Email:</strong> office@nativesquare.fr</li>
                       <li><strong className="text-gray-5">SIREN:</strong> 995 089 851</li>
                       <li><strong className="text-gray-5">SIRET (head office):</strong> 995 089 851 00019</li>
                       <li><strong className="text-gray-5">VAT:</strong> FR87995089851</li>
@@ -130,7 +132,7 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                   <h2 className="font-title fs-32 font-medium leading-tight tracking-tight mb-8 pb-4" style={{ borderBottom: "1px solid var(--gray-90)" }}>
                     Terms of Service
                   </h2>
-                  <p className="text-[13px] tracking-tight text-gray-40 italic mb-8 uppercase">Last Updated: December 2025</p>
+                  <p className="text-[13px] tracking-tight text-gray-40 italic mb-8 uppercase">Last Updated: October 2026</p>
 
                   <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">1. Scope of Services</h3>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30">
@@ -156,6 +158,18 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30">
                     These terms are governed by the laws of France. Any dispute relating to their interpretation and/or execution shall be subject to the exclusive jurisdiction of the courts of Paris.
                   </p>
+
+                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">6. Text Messaging Program</h3>
+                  <p className="fs-15 leading-relaxed tracking-tight text-gray-30 mb-3">
+                    NativeSquare SAS (doing business as NativeSquare) sends text messages to people who agreed to receive them, through the two optional boxes on our forms or by saying yes during a phone call with us. Non-marketing messages cover the confirmation of a call you booked, the call link, reminders and material to prepare for it. Marketing messages cover follow-ups about booking a call, with a guide on how to get more HVAC jobs. We only send the types of messages you agreed to.
+                  </p>
+                  <ul className="list-disc pl-6 space-y-2 fs-15 leading-relaxed tracking-tight text-gray-30">
+                    <li>Agreeing to receive text messages is not a condition of booking a call or buying any service.</li>
+                    <li>Message frequency may vary. Message and data rates may apply.</li>
+                    <li>Reply <strong className="text-gray-5">STOP</strong> at any time to opt out. Reply <strong className="text-gray-5">HELP</strong> for help, or contact us at <strong className="text-gray-5">office@nativesquare.fr</strong>.</li>
+                    <li>Mobile carriers are not liable for delayed or undelivered messages.</li>
+                    <li>No mobile information will be shared with third parties or affiliates for marketing or promotional purposes. See our Privacy Policy, section 6.</li>
+                  </ul>
                 </section>
               )}
 
@@ -185,7 +199,7 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                     <li>Improving website performance and user experience through analytics.</li>
                     <li>Measuring whether our ads lead to bookings and to relevant leads, with the Meta Pixel, Meta&apos;s server connection (Conversions API), the Google tag (which also feeds Google Analytics) and the LinkedIn Insight Tag. When you send your contact details, Meta receives the fact that you did, with the number of jobs you can take on. When you book a call, Meta receives the booking, with your role in the company and your revenue range, so that our ads reach more business owners (see our Cookie Policy).</li>
                     <li>Sending newsletters or updates (only with explicit consent).</li>
-                    <li>Sending text messages about a call you have scheduled with us, only if you agreed to receive them (see section 6).</li>
+                    <li>Sending text messages about a call you have scheduled with us, and follow-ups about booking one, only if you agreed to receive them (see section 6).</li>
                   </ul>
 
                   <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">4. Who We Share Your Data With</h3>
@@ -207,8 +221,12 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
 
                   <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">6. Text Messages (SMS)</h3>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30 mb-3">
-                    We only send text messages to people who have agreed to receive them, by saying yes during a phone call with us or by leaving the text message box on our booking form ticked (it is ticked by default and you can untick it), before any message is sent. Agreeing is never a condition of booking a call. We use them for confirmations, reminders and follow-up about a call you have scheduled with us.
+                    We only send text messages to people who have agreed to receive them, by checking one or both of the two text message boxes on our form, or by saying yes during a phone call with us, before any message is sent. Both boxes are unchecked by default and optional. Agreeing is never a condition of booking a call. We only send the types of messages you agreed to:
                   </p>
+                  <ul className="list-disc pl-6 space-y-2 fs-15 leading-relaxed tracking-tight text-gray-30 mb-3">
+                    <li><strong className="text-gray-5">Non-marketing texts:</strong> confirmation of a call you booked, the call link, reminders and material to prepare for it.</li>
+                    <li><strong className="text-gray-5">Marketing texts:</strong> follow-ups about booking a call, with a guide on how to get more HVAC jobs.</li>
+                  </ul>
                   <ul className="list-disc pl-6 space-y-2 fs-15 leading-relaxed tracking-tight text-gray-30">
                     <li>Message frequency varies. Message and data rates may apply.</li>
                     <li>Reply <strong className="text-gray-5">STOP</strong> at any time to stop receiving text messages from us.</li>
