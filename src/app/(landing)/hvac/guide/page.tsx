@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import SuiviRelance from "../../components/SuiviRelance";
 import LienReservation from "../../components/LienReservation";
 import GuideCalculateur from "../../components/GuideCalculateur";
+import GuidePopup from "../../components/GuidePopup";
 import { Conversation, Flux, Liste } from "../../components/GuideSchemas";
 
 /* Le cadeau des messages de relance, V3 (28/10/2026) : « 8 places an HVAC
@@ -77,7 +78,102 @@ export default function GuidePage() {
 
           <Section n={1} titre="Not enough calls coming in">
             <p className="ld-g-gros">If the phone doesn&rsquo;t ring, nothing else matters.</p>
-            <p>Word of mouth is the best lead you can get. But you can&rsquo;t turn it up when you want.</p>
+            <p>
+              Word of mouth is the best lead you can get. But you can&rsquo;t turn it up when you want. Here are six
+              things that bring in more calls. Most of them cost nothing.
+            </p>
+
+            <div className="ld-g-astuce">
+              <h3>Fill out your Google profile like it&rsquo;s your storefront</h3>
+              <p>
+                Google ranks local results on relevance, distance and prominence. Prominence counts how well known you
+                are, including how many reviews you have. Google also says you can&rsquo;t pay for a better local
+                ranking.<sup>1</sup> So the profile itself matters: every service you offer, your service area, your
+                real hours, the phone number you actually answer, and photos of your trucks and finished jobs.
+              </p>
+              <Liste
+                titre="Your Google profile · 5-minute check"
+                lignes={[
+                  { nom: "Services and service area", sous: "Everything you do, every town you cover", etat: "Done", ok: true },
+                  { nom: "Hours", sous: "Holidays included", etat: "Done", ok: true },
+                  { nom: "Phone number", sous: "The one that gets answered", etat: "Done", ok: true },
+                  { nom: "Photos", sous: "Trucks, crew, finished jobs", etat: "Add 10" },
+                ]}
+              />
+              <p className="ld-g-faire">
+                <strong>This week:</strong> open your profile and fill in every empty field.
+              </p>
+            </div>
+
+            <div className="ld-g-astuce">
+              <h3>Answer the phone. Google keeps score.</h3>
+              <p>
+                On Local Services Ads, Google ranks you on more than your bid. It looks at how well you respond to
+                customers, and it says missed calls may hurt that.<sup>2</sup> So answering the phone changes how often
+                you show up, on top of the jobs you save (part 2 shows the math).
+              </p>
+              <p className="ld-g-faire">
+                <strong>This week:</strong> count last week&rsquo;s missed calls.
+              </p>
+            </div>
+
+            <div className="ld-g-astuce">
+              <h3>Pay per lead, not per click</h3>
+              <p>
+                Local Services Ads are pay-per-lead: you&rsquo;re charged when a customer reaches you by call, message
+                or booking, not for views.<sup>3</sup> Google screens advertisers first. The checks can include a
+                license, insurance and a background check.<sup>3</sup> Leads it finds invalid or low quality are not
+                charged, and poor ones are credited, usually within 30 days. Google no longer gives credits for a job
+                type you don&rsquo;t do or an area you don&rsquo;t cover, so set both tight.<sup>4</sup>
+              </p>
+              <p className="ld-g-faire">
+                <strong>This week:</strong> if you run these ads, open last month&rsquo;s leads and mark every wrong
+                job or wrong area. Many of them? Tighten your settings.
+              </p>
+            </div>
+
+            <div className="ld-g-astuce">
+              <h3>Ask every customer for a review, the same way, with no deal attached</h3>
+              <p>
+                Google lets you ask real customers for reviews. It doesn&rsquo;t allow rewards, like a discount or a free
+                service, and it doesn&rsquo;t allow asking only the customers you expect to be happy.<sup>5</sup> If you
+                break those rules, Google can restrict your profile, for example by blocking new reviews for a while.
+                <sup>5</sup> So ask everyone, with the same text, and offer nothing in return. Part 6 shows how to make
+                it automatic.
+              </p>
+              <p className="ld-g-faire">
+                <strong>This week:</strong> text the review link to your last ten customers.
+              </p>
+            </div>
+
+            <div className="ld-g-astuce">
+              <h3>Sell a maintenance plan with every job</h3>
+              <p>
+                A plan means a scheduled visit, twice a year. Software vendors that sell to HVAC shops say plans bring
+                steady income when installs slow down, and that regular visits are a chance to spot repair needs and
+                sell upgrades.<sup>6</sup> I won&rsquo;t quote the retention numbers you see online. They come from
+                vendors too.
+              </p>
+              <p className="ld-g-faire">
+                <strong>This week:</strong> add a two-visit plan to your next tune-up or install estimate.
+              </p>
+            </div>
+
+            <div className="ld-g-astuce">
+              <h3>Be the name people give when they&rsquo;re asked</h3>
+              <p>
+                People who work with homes get asked &ldquo;who do you use for HVAC?&rdquo; Realtors, property managers,
+                landlords. Pick five. Bring each one a one-page price sheet and promise a callback within the hour.
+                After any job that went well, ask the customer who else they know that needs HVAC work.
+              </p>
+              <p className="ld-g-faire">
+                <strong>This week:</strong> write down five names. Call two.
+              </p>
+            </div>
+
+            <p>
+              <strong>If you run ads too,</strong> here is how it works and what it costs.
+            </p>
             <Flux
               etapes={[
                 { titre: "Ad", sous: "Facebook, Instagram, Google" },
@@ -91,7 +187,7 @@ export default function GuidePage() {
             </p>
             <ul className="ld-g-liste-simple">
               <li>Local Services Ads: about <strong>$51</strong> a lead</li>
-              <li>Google search ads: about <strong>$104</strong> a lead, <strong>$149</strong> for non-branded searches<sup>1</sup></li>
+              <li>Google search ads: about <strong>$104</strong> a lead, <strong>$149</strong> for non-branded searches<sup>7</sup></li>
             </ul>
             <p>
               Your numbers will be different. But look at it this way: a lead that goes nowhere is{" "}
@@ -126,8 +222,8 @@ export default function GuidePage() {
               pied="Booked · 8:30 pm · in your calendar"
             />
             <p>
-              <strong>What it costs you.</strong> Studies of home service companies put unanswered calls between <strong>14%</strong> and <strong>27%</strong>.<sup>2</sup>{" "}
-              About <strong>8 in 10</strong> callers hang up on voicemail without a word.<sup>3</sup>
+              <strong>What it costs you.</strong> Studies of home service companies put unanswered calls between <strong>14%</strong> and <strong>27%</strong>.<sup>8</sup>{" "}
+              About <strong>8 in 10</strong> callers hang up on voicemail without a word.<sup>9</sup>
             </p>
             <p>
               Say you miss 8 calls a week. 1 in 5 would have booked. Your average job is $450.
@@ -153,11 +249,11 @@ export default function GuidePage() {
               <strong>The first company to call wins.</strong>
             </p>
             <p>
-              <strong>Harvard Business Review studied this.</strong><sup>4</sup> Their finding: most companies are{" "}
+              <strong>Harvard Business Review studied this.</strong><sup>10</sup> Their finding: most companies are{" "}
               <strong>not responding nearly fast enough.</strong>
             </p>
             <p>
-              The researcher behind it, Dr. James Oldroyd, says the answer is <strong>5 minutes</strong>. A lead called within 5 minutes is the one most likely to turn into a customer. After about <strong>30 minutes, the lead is almost dead.</strong><sup>5</sup>
+              The researcher behind it, Dr. James Oldroyd, says the answer is <strong>5 minutes</strong>. A lead called within 5 minutes is the one most likely to turn into a customer. After about <strong>30 minutes, the lead is almost dead.</strong><sup>11</sup>
             </p>
             <Flux
               etapes={[
@@ -211,7 +307,7 @@ export default function GuidePage() {
               ]}
             />
             <p>
-              Companies that sell follow-up software report close rates going from the low 30s to <strong>40–50%</strong> when every estimate gets a three-step follow-up.<sup>6</sup> I can&rsquo;t verify their data. Read it as a direction.
+              Companies that sell follow-up software report close rates going from the low 30s to <strong>40–50%</strong> when every estimate gets a three-step follow-up.<sup>12</sup> I can&rsquo;t verify their data. Read it as a direction.
             </p>
             <p>
               Do your own math. 20 estimates a month. 25% close. $6,000 average job. Lift the close rate to 30% and you close <strong>one more install a month. $72,000 a year.</strong>
@@ -225,7 +321,7 @@ export default function GuidePage() {
 
           <Section n={6} titre="The review nobody asked for">
             <p>
-              <strong>97%</strong> of people read reviews before they pick a local business.<sup>7</sup> A homeowner choosing who replaces a furnace compares you with two other names. They compare the stars and how many reviews.
+              <strong>97%</strong> of people read reviews before they pick a local business.<sup>13</sup> A homeowner choosing who replaces a furnace compares you with two other names. They compare the stars and how many reviews.
             </p>
             <p className="ld-g-gros">Every finished job is a review you didn&rsquo;t ask for.</p>
             <Conversation
@@ -297,23 +393,40 @@ export default function GuidePage() {
           </div>
 
           <p className="ld-guide-sources">
-            <sup>1</sup> SearchLight Digital data (816 contractors, January 2026), as reported by{" "}
+            <sup>1</sup> Google,{" "}
+            <a href="https://support.google.com/business/answer/7091" target="_blank" rel="noreferrer">Tips to improve your local ranking on Google</a>.{" "}
+            <sup>2</sup> Google, Local Services Help,{" "}
+            <a href="https://support.google.com/localservices/answer/7527305" target="_blank" rel="noreferrer">About ad rankings</a>.{" "}
+            <sup>3</sup> Google Ads,{" "}
+            <a href="https://ads.google.com/intl/en_us/home/resources/articles/build-online-presence-with-local-services-ads" target="_blank" rel="noreferrer">How to grow your business with Local Services Ads</a>; Google, Local Services Help,{" "}
+            <a href="https://support.google.com/localservices/answer/6230381" target="_blank" rel="noreferrer">How providers qualify</a>.{" "}
+            <sup>4</sup> Google, Local Services Help,{" "}
+            <a href="https://support.google.com/localservices/answer/15100654" target="_blank" rel="noreferrer">About automated lead credits</a> and{" "}
+            <a href="https://support.google.com/localservices/answer/7195435" target="_blank" rel="noreferrer">How leads work</a>.{" "}
+            <sup>5</sup> Google Business Profile Help,{" "}
+            <a href="https://support.google.com/business/answer/7400114" target="_blank" rel="noreferrer">Prohibited &amp; restricted content</a> and{" "}
+            <a href="https://support.google.com/business/answer/14114287" target="_blank" rel="noreferrer">Business Profile restrictions for policy violations</a>.{" "}
+            <sup>6</sup> Blogs of HVAC software vendors:{" "}
+            <a href="https://www.servicetitan.com/blog/recession-proof-hvac-business" target="_blank" rel="noreferrer">ServiceTitan</a> and{" "}
+            <a href="https://fieldedge.com/blog/hvac-service-agreement-programs/" target="_blank" rel="noreferrer">FieldEdge</a>. Vendor claims, not verified.{" "}
+            <sup>7</sup> SearchLight Digital data (816 contractors, January 2026), as reported by{" "}
             <a href="https://www.enrichlabs.ai/blog/hvac-marketing-complete-guide-2026" target="_blank" rel="noreferrer">Enrich Labs</a> and{" "}
             <a href="https://www.webtonic.io/blog/heating-ventilation-google-ads-statistics" target="_blank" rel="noreferrer">Webtonic</a>. Vendor-reported.{" "}
-            <sup>2</sup> CallRail small-business benchmark, January 2025 (14%); Invoca, 2024 (27%). As reported by third-party sites; originals not read.{" "}
-            <sup>3</sup> Industry surveys cited by answering-service vendors. No primary source found.{" "}
-            <sup>4</sup> J. Oldroyd, K. McElheran, D. Elkington,{" "}
+            <sup>8</sup> CallRail small-business benchmark, January 2025 (14%); Invoca, 2024 (27%). As reported by third-party sites; originals not read.{" "}
+            <sup>9</sup> Industry surveys cited by answering-service vendors. No primary source found.{" "}
+            <sup>10</sup> J. Oldroyd, K. McElheran, D. Elkington,{" "}
             <a href="https://scholarsarchive.byu.edu/facpub/9711" target="_blank" rel="noreferrer">The Short Life of Online Sales Leads</a>, Harvard Business Review, 2011.{" "}
-            <sup>5</sup> Summary of Dr. Oldroyd&rsquo;s research in{" "}
+            <sup>11</sup> Summary of Dr. Oldroyd&rsquo;s research in{" "}
             <a href="https://www.cbsnews.com/news/online-sales-leads-how-long-are-they-hot/" target="_blank" rel="noreferrer">CBS MoneyWatch</a>, 2010.{" "}
-            <sup>6</sup> Vendor-reported close rates for HVAC estimates with and without follow-up. Not verified.{" "}
-            <sup>7</sup> BrightLocal,{" "}
+            <sup>12</sup> Vendor-reported close rates for HVAC estimates with and without follow-up. Not verified.{" "}
+            <sup>13</sup> BrightLocal,{" "}
             <a href="https://www.brightlocal.com/research/local-consumer-review-survey/2026/" target="_blank" rel="noreferrer">Local Consumer Review Survey 2026</a>.
           </p>
         </article>
       </div>
       <Suspense fallback={null}>
         <SuiviRelance page="guide" />
+        <GuidePopup />
       </Suspense>
     </section>
   );

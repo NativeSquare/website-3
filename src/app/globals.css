@@ -1142,6 +1142,18 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-g-liste-ligne small{color:var(--gray-40);font-size:13px}
 .ld-g-liste-ligne span{flex:none;padding:3px 10px;border-radius:999px;background:var(--gray-94);color:var(--gray-30);font-size:12.5px;font-weight:600}
 .ld-g-liste-ligne span.ok{background:#eaf7ec;color:#2a7a37}
+/* Les astuces de la partie 1 (generation de leads) et le popup du guide. */
+.ld-g-astuce{margin-top:26px;padding-left:16px;border-left:3px solid var(--gray-90)}
+.ld-g-astuce h3{margin:0;font-size:19px;line-height:1.25;letter-spacing:-.015em;color:var(--ink)}
+.ld-g-faire{margin-top:10px;padding:9px 12px;border-radius:10px;background:var(--section-gray);font-size:15.5px;color:var(--gray-20)}
+.ld-g-popup{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:60;width:min(440px,calc(100vw - 32px));padding:20px 22px 20px;border-radius:16px;background:#060504;color:#fff;box-shadow:0 14px 44px rgba(0,0,0,.3);animation:ld-g-popup-in .35s ease-out}
+.ld-g-popup p{margin:0 26px 14px 0;font-size:16px;line-height:1.4;font-weight:500}
+.ld-g-popup .btn{width:100%}
+.ld-g-popup-x{position:absolute;top:6px;right:8px;width:36px;height:36px;border:0;background:transparent;color:#cfcdcc;font-size:26px;line-height:1;cursor:pointer}
+.ld-g-popup-x:hover{color:#fff}
+.ld-g-popup-x:focus-visible{outline:2px solid #fff;outline-offset:-4px;border-radius:8px}
+@keyframes ld-g-popup-in{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translate(-50%,0)}}
+@media (prefers-reduced-motion:reduce){.ld-g-popup{animation:none}}
 /* Calculateur */
 .ld-calc{margin-top:14px;display:flex;flex-direction:column;gap:12px}
 .ld-calc-note{margin:0;font-size:14px;color:var(--gray-40)}
