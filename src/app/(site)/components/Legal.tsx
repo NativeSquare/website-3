@@ -171,6 +171,11 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                     <li>Mobile carriers are not liable for delayed or undelivered messages.</li>
                     <li>No mobile information will be shared with third parties or affiliates for marketing or promotional purposes. See our Privacy Policy, section 6.</li>
                   </ul>
+
+                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">7. Age Restriction</h3>
+                  <p className="fs-15 leading-relaxed tracking-tight text-gray-30">
+                    Our services are intended for business owners and other adults. You must be at least 18 years old to use our services or to opt in to receive text messages from us.
+                  </p>
                 </section>
               )}
 
@@ -240,6 +245,11 @@ const Legal: React.FC<{ initialSection?: string }> = ({ initialSection = "mentio
                   <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">7. Data Retention</h3>
                   <p className="fs-15 leading-relaxed tracking-tight text-gray-30">
                     We retain personal data only for as long as necessary to fulfill the purposes it was collected for, including for the purposes of satisfying any legal, accounting, or reporting requirements.
+                  </p>
+
+                  <h3 className="fs-20 font-medium leading-snug tracking-tight mt-8 mb-3">8. Data Security</h3>
+                  <p className="fs-15 leading-relaxed tracking-tight text-gray-30">
+                    We protect personal data with technical and organizational measures: data sent through our website travels over encrypted (HTTPS) connections, and access to personal data is limited to the people and service providers who need it to run our services. No method of transmission or storage is completely secure, so we cannot guarantee absolute security. If a breach affects your personal data, we will notify you and the competent authority as the law requires.
                   </p>
                 </section>
               )}

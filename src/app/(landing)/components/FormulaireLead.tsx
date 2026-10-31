@@ -48,6 +48,8 @@ export type LeadQualifie = {
 
 type Props = {
   source: string;
+  /* Premier rendu sur l'ecran des coordonnees (`/hvac?step=contact`). */
+  ouvrirSurContact?: boolean;
   boutonContact: string;
   /* Le libelle du bouton du contact une fois les trois champs valides. */
   boutonContactPret?: string;
@@ -105,13 +107,14 @@ export function Cartes({
 
 export default function FormulaireLead({
   source,
+  ouvrirSurContact,
   boutonContact,
   boutonContactPret,
   boutonFinal,
   consentement,
   onComplete,
 }: Props) {
-  const [ecran, setEcran] = useState<number>(ECRAN.CAPACITE);
+  const [ecran, setEcran] = useState<number>(ouvrirSurContact ? ECRAN.CONTACT : ECRAN.CAPACITE);
   const [restaure, setRestaure] = useState(false);
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
@@ -292,6 +295,16 @@ export default function FormulaireLead({
       window.requestAnimationFrame(() => {
         document.querySelector<HTMLElement>(".ld-form .ld-invalide input")?.focus();
       });
+      return;
+    }
+    /* Arrive par `/hvac?step=contact` sans avoir repondu aux deux premieres
+       questions : on les pose d'abord, les coordonnees saisies restent. */
+    if (!capacite) {
+      aller(ECRAN.CAPACITE);
+      return;
+    }
+    if (zone.trim().length < 2) {
+      aller(ECRAN.ZONE);
       return;
     }
     setEnvoi(true);

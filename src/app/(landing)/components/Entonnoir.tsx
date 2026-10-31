@@ -20,6 +20,8 @@ type Props = {
   source: string;
   /* Le formulaire de la campagne HVAC (par defaut) ou le formulaire general. */
   variante?: "hvac" | "general";
+  /* Ouvre le formulaire HVAC sur l'ecran des coordonnees (voir Landing). */
+  ouvrirSurContact?: boolean;
   boutonContact: string;
   boutonContactPret?: string;
   boutonFinal: string;
@@ -35,6 +37,7 @@ const CLE_CALENDRIER = "ns_cal";
 export default function Entonnoir({
   source,
   variante = "hvac",
+  ouvrirSurContact,
   boutonContact,
   boutonContactPret,
   boutonFinal,
@@ -104,6 +107,7 @@ export default function Entonnoir({
       {!lead && variante !== "general" && (
         <FormulaireLead
           source={source}
+          ouvrirSurContact={ouvrirSurContact}
           boutonContact={boutonContact}
           boutonContactPret={boutonContactPret}
           boutonFinal={boutonFinal}

@@ -101,10 +101,15 @@ export default function Landing({
   c,
   porte,
   source,
+  ouvrirSurContact,
 }: {
   c: Contenu;
   porte?: Porte;
   source: string;
+  /* `/hvac?step=contact` : le tunnel s'ouvre sur l'ecran des coordonnees et des
+     cases SMS, pour qu'on puisse montrer le consentement sans repondre aux deux
+     premieres questions (relecture A2P de HighLevel, 31/10/2026). */
+  ouvrirSurContact?: boolean;
 }) {
   const accroche = porte && c.portes ? c.portes[porte] : c.generique;
 
@@ -157,6 +162,7 @@ export default function Landing({
             <Entonnoir
               source={source}
               variante={f.variante}
+              ouvrirSurContact={ouvrirSurContact}
               boutonContact={f.boutonContact}
               boutonContactPret={f.boutonContactPret}
               boutonFinal={f.boutonFinal}
