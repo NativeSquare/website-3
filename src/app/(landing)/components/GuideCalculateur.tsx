@@ -15,11 +15,12 @@ const nb = (valeur: string) => {
 };
 
 type Valeurs = Record<
-  "appels" | "sur" | "chantier" | "devis" | "closing" | "gain" | "chantierDevis" | "clients" | "reserve" | "ticket" | "heures" | "valeur",
+  "leads" | "perdus" | "coutLead" | "appels" | "sur" | "chantier" | "devis" | "closing" | "gain" | "chantierDevis" | "clients" | "reserve" | "ticket" | "heures" | "valeur",
   string
 >;
 
 const DEPART: Valeurs = {
+  leads: "30", perdus: "30", coutLead: "100",
   appels: "8", sur: "5", chantier: "450",
   devis: "20", closing: "25", gain: "5", chantierDevis: "6000",
   clients: "800", reserve: "5", ticket: "350",
@@ -44,15 +45,27 @@ export default function GuideCalculateur() {
   const maj = (cle: keyof Valeurs) => (valeur: string) => setV((a) => ({ ...a, [cle]: valeur }));
 
   const sur = nb(v.sur) || 1;
+  /* Les leads payes qui ne menent a rien : ce qu'ils ont coute, sans resultat. */
+  const pub = nb(v.leads) * (nb(v.perdus) / 100) * nb(v.coutLead) * 12;
   const appels = nb(v.appels) * (1 / sur) * nb(v.chantier) * 52;
   const devis = nb(v.devis) * (nb(v.gain) / 100) * nb(v.chantierDevis) * 12;
   const anciens = nb(v.clients) * (nb(v.reserve) / 100) * nb(v.ticket);
   const bureau = nb(v.heures) * nb(v.valeur) * 52;
-  const total = appels + devis + anciens + bureau;
+  const total = pub + appels + devis + anciens + bureau;
 
   return (
     <div className="ld-calc">
       <p className="ld-calc-note">The numbers below are examples. Change them to yours.</p>
+
+      <div className="ld-calc-bloc">
+        <h3>Paid leads that go nowhere</h3>
+        <div className="ld-calc-champs">
+          <Champ label="Paid leads a month" valeur={v.leads} onChange={maj("leads")} />
+          <Champ label="Never reached or booked" valeur={v.perdus} onChange={maj("perdus")} suffixe="%" />
+          <Champ label="Cost per lead" valeur={v.coutLead} onChange={maj("coutLead")} prefixe="$" />
+        </div>
+        <p className="ld-calc-res">{usd.format(pub)} <small>a year</small></p>
+      </div>
 
       <div className="ld-calc-bloc">
         <h3>Missed calls</h3>

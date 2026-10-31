@@ -1154,6 +1154,30 @@ h1, h2, h3 { font-family: var(--font-title); font-weight: 500; }
 .ld-g-popup-x:focus-visible{outline:2px solid #fff;outline-offset:-4px;border-radius:8px}
 @keyframes ld-g-popup-in{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translate(-50%,0)}}
 @media (prefers-reduced-motion:reduce){.ld-g-popup{animation:none}}
+/* L'entonnoir d'ouverture, les bandeaux de partie et les conseils de la V4. */
+.ld-g-titre-ctx{margin-top:34px;font-size:26px;line-height:1.15;letter-spacing:-.025em;text-wrap:balance}
+.ld-g-ent{margin:20px 0 10px;display:flex;flex-direction:column;align-items:center}
+.ld-g-etage{width:100%;padding:18px 20px 16px;border-radius:16px;border:1px solid var(--gray-90);background:#fff;box-shadow:var(--shadow-tile);text-align:left}
+.ld-g-etage.tof{background:#f2f9ff;border-color:#bcdcff}
+.ld-g-etage.bof{width:86%;background:#eef8f0;border-color:#bfe3c6}
+.ld-g-etage small{display:block;font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-40)}
+.ld-g-etage b{display:block;margin-top:2px;font-size:22px;letter-spacing:-.02em;color:var(--ink)}
+.ld-g-etage-sous{display:block;margin-top:2px;font-size:15px;color:var(--gray-30)}
+.ld-g-etage ol{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.ld-g-etage li{display:inline-flex;align-items:center;gap:7px;padding:5px 12px 5px 5px;border-radius:999px;background:#fff;border:1px solid var(--gray-90);font-size:14.5px;font-weight:500;color:var(--ink)}
+.ld-g-etage li i{display:inline-flex;width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;align-items:center;justify-content:center;font-size:12.5px;font-style:normal;font-weight:600}
+.ld-g-etage p{margin:12px 0 0;font-size:14.5px;line-height:1.4;color:var(--gray-30)}
+.ld-g-pont{margin:8px 0;font-size:14px;color:var(--gray-40)}
+.ld-g-partie{margin-top:46px;padding:20px 22px;border-radius:16px;background:#060504;color:#fff}
+.ld-g-partie small{display:block;font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:#cfcdcc}
+.ld-g-partie h2{margin:4px 0 0;font-size:28px;line-height:1.1;letter-spacing:-.025em;color:#fff}
+.ld-g-partie p{margin:6px 0 0;font-size:16px;line-height:1.35;color:#cfcdcc}
+.ld-g-partie+.ld-g-section{margin-top:20px;padding-top:0;border-top:0}
+.ld-g-nous{margin-top:10px;padding:9px 12px;border-radius:10px;background:#f2f9ff;border:1px solid #cfe6ff;font-size:15.5px;color:var(--gray-20)}
+.ld-g-sous{margin-top:26px;padding-top:20px;border-top:1px solid var(--gray-94)}
+.ld-g-section>h2+.ld-g-sous{margin-top:14px;padding-top:0;border-top:0}
+.ld-g-sous>h3{margin:0;font-size:21px;line-height:1.2;letter-spacing:-.02em;color:var(--ink)}
+@media (max-width:520px){.ld-g-etage.bof{width:93%}}
 /* Calculateur */
 .ld-calc{margin-top:14px;display:flex;flex-direction:column;gap:12px}
 .ld-calc-note{margin:0;font-size:14px;color:var(--gray-40)}

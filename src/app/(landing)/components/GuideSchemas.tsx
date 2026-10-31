@@ -47,3 +47,40 @@ export function Liste({ titre, lignes }: { titre: string; lignes: Array<{ nom: s
     </figure>
   );
 }
+
+/**
+ * L'entonnoir d'ouverture du guide : le haut (generation de leads, parties 1 a 4)
+ * et le bas (conversion, parties 5 a 8), avec ce que NativeSquare fait de
+ * chaque cote. Du texte seulement, lisible au telephone.
+ */
+export function SchemaEntonnoir() {
+  return (
+    <figure className="ld-g-ent">
+      <div className="ld-g-etage tof">
+        <small>Top of the funnel</small>
+        <b>Lead generation</b>
+        <span className="ld-g-etage-sous">Strangers find you and raise a hand</span>
+        <ol>
+          <li><i>1</i>Search</li>
+          <li><i>2</i>Ads</li>
+          <li><i>3</i>Tracking</li>
+          <li><i>4</i>Retargeting</li>
+        </ol>
+        <p><strong>We&rsquo;re here:</strong> media buying, tracking, funnel analysis, retargeting.</p>
+      </div>
+      <span className="ld-g-pont">↓ a lead</span>
+      <div className="ld-g-etage bof">
+        <small>Bottom of the funnel</small>
+        <b>Lead conversion</b>
+        <span className="ld-g-etage-sous">Leads become booked jobs, then repeat customers</span>
+        <ol>
+          <li><i>5</i>Answer and call back</li>
+          <li><i>6</i>Follow-up</li>
+          <li><i>7</i>Reviews and repeat</li>
+          <li><i>8</i>Office</li>
+        </ol>
+        <p><strong>We&rsquo;re here:</strong> AI receptionist, speed-to-lead calls, follow-up, reviews, reactivation, back office.</p>
+      </div>
+    </figure>
+  );
+}
