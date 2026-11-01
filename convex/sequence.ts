@@ -28,6 +28,7 @@ import {
   type Lien,
 } from "../src/lib/sequence-messages";
 import { fenetreSms, lienAbsent, lienSuivi } from "../src/lib/relance";
+import { envoyerSms } from "./envoi";
 
 /**
  * La sequence post-booking, depuis le 30/10/2026 :
@@ -793,16 +794,3 @@ async function envoyerEmail(
   if (!reponse.ok) throw new Error(`Resend ${reponse.status} : ${await reponse.text()}`);
 }
 
-/* Quo : https://support.quo.com/core-concepts/integrations/api */
-async function envoyerSms(a: string, texte: string) {
-  const cle = process.env.QUO_API_KEY;
-  const numero = process.env.QUO_NUMERO;
-  if (!cle || !numero) throw new Error("QUO_API_KEY ou QUO_NUMERO absent");
-
-  const reponse = await fetch("https://api.quo.com/v1/messages", {
-    method: "POST",
-    headers: { Authorization: cle, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: numero, to: [a], content: texte }),
-  });
-  if (!reponse.ok) throw new Error(`Quo ${reponse.status} : ${await reponse.text()}`);
-}
