@@ -97,8 +97,25 @@ const ETATS: [string, string, string][] = [
 
 const FUSEAUX_BOOKER = ["America/New_York", "America/Chicago", "America/Denver", "America/Los_Angeles"];
 
+/* Un code postal donne un fuseau approché (les États coupés en deux fuseaux se trompent près de la frontière). */
+function fuseauDeZip(zip: string): string | null {
+  const z = parseInt(zip.slice(0, 2), 10);
+  if (zip.startsWith("799") || zip.startsWith("885")) return "America/Denver";
+  if (zip.startsWith("889") || z === 89) return "America/Los_Angeles";
+  if (z <= 34) return "America/New_York";
+  if (z <= 39) return "America/Chicago";
+  if (z <= 49) return "America/New_York";
+  if (z <= 79) return "America/Chicago";
+  if (z === 85 || z === 86) return "America/Phoenix";
+  if (z <= 88) return "America/Denver";
+  if (z <= 98) return "America/Los_Angeles";
+  return "America/Anchorage";
+}
+
 function fuseauDe(p: Prospect): string | null {
   const brut = (p.etat ?? "").trim();
+  const zip = `${brut} ${ligneDe(p.contexte, "Zone")}`.match(/\b(\d{5})\b/);
+  if (zip) return fuseauDeZip(zip[1]);
   const parAbrev = ETATS.find((e) => e[0] === brut.toUpperCase());
   if (parAbrev) return parAbrev[2];
   const bas = `${brut} ${p.ville ?? ""}`.toLowerCase();
@@ -445,7 +462,8 @@ export default function Appels() {
     heure,
     h1,
     h2,
-    etat: p ? ligneDe(p.contexte, "Zone") || p.etat || "" : "",
+    /* Un code postal n'est pas un État : le crochet reste jaune, tu le demandes. */
+    etat: p ? (/^\d{5}/.test(ligneDe(p.contexte, "Zone")) ? "" : ligneDe(p.contexte, "Zone") || p.etat || "") : "",
     x: p ? ligneDe(p.contexte, "Chantiers par mois") : "",
     email: p?.email ?? "",
     quand: p ? quand(p.creeLe) : "",
@@ -526,7 +544,7 @@ export default function Appels() {
                   <span className="ap-nom">
                     <b>{x.prenom ? `${x.prenom} ${x.nom ?? ""}`.trim() : x.entreprise}</b>
                     <small>
-                      {x.prenom ? x.entreprise : "prénom inconnu"}
+                      {x.entreprise.startsWith("(") ? "lead du formulaire" : x.prenom ? x.entreprise : "prénom inconnu"}
                       {x.avis ? ` · ${x.avis} avis` : ""}
                     </small>
                   </span>
@@ -567,7 +585,7 @@ export default function Appels() {
                 </div>
                 <h2 className="ap-qui">{p.prenom ? `${p.prenom} ${p.nom ?? ""}`.trim() : "Prénom inconnu"}</h2>
                 <p className="ap-ent">
-                  {p.entreprise}
+                  {p.entreprise.startsWith("(") ? "Lead du formulaire" : p.entreprise}
                   {p.ville ? ` · ${p.ville}` : ""}
                   {p.etat && p.etat.length <= 3 ? `, ${p.etat}` : ""}
                   {p.comte ? ` · comté de ${p.comte.charAt(0) + p.comte.slice(1).toLowerCase()}` : ""}

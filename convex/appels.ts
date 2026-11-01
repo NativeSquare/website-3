@@ -305,7 +305,8 @@ export const synchroRappels = mutation({
       }
       const contexte = [
         lead.statut === "partiel" ? "A laissé ses coordonnées, pas les questions" : "A répondu aux questions, n'a pas réservé",
-        lead.capacite ? `Chantiers par mois : ${lead.capacite}` : "",
+        /* « 1_to_10_jobs_a_month » devient « 1 to 10 » : la phrase du script dit « take on 1 to 10 jobs ». */
+        lead.capacite ? `Chantiers par mois : ${lead.capacite.replace(/_jobs?_a_month$/, "").replace(/_/g, " ")}` : "",
         lead.zone ? `Zone : ${lead.zone}` : "",
         lead.role ? `Rôle : ${lead.role}` : "",
         lead.chiffreAffaires ? `Chiffre d'affaires : ${lead.chiffreAffaires}` : "",
