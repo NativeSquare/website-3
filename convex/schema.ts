@@ -230,4 +230,70 @@ export default defineSchema({
     canal: v.optional(v.string()),
     message: v.optional(v.string()),
   }).index("by_lead_page", ["leadId", "page"]),
+
+  /**
+   * Les listes de la page d'appels (`/interne/appels`) : une liste = une session
+   * de cold calling, un seul fait de la fiche et un seul comment pour tous ses
+   * prospects (méthode de la vidéo « How to Cold Call », 30/10/2026). La liste
+   * « rappels » est virtuelle : elle se calcule depuis les leads qui ont laissé
+   * leurs coordonnées sans réserver, plus les prospects marqués « à rappeler ».
+   */
+  listesAppel: defineTable({
+    cle: v.string(),
+    nom: v.string(),
+    genre: v.union(v.literal("froid"), v.literal("rappels")),
+    jour: v.optional(v.string()),
+    /* « your Google listing says you close at 5 » : la fin de « I noticed … ». */
+    fait: v.optional(v.string()),
+    /* « making sure no call goes unanswered » : la fin de « mostly by … ». */
+    comment: v.optional(v.string()),
+    creeLe: v.number(),
+  }).index("by_cle", ["cle"]),
+
+  /**
+   * Un prospect d'une liste. Le prénom est absent quand le patron n'a pas pu
+   * être nommé ; `sourceNom` dit alors d'où il vient quand il l'est.
+   */
+  prospectsAppel: defineTable({
+    liste: v.string(),
+    rang: v.number(),
+    prenom: v.optional(v.string()),
+    nom: v.optional(v.string()),
+    entreprise: v.string(),
+    /* Dix chiffres pour les prospects froids, format international pour les leads. */
+    telephone: v.string(),
+    email: v.optional(v.string()),
+    ville: v.optional(v.string()),
+    etat: v.optional(v.string()),
+    comte: v.optional(v.string()),
+    adresse: v.optional(v.string()),
+    site: v.optional(v.string()),
+    avis: v.optional(v.number()),
+    note: v.optional(v.number()),
+    fermeture: v.optional(v.string()),
+    sourceNom: v.optional(v.string()),
+    noteNom: v.optional(v.string()),
+    categorie: v.optional(v.string()),
+    /* Pour les leads : ce qu'ils ont répondu au formulaire. */
+    contexte: v.optional(v.string()),
+    leadId: v.optional(v.id("leads")),
+    creeLe: v.optional(v.number()),
+    statut: v.union(
+      v.literal("a_appeler"),
+      v.literal("pas_de_reponse"),
+      v.literal("repondeur"),
+      v.literal("pas_patron"),
+      v.literal("rappeler"),
+      v.literal("refus"),
+      v.literal("booke"),
+    ),
+    notes: v.optional(v.string()),
+    appels: v.number(),
+    dernierAppel: v.optional(v.number()),
+    /* AAAA-MM-JJ : le jour où il revient dans « rappels ». */
+    rappelLe: v.optional(v.string()),
+  })
+    .index("by_liste", ["liste", "rang"])
+    .index("by_leadId", ["leadId"])
+    .index("by_statut", ["statut"]),
 });
