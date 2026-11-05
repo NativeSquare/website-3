@@ -139,6 +139,9 @@ export default defineSchema({
       v.literal("reserve"),
     ),
     calUid: v.optional(v.string()),
+    /* Le contact HighLevel cree a l'arrivee du lead (convex/ghl.ts). Absent des
+       leads d'avant le 06/11/2026 et du formulaire general. */
+    ghlContactId: v.optional(v.string()),
   })
     .index("by_email", ["email"])
     .index("by_visiteId", ["visiteId"]),

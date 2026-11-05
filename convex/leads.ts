@@ -121,6 +121,8 @@ export const contact = mutation({
        n'en a pas. */
     if (args.variante !== "general") {
       await ctx.scheduler.runAfter(delaiAvantVerification(), internal.relance.verifier, { leadId });
+      /* Le lead d'une pub entre aussitot dans HighLevel (convex/ghl.ts). */
+      await ctx.scheduler.runAfter(0, internal.ghl.pousserLead, { leadId });
     }
     return leadId;
   },
@@ -186,6 +188,8 @@ export const depuisMeta = internalMutation({
     });
     await ctx.scheduler.runAfter(0, internal.alarme.reveiller, { leadId });
     await ctx.scheduler.runAfter(delaiAvantVerification(), internal.relance.verifier, { leadId });
+    /* Le lead du formulaire Meta entre aussitot dans HighLevel (convex/ghl.ts). */
+    await ctx.scheduler.runAfter(0, internal.ghl.pousserLead, { leadId });
     return { leadId, nouveau: true };
   },
 });
@@ -337,6 +341,16 @@ export const marquerReserve = internalMutation({
       debut: args.debut,
     });
     return retour;
+  },
+});
+
+/* Le contact HighLevel du lead, une fois cree (convex/ghl.ts). */
+export const lierGhl = internalMutation({
+  args: { leadId: v.id("leads"), ghlContactId: v.string() },
+  returns: v.null(),
+  handler: async (ctx, { leadId, ghlContactId }) => {
+    await ctx.db.patch("leads", leadId, { ghlContactId });
+    return null;
   },
 });
 

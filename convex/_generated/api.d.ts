@@ -12,6 +12,7 @@ import type * as alarme from "../alarme.js";
 import type * as appels from "../appels.js";
 import type * as calendly from "../calendly.js";
 import type * as envoi from "../envoi.js";
+import type * as ghl from "../ghl.js";
 import type * as http from "../http.js";
 import type * as leads from "../leads.js";
 import type * as meta from "../meta.js";
@@ -34,6 +35,7 @@ declare const fullApi: ApiFromModules<{
   appels: typeof appels;
   calendly: typeof calendly;
   envoi: typeof envoi;
+  ghl: typeof ghl;
   http: typeof http;
   leads: typeof leads;
   meta: typeof meta;
