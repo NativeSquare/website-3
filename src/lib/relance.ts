@@ -5,7 +5,7 @@
  * fonctions tournent dans Convex et dans les tests.
  *
  * Source des textes (le premier message, R2 et R3, depuis le 05/11/2026) :
- * atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v7-2026-11-05.md
+ * atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v8-2026-11-05.md
  */
 
 export const LIEN_RESERVATION = "https://nativesquare.ai/hvac/call";
@@ -235,7 +235,7 @@ const estAnonyme = (p: string) => p.trim() === "" || /^there$/i.test(p.trim());
 /* Les trois messages d'un lead qui a laisse ses coordonnees sans reserver (le
    premier message, nomme `r1` dans le code, puis R2 et R3). Textes de la V6 du
    05/11/2026 :
-   atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v7-2026-11-05.md
+   atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v8-2026-11-05.md
    `quand` et `mode` ne servent plus aux textes ; ils restent dans le type pour
    que l'apercu et l'envoi n'aient pas a changer. `maintenant` n'est plus lu. */
 export function messageRelance(

@@ -19,6 +19,7 @@ import type * as quo from "../quo.js";
 import type * as relance from "../relance.js";
 import type * as rendezvous from "../rendezvous.js";
 import type * as sequence from "../sequence.js";
+import type * as sms from "../sms.js";
 import type * as visites from "../visites.js";
 
 import type {
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   relance: typeof relance;
   rendezvous: typeof rendezvous;
   sequence: typeof sequence;
+  sms: typeof sms;
   visites: typeof visites;
 }>;
 

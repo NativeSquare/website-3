@@ -5,7 +5,7 @@
  *
  * Source : la sequence d'Angelo du 18/09, refaite le 30/10/2026 (confirmation
  * par YES, liens suivis), puis B1 et B2 modifies par Alexandre le 05/11/2026 :
- * atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v7-2026-11-05.md
+ * atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v8-2026-11-05.md
  *
  * Les etapes : B1 (a la reservation, « reply YES »), B2 (no show risk), B3 (la
  * confirmation, `EMAIL_1` et `SMS_1`), puis mi-chemin (`EMAIL_2`, `SMS_2`) et 30
@@ -220,13 +220,13 @@ export const EMAIL_1 = (c: Contact, lien: Lien = SANS_SUIVI): Message => ({
     "I put together a page that covers exactly what we do, the results we've gotten for owners like you, and a short 5 minute video that walks through everything. The owners who watch it beforehand get a lot more out of our call. You can put it on 2x speed to go faster.",
     `Check it out here: ${lien("video")}`,
     `Add the call to your calendar: ${lienGoogleAgenda(c, lien("video", "b3-agenda"))}`,
-    "If anything comes up before then, just reply to this email. Looking forward to it.",
+    `If anything comes up before then, just reply to this email. Looking forward to it. See you on ${rdv(c)}.`,
     "Alex\nNativeSquare",
   ].join("\n\n"),
 });
 
 export const SMS_1 = (c: Contact, lien: Lien = SANS_SUIVI): Message => ({
-  texte: `Perfect, you're confirmed for ${rdv(c)}. I ask everyone I meet with to watch this short video beforehand, it'll make our time together a lot more productive (you can put it on 2x speed): ${lien("video")}`,
+  texte: `Perfect, you're confirmed for ${rdv(c)}. I ask everyone I meet with to watch this short video beforehand, it'll make our time together a lot more productive (you can put it on 2x speed): ${lien("video")}\nSee you on ${rdv(c)}.`,
 });
 
 /* Mi-chemin : les deux one-pagers en liens, plus de pieces jointes. */

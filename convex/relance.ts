@@ -23,7 +23,7 @@ import {
  * existe, celle-ci quand il n'y en a pas.
  *
  * Le fil, pour un lead qui arrive (formulaire Meta ou formulaire de la landing).
- * Version du 05/11/2026 (sequence-confirmation-oui-v7) :
+ * Version du 05/11/2026 (sequence-confirmation-oui-v8) :
  *   verification  1 min 30 apres le formulaire quand Alexandre dort (23 h a 8 h a
  *            Paris) et que RELANCE_AUTO vaut 1 ; 5 min sinon. S'il a reserve (sa
  *            fiche, ou un rendez-vous a son e-mail, alias compris) ou si Alexandre a
