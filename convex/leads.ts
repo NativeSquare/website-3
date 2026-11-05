@@ -113,6 +113,9 @@ export const contact = mutation({
       leadId,
       moment: "contact",
     });
+    /* La nuit d'Alexandre, son telephone sonne jusqu'a ce qu'il acquitte
+       (convex/alarme.ts). Elle ne regarde pas s'il va reserver. */
+    await ctx.scheduler.runAfter(0, internal.alarme.reveiller, { leadId });
     /* Un peu plus tard (1 min 30 la nuit d'Alexandre, 5 min sinon) : s'il n'a pas
        reserve, la relance se decide (convex/relance.ts). Le formulaire general
        n'en a pas. */
@@ -181,6 +184,7 @@ export const depuisMeta = internalMutation({
       leadId,
       moment: "contact",
     });
+    await ctx.scheduler.runAfter(0, internal.alarme.reveiller, { leadId });
     await ctx.scheduler.runAfter(delaiAvantVerification(), internal.relance.verifier, { leadId });
     return { leadId, nouveau: true };
   },

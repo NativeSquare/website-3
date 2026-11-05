@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as alarme from "../alarme.js";
 import type * as appels from "../appels.js";
 import type * as calendly from "../calendly.js";
 import type * as envoi from "../envoi.js";
@@ -29,6 +30,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  alarme: typeof alarme;
   appels: typeof appels;
   calendly: typeof calendly;
   envoi: typeof envoi;
