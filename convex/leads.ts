@@ -3,7 +3,19 @@ import { internalMutation, internalQuery, mutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { idEvenementLead } from "../src/lib/lead-meta";
 import { ORIGINE_META } from "../src/lib/formulaire-meta";
-import { DELAI_VERIFICATION } from "../src/lib/relance";
+import { delaiVerification } from "../src/lib/relance";
+
+/* Combien de temps apres le formulaire on regarde s'il a reserve : 1 min 30 quand
+   Alexandre dort et que RELANCE_AUTO vaut 1 (le premier message part alors), 5 min
+   sinon. Meme plage de sommeil que convex/relance.ts. */
+function delaiAvantVerification(): number {
+  return delaiVerification(
+    process.env.RELANCE_AUTO === "1",
+    Date.now(),
+    Number(process.env.SOMMEIL_DEBUT ?? 23),
+    Number(process.env.SOMMEIL_FIN ?? 8),
+  );
+}
 
 /**
  * Le formulaire de la landing des pubs, en deux temps (retour d'Angelo du
@@ -101,10 +113,11 @@ export const contact = mutation({
       leadId,
       moment: "contact",
     });
-    /* 5 minutes plus tard : s'il n'a pas reserve, la relance se decide
-       (convex/relance.ts). Le formulaire general n'en a pas. */
+    /* Un peu plus tard (1 min 30 la nuit d'Alexandre, 5 min sinon) : s'il n'a pas
+       reserve, la relance se decide (convex/relance.ts). Le formulaire general
+       n'en a pas. */
     if (args.variante !== "general") {
-      await ctx.scheduler.runAfter(DELAI_VERIFICATION, internal.relance.verifier, { leadId });
+      await ctx.scheduler.runAfter(delaiAvantVerification(), internal.relance.verifier, { leadId });
     }
     return leadId;
   },
@@ -168,7 +181,7 @@ export const depuisMeta = internalMutation({
       leadId,
       moment: "contact",
     });
-    await ctx.scheduler.runAfter(DELAI_VERIFICATION, internal.relance.verifier, { leadId });
+    await ctx.scheduler.runAfter(delaiAvantVerification(), internal.relance.verifier, { leadId });
     return { leadId, nouveau: true };
   },
 });
@@ -284,11 +297,21 @@ export const marquerReserve = internalMutation({
   handler: async (ctx, args) => {
     const email = args.email?.trim().toLowerCase();
     if (!email) return null;
-    const lead = await ctx.db
+    let lead = await ctx.db
       .query("leads")
       .withIndex("by_email", (q) => q.eq("email", email))
       .order("desc")
       .first();
+    /* Une reservation faite avec un alias (« jean+rdv@gmail.com ») est la meme
+       personne que « jean@gmail.com » : sans cela, elle ne recevrait pas la sequence. */
+    const sansAlias = email.replace(/\+[^@]*@/, "@");
+    if (!lead && sansAlias !== email) {
+      lead = await ctx.db
+        .query("leads")
+        .withIndex("by_email", (q) => q.eq("email", sansAlias))
+        .order("desc")
+        .first();
+    }
     if (!lead) return null;
     const retour = {
       prenom: lead.prenom,

@@ -4,8 +4,8 @@
  * tournent dans le navigateur comme dans le moteur Convex.
  *
  * Source : la sequence d'Angelo du 18/09, refaite le 30/10/2026 (confirmation
- * par YES, liens suivis) dans
- * atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v5-2026-10-30.md
+ * par YES, liens suivis), puis B1 et B2 modifies par Alexandre le 05/11/2026 :
+ * atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v7-2026-11-05.md
  *
  * Les etapes : B1 (a la reservation, « reply YES »), B2 (no show risk), B3 (la
  * confirmation, `EMAIL_1` et `SMS_1`), puis mi-chemin (`EMAIL_2`, `SMS_2`) et 30
@@ -188,13 +188,13 @@ export const EMAIL_B1 = (c: Contact): Message => ({
   objet: `Please confirm your call, ${prenomPropre(c.prenom)}`,
   texte: [
     `Hey ${prenomPropre(c.prenom)},`,
-    `Alex here. You asked for a slot for ${rdv(c)}. Your call is not confirmed yet. Just reply YES to confirm it.`,
+    `Alex here. You asked for a slot for ${rdv(c)}. Your call is not confirmed yet. Just reply YES to confirm it. Looking forward to help you book more jobs.`,
     "Alex",
   ].join("\n\n"),
 });
 
 export const SMS_B1 = (c: Contact): Message => ({
-  texte: `Hey ${prenomPropre(c.prenom)}, it's Alex. You asked for a slot for ${rdv(c)}. Your call is not confirmed yet. Just reply YES to confirm it.`,
+  texte: `Hey ${prenomPropre(c.prenom)}, it's Alex. You asked for a slot for ${rdv(c)}. Your call is NOT CONFIRMED yet. Just reply "YES" to confirm it. Looking forward to help you book more jobs!`,
 });
 
 /* B2 : no show risk. Ni YES ni signal « confirme » apres le delai. */
@@ -208,7 +208,7 @@ export const EMAIL_B2 = (c: Contact, lien: Lien = SANS_SUIVI): Message => ({
 });
 
 export const SMS_B2 = (c: Contact, lien: Lien = SANS_SUIVI): Message => ({
-  texte: `${prenomPropre(c.prenom)}, I still need your YES to keep ${rdv(c)}. Reply YES, or tell me a better time. In the meantime, here's a guide with some hard learned knowledge on how to get more HVAC jobs: ${lien("guide")}`,
+  texte: `Hey ${prenomPropre(c.prenom)}, I still need your YES to keep ${rdv(c)}. Reply YES, or tell me a better time. In the meantime, I wanted to offer you this guide showing things we learned to book more HVAC jobs: ${lien("guide")}`,
 });
 
 /* B3 : la confirmation (l'e-mail 1 d'Angelo, avec une premiere ligne nouvelle). */

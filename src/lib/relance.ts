@@ -4,8 +4,8 @@
  * textes, les plages horaires et le calendrier des envois, pour que les memes
  * fonctions tournent dans Convex et dans les tests.
  *
- * Source des textes (P1, P2, P3 depuis le 30/10/2026) :
- * atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v5-2026-10-30.md
+ * Source des textes (le premier message, R2 et R3, depuis le 05/11/2026) :
+ * atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v7-2026-11-05.md
  */
 
 export const LIEN_RESERVATION = "https://nativesquare.ai/hvac/call";
@@ -16,6 +16,10 @@ export const DELAI_VERIFICATION = 5 * 60 * 1000;
 /* Quand Alexandre est disponible, il a une heure pour appeler avant que la
    sequence parte quand meme. */
 export const DELAI_REPLI_AUTO = 60 * 60 * 1000;
+/* Le lead arrive pendant que tu dors et RELANCE_AUTO vaut 1 : le premier message
+   (e-mail et texto) part 1 min 30 apres le formulaire, s'il n'a pas reserve.
+   Decision d'Alexandre du 05/11/2026. Dans tous les autres cas, 5 minutes. */
+export const DELAI_PREMIER_MESSAGE = 90 * 1000;
 
 const PACIFIQUE = "America/Los_Angeles";
 const PARIS = "Europe/Paris";
@@ -97,13 +101,28 @@ export function alexandreDort(ts: number, debut = 23, fin = 8): boolean {
   return debut > fin ? h >= debut || h < fin : h >= debut && h < fin;
 }
 
-/* Quand les messages partent : R1 tout de suite (le texto attend sa plage),
-   R2 vers 9 h au Pacifique le lendemain, R3 trois jours apres R1. */
-export function planRelances(lancement: number): Record<"r1_email" | "r1_sms" | "r2_email" | "r2_sms" | "r3_email" | "r3_sms", number> {
-  const r1Sms = fenetreSms(lancement);
-  /* Depuis le texto de R1 (pas depuis le lancement) : un texto repousse a 8 h
-     ne doit pas etre suivi de R2 une heure plus tard. */
-  const r2 = prochainePacifique(r1Sms + 12 * HEURE, 9);
+/* Le jour suivant (jour civil au Pacifique) a `heure` h. */
+export function lendemainPacifique(ts: number, heure: number): number {
+  const demain = jourPlus(ts, PACIFIQUE, 1);
+  return murVersInstant(demain.annee, demain.mois, demain.jour, heure, PACIFIQUE);
+}
+
+/* Combien de temps apres le formulaire on regarde s'il a reserve. */
+export function delaiVerification(auto: boolean, ts: number, debut = 23, fin = 8): number {
+  return auto && alexandreDort(ts, debut, fin) ? DELAI_PREMIER_MESSAGE : DELAI_VERIFICATION;
+}
+
+/* Quand les messages partent : le premier message (`r1`) tout de suite, e-mail et
+   texto (`smsImmediat` : le texto ignore la plage 8 h a 18 h Pacifique ; sans lui,
+   il attend sa plage), R2 le lendemain a 9 h au Pacifique, R3 47 h apres R2. */
+export function planRelances(
+  lancement: number,
+  smsImmediat = true,
+): Record<"r1_email" | "r1_sms" | "r2_email" | "r2_sms" | "r3_email" | "r3_sms", number> {
+  const r1Sms = smsImmediat ? lancement : fenetreSms(lancement);
+  /* Depuis le texto du premier message (pas depuis le lancement) : un texto
+     repousse a 8 h ne doit pas etre suivi de R2 une heure plus tard. */
+  const r2 = lendemainPacifique(r1Sms, 9);
   const r3 = prochainePacifique(r2 + 47 * HEURE, 9);
   return {
     r1_email: lancement,
@@ -213,12 +232,12 @@ const prenomPropre = (p: string) => p.trim().charAt(0).toUpperCase() + p.trim().
    les objets et les phrases d'accroche perdent leur prenom. */
 const estAnonyme = (p: string) => p.trim() === "" || /^there$/i.test(p.trim());
 
-/* Les trois relances d'un lead qui a laisse ses coordonnees sans reserver (P1,
-   P2, P3). Textes de la V5 du 30/10/2026 :
-   atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v5-2026-10-30.md
+/* Les trois messages d'un lead qui a laisse ses coordonnees sans reserver (le
+   premier message, nomme `r1` dans le code, puis R2 et R3). Textes de la V6 du
+   05/11/2026 :
+   atlas/agence/mentorat-angelo/assets-precall/sequence-confirmation-oui-v7-2026-11-05.md
    `quand` et `mode` ne servent plus aux textes ; ils restent dans le type pour
-   que l'apercu et l'envoi n'aient pas a changer. `maintenant` donne le « next
-   business day » de P1. */
+   que l'apercu et l'envoi n'aient pas a changer. `maintenant` n'est plus lu. */
 export function messageRelance(
   etape: EtapeRelance,
   canal: Canal,
@@ -234,29 +253,32 @@ export function messageRelance(
   const prenom = anonyme ? "there" : prenomPropre(c.prenom);
   const lien = lienRelance(etape, canal, c.leadId);
   const guide = lienGuide(etape, canal, c.leadId);
-  const prochain = prochainJourOuvre(c.maintenant ?? Date.now());
   const FIXE = "I see you forgot to book a slot so we can get you started";
 
+  /* Le premier message : 1 min 30 apres le formulaire, s'il n'a pas reserve. Les
+     deux textes sont ceux d'Alexandre (05/11/2026) : le texto ne dit pas
+     « tomorrow », l'e-mail le dit. L'ancien R1 est garde dans la V6 de la sequence. */
   if (etape === "r1" && canal === "sms") {
     return {
-      texte: `Hey ${prenom}, it's Alex. You left your info to get more HVAC jobs, but your call is not booked yet. Make sure to book it here: ${lien} or just text me a time and I'll book it for you. Does today or ${prochain} work for you?`,
+      texte: `Hey ${prenom}, you just left me your info but you haven't booked a call yet! Without it we can't help you book more jobs. What's the best time for me to call you?`,
     };
   }
 
   if (etape === "r1") {
     return {
-      objet: anonyme ? "Book your call" : `Book your call, ${prenom}`,
+      objet: anonyme ? "You haven't booked a call yet" : `You haven't booked a call yet, ${prenom}`,
       texte: [
         `Hey ${prenom},`,
-        `Alex here. You left your info to get more HVAC jobs, but your call is not booked yet. Make sure to book it here: ${lien} or just reply with a time and I'll book it for you. Does today or ${prochain} work for you?`,
+        "You haven't booked a call yet, and without it we can't help you get more jobs. What's the best time for me to call you tomorrow?",
         "Alex",
       ].join("\n\n"),
     };
   }
 
+  /* R2 : le lendemain matin, seulement s'il n'a ni reserve ni repondu. */
   if (etape === "r2" && canal === "sms") {
     return {
-      texte: `${anonyme ? "I" : `${prenom}, I`} still don't see a booking from you. Pick a time here: ${lien} Or reply with a time that works and I'll book it for you. In the meantime, here's a guide with some hard learned knowledge on how to get more HVAC jobs. It shows 8 ways to get more HVAC jobs: ${guide}`,
+      texte: `Hey ${prenom}, I'll call you today to setup your call. If you prefer booking directly click here: ${lien}. In the meantime, I wanted to offer you this guide of ours. It's 8 ways to get more HVAC jobs: ${guide}\nWhat's the best time for me to call you today?`,
     };
   }
 
@@ -275,7 +297,7 @@ export function messageRelance(
 
   if (canal === "sms") {
     return {
-      texte: `${anonyme ? "Last one from me." : `${prenom}, last one from me.`} Should I close your file? If you still want more HVAC jobs, book here: ${lien} The guide is yours to keep, with some hard learned knowledge on 8 ways to get more HVAC jobs: ${guide}`,
+      texte: `${anonyme ? "Last one from me." : `${prenom}, last one from me.`} Should I close your file? If you still want more HVAC jobs, be sure to book here: ${lien}.`,
     };
   }
 

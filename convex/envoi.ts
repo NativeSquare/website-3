@@ -64,6 +64,67 @@ export async function envoyerSmsGhl(a: string, texte: string): Promise<void> {
   if (!message.ok) throw new Error(`HighLevel message ${message.status} : ${await message.text()}`);
 }
 
+/* A-t-il repondu par texto depuis `depuis` (ms) ? On regarde dans HighLevel, ou
+   arrivent les reponses au numero A2P : le contact par son telephone, ses
+   conversations, puis les messages entrants. Rend vrai au premier texto entrant.
+   Ne lit que les textos : une reponse par e-mail n'est pas vue. Leve une erreur
+   si HighLevel ne repond pas, a charge de l'appelant de decider quoi faire. */
+export async function aReponduParSms(telephone: string, depuis: number): Promise<boolean> {
+  const jeton = process.env.GHL_TOKEN;
+  const lieu = process.env.GHL_LOCATION_ID;
+  if (!jeton || !lieu) throw new Error("GHL_TOKEN ou GHL_LOCATION_ID absent");
+
+  const base = "https://services.leadconnectorhq.com";
+  const lire = async (chemin: string, version: string) => {
+    for (let essai = 0; ; essai++) {
+      const r = await fetch(base + chemin, {
+        headers: { Authorization: `Bearer ${jeton}`, Version: version, Accept: "application/json" },
+      });
+      if (r.status === 429 && essai < 3) {
+        await new Promise((ok) => setTimeout(ok, 1500 * (essai + 1)));
+        continue;
+      }
+      if (!r.ok) throw new Error(`HighLevel ${r.status} sur ${chemin.split("?")[0]}`);
+      return (await r.json()) as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+    }
+  };
+
+  const chiffres = telephone.replace(/\D/g, "");
+  const contacts = await lire(
+    `/contacts/?locationId=${lieu}&query=${encodeURIComponent(telephone)}&limit=5`,
+    "2021-07-28",
+  );
+  const contact = ((contacts.contacts ?? []) as Array<{ id: string; phone?: string }>).find(
+    (c) => (c.phone ?? "").replace(/\D/g, "") === chiffres,
+  );
+  if (!contact) return false;
+
+  const conversations = await lire(
+    `/conversations/search?locationId=${lieu}&contactId=${contact.id}`,
+    "2021-04-15",
+  );
+  for (const conv of (conversations.conversations ?? []) as Array<{ id: string }>) {
+    const messages = await lire(`/conversations/${conv.id}/messages?limit=100`, "2021-04-15");
+    const liste = (messages.messages?.messages ?? []) as Array<{
+      direction?: string;
+      messageType?: string;
+      type?: string;
+      dateAdded?: string;
+    }>;
+    if (
+      liste.some(
+        (m) =>
+          m.direction === "inbound" &&
+          (m.messageType ?? m.type) === "TYPE_SMS" &&
+          Date.parse(m.dateAdded ?? "") >= depuis,
+      )
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 /* Quo : https://support.quo.com/core-concepts/integrations/api */
 async function envoyerSmsQuo(a: string, texte: string): Promise<void> {
   const cle = process.env.QUO_API_KEY;

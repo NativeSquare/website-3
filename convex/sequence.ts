@@ -27,14 +27,15 @@ import {
   type Contact,
   type Lien,
 } from "../src/lib/sequence-messages";
-import { fenetreSms, lienAbsent, lienSuivi } from "../src/lib/relance";
+import { lendemainPacifique, lienAbsent, lienSuivi } from "../src/lib/relance";
 import { envoyerSms } from "./envoi";
 
 /**
  * La sequence post-booking, depuis le 30/10/2026 :
  *   B1  a la reservation : « reply YES to confirm » (e-mail + texto).
- *   B2  « no show risk » : ni YES ni signal d'Alexandre 3 h apres la reservation
- *       (ou quand il le dit) : e-mail + texto avec le guide.
+ *   B2  « no show risk » : ni YES ni signal d'Alexandre le lendemain matin de la
+ *       reservation, 9 h au Pacifique (ou quand il le dit) : e-mail + texto avec
+ *       le guide. Avant le 05/11/2026 : 3 h apres la reservation.
  *   B3  la confirmation (`email1`, `sms1`), posee quand le rendez-vous passe en
  *       « confirme », avec la suite : mi-chemin (`email2`, `sms2`) et 30
  *       minutes avant (`email3`, `sms3`).
@@ -55,9 +56,10 @@ import { envoyerSms } from "./envoi";
 const TRENTE_MIN = 30 * 60 * 1000;
 /* En dessous, une etape tomberait trop pres de la precedente : on la saute. */
 const MARGE = 5 * 60 * 1000;
-/* Sans YES ni signal d'Alexandre apres ce delai, le rendez-vous passe en
-   « no show risk » (dans la plage des textos, 8 h a 18 h Pacifique). */
-const DELAI_NO_SHOW = 3 * 60 * 60 * 1000;
+/* Sans YES ni signal d'Alexandre le lendemain matin (9 h au Pacifique, dans la
+   plage des textos), le rendez-vous passe en « no show risk ». Decision
+   d'Alexandre du 05/11/2026 : avant, c'etait 3 h apres la reservation. */
+const HEURE_NO_SHOW = 9;
 
 type Etape =
   | "b1_email"
@@ -258,7 +260,7 @@ async function planifier(
     }
     /* Sans YES ni signal d'Alexandre : no show risk, dans la plage des textos,
        et seulement si l'appel est assez loin pour que ca serve. */
-    const declenchement = fenetreSms(maintenant + DELAI_NO_SHOW);
+    const declenchement = lendemainPacifique(maintenant, HEURE_NO_SHOW);
     if (declenchement < new Date(donnees.debut).getTime() - TRENTE_MIN) {
       taches.push(
         await ctx.scheduler.runAt(declenchement, internal.sequence.noShowRisk, {
@@ -387,8 +389,8 @@ async function prevenir(ctx: MutationCtx, texte: string) {
 }
 
 /**
- * « No show risk » : le lead n'a ni repondu YES ni ete joint. Part tout seul 3 h
- * apres la reservation (`auto`), ou quand Alexandre dit « je ne l'ai pas
+ * « No show risk » : le lead n'a ni repondu YES ni ete joint. Part tout seul le
+ * lendemain matin de la reservation (`auto`), ou quand Alexandre dit « je ne l'ai pas
  * joint ». Envoie B2 : e-mail, et texto si les textos sont permis.
  */
 export const noShowRisk = internalMutation({
@@ -415,7 +417,7 @@ export const noShowRisk = internalMutation({
     await ctx.db.patch("sequences", s._id, { confirmation: "no_show_risk", taches });
     await prevenir(
       ctx,
-      `*No show risk.* ${s.prenom} hasn't confirmed ${jour(s)} at ${heure(s.debut, s.fuseau)}${auto ? " (3 h after booking)" : ""}. Reminder sent by email${s.avecSms ? " and text" : ""}.\n${s.telephone ?? "no phone"} | ${s.email}`,
+      `*No show risk.* ${s.prenom} hasn't confirmed ${jour(s)} at ${heure(s.debut, s.fuseau)}${auto ? " (next morning)" : ""}. Reminder sent by email${s.avecSms ? " and text" : ""}.\n${s.telephone ?? "no phone"} | ${s.email}`,
     );
     return `no show risk : ${etapes.join(", ")}`;
   },
@@ -501,11 +503,21 @@ export const contexteEnvoi = internalQuery({
       .withIndex("by_calUid", (q) => q.eq("calUid", calUid))
       .unique();
     if (!sequence) return null;
-    const lead = await ctx.db
+    const adresse = sequence.email.trim().toLowerCase();
+    let lead = await ctx.db
       .query("leads")
-      .withIndex("by_email", (q) => q.eq("email", sequence.email.trim().toLowerCase()))
+      .withIndex("by_email", (q) => q.eq("email", adresse))
       .order("desc")
       .first();
+    /* Reservation faite avec un alias (« jean+rdv@... ») : la fiche est a l'adresse sans alias. */
+    const sansAlias = adresse.replace(/\+[^@]*@/, "@");
+    if (!lead && sansAlias !== adresse) {
+      lead = await ctx.db
+        .query("leads")
+        .withIndex("by_email", (q) => q.eq("email", sansAlias))
+        .order("desc")
+        .first();
+    }
     return { sequence, leadId: lead?._id };
   },
 });

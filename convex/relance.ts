@@ -2,8 +2,8 @@ import { v } from "convex/values";
 import { internalAction, internalMutation, internalQuery, mutation, query } from "./_generated/server";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
-import type { Id } from "./_generated/dataModel";
-import { envoyerEmail, envoyerSms } from "./envoi";
+import type { Doc, Id } from "./_generated/dataModel";
+import { aReponduParSms, envoyerEmail, envoyerSms } from "./envoi";
 import {
   DELAI_REPLI_AUTO,
   alexandreDort,
@@ -22,16 +22,22 @@ import {
  * Ce n'est pas la sequence post-booking : celle-la part quand un rendez-vous
  * existe, celle-ci quand il n'y en a pas.
  *
- * Le fil, pour un lead qui arrive (formulaire Meta ou formulaire de la landing) :
- *   +5 min   verification : s'il a reserve ou si Alexandre a dit stop, rien.
- *            Sinon :
- *            - Alexandre dort (23 h a 8 h a Paris) : la relance part toute seule ;
+ * Le fil, pour un lead qui arrive (formulaire Meta ou formulaire de la landing).
+ * Version du 05/11/2026 (sequence-confirmation-oui-v7) :
+ *   verification  1 min 30 apres le formulaire quand Alexandre dort (23 h a 8 h a
+ *            Paris) et que RELANCE_AUTO vaut 1 ; 5 min sinon. S'il a reserve (sa
+ *            fiche, ou un rendez-vous a son e-mail, alias compris) ou si Alexandre a
+ *            dit stop, rien. Sinon :
+ *            - Alexandre dort : la relance part toute seule, tout de suite ;
  *            - il est disponible : alerte Slack « appelle-le ». Il a une heure ;
  *              passe ce delai, la relance part quand meme.
- *   R1       e-mail tout de suite, texto dans la plage 8 h a 18 h Pacifique.
- *   R2       le lendemain vers 9 h au Pacifique : e-mail et texto.
- *   R3       trois jours apres R1 : e-mail et texto, le dernier.
- * Chaque envoi reverifie juste avant de partir que le lead n'a pas reserve.
+ *   Premier message (`r1` dans le code)  e-mail et texto tout de suite. Le texto
+ *            ignore la plage 8 h a 18 h Pacifique (SMS_PREMIER_IMMEDIAT=0 la remet).
+ *   R2       le lendemain a 9 h au Pacifique : e-mail et texto.
+ *   R3       47 h apres R2, a 9 h au Pacifique : e-mail et texto, le dernier.
+ * Chaque envoi reverifie juste avant de partir qu'il n'a pas reserve. R2 et R3
+ * verifient aussi qu'il n'a pas repondu par texto au premier message (HighLevel) :
+ * s'il a repondu, la relance s'arrete et Alexandre est prevenu sur Slack.
  *
  * Interrupteur : RELANCE_AUTO=1 dans l'environnement Convex pour que les
  * departs automatiques soient actifs. Sans lui, rien ne part tout seul ; le
@@ -71,6 +77,26 @@ function sommeil(): { debut: number; fin: number } {
 
 /* ----------------------------------------------------------------- lecture */
 
+/* « jean+rdv@gmail.com » et « jean@gmail.com » sont la meme boite. */
+const emailSansAlias = (e: string) => e.trim().toLowerCase().replace(/\+[^@]*@/, "@");
+
+/* A-t-il reserve depuis qu'il a rempli le formulaire ? Sa fiche le dit quand la
+   reservation passe par Cal.com avec son e-mail. Mais une reservation par
+   Calendly, ou avec un alias de son e-mail, ne change pas la fiche : on regarde
+   aussi les rendez-vous. Un rendez-vous annule ne compte pas. */
+async function aReserve(ctx: { db: QueryCtx["db"] }, lead: Doc<"leads">): Promise<boolean> {
+  if (lead.statut === "reserve") return true;
+  const cible = emailSansAlias(lead.email);
+  const recents = await ctx.db.query("rendezvous").order("desc").take(300);
+  return recents.some(
+    (r) =>
+      !!r.email &&
+      r._creationTime >= lead._creationTime &&
+      emailSansAlias(r.email) === cible &&
+      !/cancel|reject/i.test(r.statut ?? ""),
+  );
+}
+
 export const contexte = internalQuery({
   args: { leadId: v.id("leads") },
   handler: async (ctx, { leadId }) => {
@@ -83,7 +109,12 @@ export const contexte = internalQuery({
       .query("envois")
       .withIndex("by_calUid", (q) => q.eq("calUid", cleJournal(leadId)))
       .take(50);
-    return { lead, relance, deja: journal.filter((l) => l.etat === "envoye").map((l) => l.etape) };
+    return {
+      lead,
+      relance,
+      deja: journal.filter((l) => l.etat === "envoye").map((l) => l.etape),
+      reserve: lead ? await aReserve(ctx, lead) : false,
+    };
   },
 });
 
@@ -182,10 +213,21 @@ async function lancer(
   if (existante && existante.etat !== "en_attente") {
     return `rien lance : relance deja ${existante.etat}`;
   }
-  const plan = planRelances(Date.now());
+  /* Le texto du premier message part tout de suite, meme hors de la plage 8 h a
+     18 h Pacifique (decision d'Alexandre du 05/11/2026). SMS_PREMIER_IMMEDIAT=0
+     dans l'environnement Convex le remet dans la plage. */
+  const smsImmediat = process.env.SMS_PREMIER_IMMEDIAT !== "0";
+  const plan = planRelances(Date.now(), smsImmediat);
   const taches: Id<"_scheduled_functions">[] = [];
   for (const etape of ETAPES) {
-    taches.push(await ctx.scheduler.runAt(plan[etape], internal.relance.envoyer, { leadId, etape }));
+    const forcer = smsImmediat && etape === "r1_sms";
+    taches.push(
+      await ctx.scheduler.runAt(plan[etape], internal.relance.envoyer, {
+        leadId,
+        etape,
+        ...(forcer ? { forcer: true } : {}),
+      }),
+    );
   }
   const champs = {
     etat: "en_cours" as const,
@@ -222,7 +264,7 @@ export const verifier = internalMutation({
   handler: async (ctx, { leadId }): Promise<string> => {
     const lead = await ctx.db.get(leadId);
     if (!lead) return "lead inconnu";
-    if (lead.statut === "reserve") return "rien : il a reserve";
+    if (await aReserve(ctx, lead)) return "rien : il a reserve";
     if (lead.variante === "general") return "rien : formulaire general";
     if (leadDeTest(lead)) return "rien : fiche de test";
     if (await relanceDe(ctx, leadId)) return "rien : relance deja traitee";
@@ -230,12 +272,14 @@ export const verifier = internalMutation({
 
     const { debut, fin } = sommeil();
     if (alexandreDort(Date.now(), debut, fin)) {
-      await lancer(ctx, leadId, "auto");
-      await prevenir(
-        ctx,
-        `*Follow-up sent automatically (you're asleep).* ${lead.prenom} filled the form and didn't book after 5 min. Email now, text when the window opens (8 AM to 6 PM Pacific).`,
-      );
-      return "relance lancee (il dort)";
+      const resultat = await lancer(ctx, leadId, "auto");
+      if (resultat === "relance lancee") {
+        await prevenir(
+          ctx,
+          `*Follow-up sent automatically (you're asleep).* ${lead.prenom} filled the form and didn't book. Email and text now, then tomorrow morning and in 3 days.`,
+        );
+      }
+      return `${resultat} (il dort)`;
     }
 
     /* Il est disponible : il appelle. La relance attend, avec un delai. */
@@ -284,7 +328,7 @@ export const lancerManuel = internalMutation({
     if (lead.statut === "reserve") return "rien lance : il a deja reserve";
     const resultat = await lancer(ctx, lead._id, "manuel", prenom);
     if (resultat === "relance lancee") {
-      await prevenir(ctx, `*Follow-up launched by hand* for ${lead.prenom}: email now, text in the window, then tomorrow and in 3 days.`);
+      await prevenir(ctx, `*Follow-up launched by hand* for ${lead.prenom}: email and text now, then tomorrow morning and in 3 days.`);
     }
     return resultat;
   },
@@ -361,11 +405,11 @@ export const envoyer = internalAction({
   },
   returns: v.null(),
   handler: async (ctx, { leadId, etape, forcer }) => {
-    const { lead, relance, deja } = await ctx.runQuery(internal.relance.contexte, { leadId });
+    const { lead, relance, deja, reserve } = await ctx.runQuery(internal.relance.contexte, { leadId });
     if (!lead || !relance || relance.etat !== "en_cours") return null;
     /* Une etape deja partie ne repart jamais, quoi qu'on ait replanifie. */
     if (deja.includes(etape)) return null;
-    if (lead.statut === "reserve") {
+    if (reserve) {
       await ctx.runMutation(internal.relance.arreter, { leadId, motif: "reserve" });
       return null;
     }
@@ -378,6 +422,25 @@ export const envoyer = internalAction({
       ctx.runMutation(internal.sequence.journaliser, {
         calUid: cleJournal(leadId), etape, canal, destinataire, etat, ...(erreur ? { erreur } : {}),
       });
+
+    /* R2 et R3 ne partent que s'il n'a pas repondu au premier message. On lit les
+       textos entrants dans HighLevel depuis le lancement ; une reponse par e-mail
+       n'est pas vue. Si HighLevel ne repond pas, le message part quand meme et
+       l'erreur est notee. */
+    const numeroUS = telephoneUS(lead.telephone);
+    if (numero !== "r1" && numeroUS && relance.lancee) {
+      try {
+        if (await aReponduParSms(numeroUS, relance.lancee)) {
+          await ctx.runMutation(internal.relance.arreter, { leadId, motif: "a repondu" });
+          await ctx.scheduler.runAfter(0, internal.relance.slack, {
+            texte: `Follow-up stopped: ${lead.prenom} answered by text. Take it from here.\n${lead.telephone} | ${lead.email}`,
+          });
+          return null;
+        }
+      } catch (erreur) {
+        await journal("ignore", numeroUS, `lecture des reponses impossible : ${erreur instanceof Error ? erreur.message : String(erreur)}`);
+      }
+    }
 
     /* Un texto hors plage attend la prochaine : c'est la meme etape, repoussee. */
     if (canal === "sms") {
