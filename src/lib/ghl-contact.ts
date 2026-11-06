@@ -13,9 +13,6 @@ export type LeadPourGhl = {
   telephone: string;
   capacite?: string;
   zone?: string;
-  role?: string;
-  chiffreAffaires?: string;
-  delai?: string;
   origine?: string;
 };
 
@@ -56,9 +53,6 @@ export function noteGhl(lead: LeadPourGhl): string {
     lead.origine ? `Source: ${lead.origine}` : undefined,
     `Jobs per month: ${lead.capacite ?? "not given"}`,
     `Area: ${lead.zone ?? "not given"}`,
-    lead.role ? `Role: ${lead.role}` : undefined,
-    lead.chiffreAffaires ? `Revenue: ${lead.chiffreAffaires}` : undefined,
-    lead.delai ? `Wants to start: ${lead.delai}` : undefined,
   ]
     .filter(Boolean)
     .join("\n");
