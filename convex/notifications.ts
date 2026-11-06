@@ -71,8 +71,11 @@ export const lead = internalAction({
       complet: "Lead answered the questions, no call booked yet",
       reserve: "Call booked",
     };
+    const titre = lead.ecarte
+      ? `Screened out by the form rules (${lead.ecarte}). No call needed.`
+      : titres[args.moment];
     const lignes = [
-      `*${titres[args.moment]}*`,
+      `*${titre}*`,
       `${echapper([lead.prenom, lead.nom].filter(Boolean).join(" "))} | ${echapper(lead.telephone)} | ${echapper(lead.email)}`,
       `Texts OK: call ${lead.consentSms ? "yes" : "no"} | follow-ups ${(lead.consentSmsMarketing ?? lead.consentSms) ? "yes" : "no"}`,
     ];

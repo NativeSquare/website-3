@@ -142,6 +142,9 @@ export default defineSchema({
     /* Le contact HighLevel cree a l'arrivee du lead (convex/ghl.ts). Absent des
        leads d'avant le 06/11/2026 et du formulaire general. */
     ghlContactId: v.optional(v.string()),
+    /* Pourquoi le lead du formulaire Meta n'a pas ete suivi (role ou capacite
+       hors cible, 06/11/2026) : ni alarme, ni relance, ni HighLevel. */
+    ecarte: v.optional(v.string()),
   })
     .index("by_email", ["email"])
     .index("by_visiteId", ["visiteId"]),

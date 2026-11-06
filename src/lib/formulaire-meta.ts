@@ -16,6 +16,11 @@ export type LeadMeta = {
   consentSms: boolean;
   capacite?: string;
   zone?: string;
+  /* Les questions de tri du formulaire (06/11/2026) : absentes de l'ancien
+     formulaire, donc facultatives. */
+  role?: string;
+  chiffreAffaires?: string;
+  delai?: string;
   /* « Meta instant form | ad: H1 question | form: ... » : ce que l'alerte Slack
      affiche a la place de la pub de la visite, qu'un lead Meta n'a pas. */
   origine: string;
@@ -85,7 +90,32 @@ export function lireLeadMeta(brut: unknown): LeadMeta | null {
        (decision d'Alexandre du 22/10 : l'avertissement est dans le formulaire Meta). */
     consentSms: international !== undefined,
     capacite: premier(b, ["jobs_per_month", "capacite"]),
-    zone: premier(b, ["area", "zip_code", "zone"]),
+    zone: premier(b, ["area", "zip_code", "post_code", "zone"]),
+    role: premier(b, ["role", "job_role"]),
+    chiffreAffaires: premier(b, ["revenue", "annual_revenue", "chiffre_affaires"]),
+    delai: premier(b, ["timeline", "start_timeline", "delai"]),
     origine,
   };
+}
+
+/* Meta rend les reponses a choix en cles (« 1_to_10_jobs_a_month », « owner ») ;
+   la landing garde les libelles (« 1 to 10 jobs a month », « Owner »). */
+function norme(valeur: string): string {
+  return valeur.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
+}
+
+/* Les patrons et associes seulement, comme `decision_maker` dans lead-meta.ts. */
+const ROLES_RETENUS = new Set(["owner", "partner"]);
+const CAPACITES_ECARTEES = new Set(["1_to_10_jobs_a_month"]);
+
+/**
+ * Pourquoi un lead du formulaire ne vaut pas un appel, ou undefined. La logique
+ * conditionnelle de Meta doit deja avoir arrete ces gens avant l'envoi : un lead
+ * ecarte ici signale un formulaire mal regle. Une reponse absente n'ecarte
+ * personne (l'ancien formulaire ne posait pas la question du role).
+ */
+export function ecarteLeadMeta(l: Pick<LeadMeta, "role" | "capacite">): string | undefined {
+  if (l.role && !ROLES_RETENUS.has(norme(l.role))) return `role: ${l.role}`;
+  if (l.capacite && CAPACITES_ECARTEES.has(norme(l.capacite))) return `jobs: ${l.capacite}`;
+  return undefined;
 }

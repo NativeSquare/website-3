@@ -2,7 +2,7 @@ import { v } from "convex/values";
 import { internalMutation, internalQuery, mutation } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { idEvenementLead } from "../src/lib/lead-meta";
-import { ORIGINE_META } from "../src/lib/formulaire-meta";
+import { ORIGINE_META, ecarteLeadMeta } from "../src/lib/formulaire-meta";
 import { delaiVerification } from "../src/lib/relance";
 
 /* Combien de temps apres le formulaire on regarde s'il a reserve : 1 min 30 quand
@@ -147,6 +147,9 @@ export const depuisMeta = internalMutation({
     consentSms: v.boolean(),
     capacite: v.optional(v.string()),
     zone: v.optional(v.string()),
+    role: v.optional(v.string()),
+    chiffreAffaires: v.optional(v.string()),
+    delai: v.optional(v.string()),
     origine: v.string(),
     jeton: v.string(),
   },
@@ -168,6 +171,7 @@ export const depuisMeta = internalMutation({
       return { leadId: dernier._id, nouveau: false };
     }
 
+    const ecarte = ecarteLeadMeta({ role: args.role, capacite: args.capacite });
     const leadId = await ctx.db.insert("leads", {
       prenom: args.prenom,
       nom: args.nom,
@@ -177,15 +181,22 @@ export const depuisMeta = internalMutation({
       email,
       capacite: args.capacite,
       zone: args.zone,
+      role: args.role,
+      chiffreAffaires: args.chiffreAffaires,
+      delai: args.delai,
       variante: "hvac",
       origine: args.origine,
       jeton: args.jeton,
       statut: "complet",
+      ecarte,
     });
     await ctx.scheduler.runAfter(0, internal.notifications.lead, {
       leadId,
       moment: "contact",
     });
+    /* Un lead ecarte reste dans la table et dans Slack (signe d'un formulaire mal
+       regle), mais ne reveille personne et ne recoit aucun message. */
+    if (ecarte) return { leadId, nouveau: true };
     await ctx.scheduler.runAfter(0, internal.alarme.reveiller, { leadId });
     await ctx.scheduler.runAfter(delaiAvantVerification(), internal.relance.verifier, { leadId });
     /* Le lead du formulaire Meta entre aussitot dans HighLevel (convex/ghl.ts). */
